@@ -1,0 +1,27 @@
+{
+  "name": "polymer-hypervideo",
+  "version": "0.0.0",
+  "homepage": "https://github.com/tomayac/polymer-hypervideo",
+  "authors": [
+    "Thomas Steiner <tomac@google.com>"
+  ],
+  "description": "Hypervideo polymer element",
+  "main": "polymer-hypervideo.html",
+  "keywords": [
+    "hypervideo"
+  ],
+  "license": "Apache 2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.1"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.0-rc1"
+  }
+}

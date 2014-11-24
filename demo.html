@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="main.css" media="all" rel="stylesheet" type="text/css"/>
+    <script src="../webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="polymer-hypervideo.html">
+  </head>
+  <body>
+    <h1>Hypervideo Demo</h1>
+
+    <h2>Polymer Hypervideo (Local video)</h2>
+
+    <polymer-hypervideo src="big_buck_bunny.mp4 big_buck_bunny.webm" width="800" height="450" muted>
+
+      <polymer-track-subtitles src="subtitles.vtt" displaysubtitlesgroup="true" width="800" ></polymer-track-subtitles>
+
+      <polymer-track-chapters src="thumbs.vtt" displaychaptersthumbnails="true" width="800"></polymer-track-chapters>
+
+      <polymer-data-overlay style="color:green;" start="20" end="25">
+        <img src="fr.png"/>
+        Bonjour monde!
+      </polymer-data-overlay>
+
+      <polymer-data-overlay style="color:red; position:absolute; top:-35px; opacity: .5;" start="25" end="30">
+        <img src="fr.png"/>
+        Collision manuelle!
+      </polymer-data-overlay>
+
+      <polymer-data-overlay style="color:blue;" start="35" end="45">
+        Au revoir monde!
+        <img src="fr.png"/>
+      </polymer-data-overlay>
+
+      <polymer-data-overlay style="color:orange;" start="40" end="50">
+        Collision auto
+      </polymer-data-overlay>
+
+      <polymer-data-actor start="10" end="15" name="Big Buck Bunny" url="http://commons.wikimedia.org/wiki/File:Big.Buck.Bunny.-.Bunny.Portrait.png"></polymer-data-actor>
+
+      <polymer-data-actor start="10" end="35" name="Chirp (Owl)" xywh="170,20,70,80"  url="http://commons.m.wikimedia.org/wiki/File:Chirp1_-_BBB_-_reduced_snapshot.png"></polymer-data-actor>
+
+      <polymer-data-actor start="40" end="35" name="Jane Doe"></polymer-data-actor>
+
+      <polymer-data-actor start="40" end="50" name="Owl"></polymer-data-actor>
+
+      <polymer-data-annotation start="30" end="38" kind="generic">
+        Room for your notes
+      </polymer-data-annotation>
+
+      <polymer-visualization-timeline orientation="landscape" width="800" height="150"></polymer-visualization-timeline>
+
+      <polymer-visualization-timeline orientation="portrait" width="800" height="400"></polymer-visualization-timeline>
+
+      <polymer-visualization-toc width="800"></polymer-visualization-toc>
+
+    </polymer-hypervideo>
+
+  </body>
+</html>

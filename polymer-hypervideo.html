@@ -1,0 +1,45 @@
+<link rel="import" href="../polymer/polymer.html">
+<!--
+This element serves as a container element for various hypervideo-related sub-elements.
+
+##### Example
+
+    <polymer-hypervideo
+        // Provide different encodings as space-separated list
+        src="big_buck_bunny.mp4 big_buck_bunny.webm"
+        width="800"
+        height="450"
+        muted>
+    </polymer-hypervideo>
+
+@element polymer-hypervideo
+@blurb This element serves as a container element for various hypervideo-related sub-elements.
+@status alpha
+@url http://github.com/tomayac/postdoc/demos/polymer-hypervideo
+-->
+<polymer-element name="polymer-hypervideo" attributes="src width height poster muted youtubevideoid">
+  <template>
+    <link href="polymer-hypervideo.css" media="all" rel="stylesheet" type="text/css"/>
+    <div style="position:relative">
+      <div id="container">
+        <video
+            id="hypervideo"
+            class="hypervideo"
+            controls
+            crossorigin="Anonymous">
+        </video>
+        <content></content>
+      </div>
+    </div>
+  </template>
+  <script src="./elements/util.js"></script>
+  <script src="polymer-hypervideo.js"></script>
+</polymer-element>
+
+<link rel="import" href="elements/polymer-data-actor.html">
+<link rel="import" href="elements/polymer-data-annotation.html">
+<link rel="import" href="elements/polymer-data-overlay.html">
+<link rel="import" href="elements/polymer-track-chapters.html">
+<link rel="import" href="elements/polymer-track-subtitles.html">
+<link rel="import" href="elements/polymer-visualization-timeline.html">
+<link rel="import" href="elements/polymer-visualization-toc.html">

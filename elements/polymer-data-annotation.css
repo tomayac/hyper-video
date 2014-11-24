@@ -1,0 +1,14 @@
+* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.container {
+  background-color: white;
+  opacity: .75;
+  border: solid black 1px;
+  border-radius: 3px;
+  padding: 3px;
+}
