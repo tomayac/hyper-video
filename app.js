@@ -8,7 +8,7 @@ var request = require('request');
 var url = require('url');
 
 // start static serving
-app.use(express.static(__dirname + '/./'));
+app.use(express.static(__dirname + '/'));
 
 // CORS server
 app.get(/^\/cors\/(.+)$/, function(req, res) {
