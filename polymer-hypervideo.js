@@ -13,6 +13,29 @@ Polymer('polymer-hypervideo', {
     var that = this;
     var spinner;
     var video = that.$.hypervideo;
+
+    var onMutation = function(observer, mutations) {
+      var nodes = [];
+      var chapters = [];
+      for (var i = 0, lenI = mutations.length; i < lenI; i++) {
+        var mutation = mutations[i];
+        if (mutation.addedNodes) {
+          for (var j = 0, lenJ = mutation.addedNodes.length; j < lenJ; j++) {
+            if (/^polymer-data-/gi.test(mutation.addedNodes[j].nodeName)) {
+              nodes.push(mutation.addedNodes[j]);
+            }
+          }
+        }
+      }
+      if (nodes.length) {
+        positionDataAnnotations(nodes);
+        updateTimelineAnnotations(nodes);
+      }
+      that.onMutation(that, onMutation);
+    };
+
+    that.onMutation(that, onMutation);
+
     var CORS_PROXY = document.location.origin + '/cors/';
     document.addEventListener('trackready', function(e) {
       console.log('Received event (document): trackready');
@@ -75,10 +98,10 @@ Polymer('polymer-hypervideo', {
       );
     }, false);
 
-    document.addEventListener('timelineready', function() {
-      console.log('Received event (document): timelineready');
+    var updateTimelineAnnotations = function(opt_nodes) {
       // get all child <polymer-data-*> child nodes
-      var dataAnnotations = queryRegExSelectorAll(that, /^polymer-data-/gi);
+      var dataAnnotations =
+          opt_nodes || queryRegExSelectorAll(that, /^polymer-data-/gi);
       var annotations = [];
       dataAnnotations.forEach(function(annotation) {
         var type;
@@ -102,6 +125,12 @@ Polymer('polymer-hypervideo', {
           dataAnnotations: annotations
         }
       );
+
+    };
+
+    document.addEventListener('timelineready', function() {
+      console.log('Received event (document): timelineready');
+      updateTimelineAnnotations();
     }, false);
 
     // listen for events coming from the timeline component
@@ -156,6 +185,7 @@ Polymer('polymer-hypervideo', {
         } else {
           video.removeEventListener('seeked', getNextStillFrame);
           video.currentTime = 0;
+          that.fire('allstillframesreceived');
           spinner.remove();
         }
       };
@@ -236,9 +266,10 @@ Polymer('polymer-hypervideo', {
       return splashDiv;
     };
 
-    var positionDataAnnotations = function() {
+    var positionDataAnnotations = function(opt_nodes) {
       // positions data annotations on top of the video
-      var polymerData = queryRegExSelectorAll(that, /^polymer-data-/gi);
+      var polymerData =
+          opt_nodes || queryRegExSelectorAll(that, /^polymer-data-/gi);
       polymerData.forEach(function(node) {
         node.style.position = 'absolute';
         node.style.top = (video.offsetTop + 0.66 * video.offsetHeight) +

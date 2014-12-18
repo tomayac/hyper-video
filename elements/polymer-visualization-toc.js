@@ -7,17 +7,17 @@ Polymer('polymer-visualization-toc', {
     var that = this;
     var cuesElements = [];
     var container = that.$.container;
-    if (that.width) {
-      container.style.width = that.width + 'px';
-    } else {
-      container.style.width = '50%';
-    }
-    if (that.height) {
-      container.style.height = that.height + 'px';
-    }
     // listen for events
     document.addEventListener('webcomponentstoc', function(e) {
       console.log('Received event (document): webcomponentstoc');
+      if (that.width) {
+        container.style.width = that.width + 'px';
+      } else {
+        container.style.width = '50%';
+      }
+      if (that.height) {
+        container.style.height = that.height + 'px';
+      }
       var fragment = document.createDocumentFragment();
       var ol = document.createElement('ol');
       fragment.appendChild(ol);

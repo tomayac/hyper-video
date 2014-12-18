@@ -12,17 +12,16 @@ Polymer('polymer-track-chapters', {
     var cuesRead = false;
     that.displaychaptersthumbnails = true;
 
-    if (that.width) {
-      container.style.width = that.width + 'px';
-    } else {
-      container.style.width = '50%';
-    }
-    if (that.height) {
-      container.style.height = that.height + 'px';
-    }
-
     document.addEventListener('hypervideoloadedmetadata', function() {
       console.log('Received event (document): hypervideoloadedmetadata');
+      if (that.width) {
+        container.style.width = that.width + 'px';
+      } else {
+        container.style.width = '50%';
+      }
+      if (that.height) {
+        container.style.height = that.height + 'px';
+      }
       hyperVideoLoadedMetadata = true;
       if ((that.displaychaptersthumbnails) &&
           (hyperVideoLoadedMetadata) &&

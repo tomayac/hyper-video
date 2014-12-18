@@ -22,12 +22,17 @@ Polymer('polymer-visualization-timeline', {
     var kinds = {};
     var legend = {};
     var eventsReceived = {};
-    var annotationsQueue = [];
     var annotationsElements = [];
-    var fontSize = parseInt(getComputedStyle(container).fontSize
-        .replace('px', ''), 10);
     var settingsWidth = 200;
     var settingsHeight = 150;
+    wrapper.style.width = '400px';
+    wrapper.style.height = '150px';
+    timeline.style.width = '200px';
+    timeline.style.height = '150px';
+    container.style.width = '200px';
+    container.style.height = '150px';
+    var fontSize = parseInt(getComputedStyle(container).fontSize
+        .replace('px', ''), 10);
     var scalingFactor;
 
     zoom.addEventListener('input', function() {
@@ -195,8 +200,8 @@ Polymer('polymer-visualization-timeline', {
         maxHeight = 2 * that.videoHeight;
       }
 
-      fontSize = parseInt(getComputedStyle(container)
-          .fontSize.replace('px', ''), 10);
+      fontSize = parseInt(getComputedStyle(container).fontSize
+          .replace('px', ''), 10);
       if (that.orientation === 'landscape') {
         scalingFactor = maxWidth / (that.duration * fontSize);
 
@@ -250,29 +255,33 @@ Polymer('polymer-visualization-timeline', {
 
         wrapper.style.width = timeline.style.width;
       }
-      annotationsQueue.forEach(function(annotationsBundle) {
-        addAnnotations(annotationsBundle);
-      });
     });
 
     document.addEventListener('cuesread', function(e) {
       console.log('Received event (document): cuesread');
       var data = e.detail;
       if (data.kind === 'chapters') {
-        annotationsQueue.push(data.cueData);
+        eventsReceived.data = data.cueData;
       }
     }, false);
 
     document.addEventListener('dataannotations', function(e) {
       console.log('Received event (document): dataannotations');
-      if (eventsReceived.dataannotations) {
-        return;
-      }
-      eventsReceived.dataannotations = true;
-      annotationsQueue.push(e.detail.dataAnnotations);
+      var interval = setInterval(function() {
+        if (that.duration) {
+          clearInterval(interval);
+          if (eventsReceived.data) {
+            addAnnotations(eventsReceived.data);
+            eventsReceived.data = null;
+          }
+          addAnnotations(e.detail.dataAnnotations);
+        }
+      }, 50);
     }, false);
 
     var addAnnotations = function(annotations) {
+      fontSize = parseInt(getComputedStyle(container).fontSize
+          .replace('px', ''), 10);
       var lastType = '';
       annotations.sort(function(a, b) {
         return b.type - a.type;
@@ -305,7 +314,20 @@ Polymer('polymer-visualization-timeline', {
           level++;
           maxLevel = level;
         }
+        var maxWidth;
+        if (that.width) {
+          maxWidth = that.width - settingsWidth;
+        } else {
+          maxWidth = 2 * that.videoWidth;
+        }
+        var maxHeight;
+        if (that.height) {
+          maxHeight = that.height - settingsHeight;
+        } else {
+          maxHeight = 2 * that.videoHeight;
+        }
         if (that.orientation === 'landscape') {
+          scalingFactor = maxWidth / (that.duration * fontSize);
           annotationMarker.style.marginLeft = (scalingFactor * start) + 'em';
           annotationMarker.style.width = (scalingFactor * (end - start)) + 'em';
           annotationMarker.style.height = (12 * 1.1) + 'px';
@@ -313,6 +335,7 @@ Polymer('polymer-visualization-timeline', {
           annotationMarker.style.marginTop = (level * 12 * 1.2) + 'px';
           // (level * 1.2) + 'em';
         } else {
+          scalingFactor = maxHeight / (that.duration * fontSize);
           div.classList.add('rotated');
           annotationMarker.style.marginTop = (scalingFactor * start) + 'em';
           annotationMarker.style.height = (scalingFactor * (end - start)) +

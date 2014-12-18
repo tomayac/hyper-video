@@ -8,20 +8,20 @@ Polymer('polymer-track-subtitles', {
     var container = that.$.container;
     var search = that.$.search;
     var cuesContainer = that.$.cuesContainer;
-    if (that.width) {
-      container.style.width = that.width + 'px';
-      search.style.width = 'calc(' + that.width + 'px - 2em)';
-    } else {
-      container.style.width = '50%';
-      search.style.width = '50%';
-    }
-    if (that.height) {
-      container.style.height = that.height + 'px';
-    }
     var cuesElements = [];
 
     document.addEventListener('cuesread', function(e) {
       console.log('Received event (document): cuesread');
+      if (that.width) {
+        container.style.width = that.width + 'px';
+        search.style.width = 'calc(' + that.width + 'px - 2em)';
+      } else {
+        container.style.width = '50%';
+        search.style.width = '50%';
+      }
+      if (that.height) {
+        container.style.height = that.height + 'px';
+      }
       var data = e.detail;
       if (that.displaysubtitlesgroup && data.kind === 'subtitles') {
         displaySubtitlesGroup(data.cueData);
