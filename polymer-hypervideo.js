@@ -350,5 +350,11 @@ Polymer('polymer-hypervideo', {
       positionDataAnnotations();
       spinner.remove();
     }, 50);
+  },
+  pause: function() {
+    return this.$.hypervideo.pause();
+  },
+  play: function() {
+    return this.$.hypervideo.play();
   }
 });
