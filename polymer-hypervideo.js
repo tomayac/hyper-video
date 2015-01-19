@@ -143,6 +143,7 @@ Polymer('polymer-hypervideo', {
 
     document.addEventListener('requeststillframes', function(e) {
       console.log('Received event (document): requeststillframes');
+      spinner = showSpinner();
       var cues = e.detail.cues;
       if (!cues) {
         return;
@@ -181,7 +182,7 @@ Polymer('polymer-hypervideo', {
         );
         processedStillFrames++;
         if (functions[processedStillFrames]) {
-          functions[processedStillFrames].func();
+          return functions[processedStillFrames].func();
         } else {
           video.removeEventListener('seeked', getNextStillFrame);
           video.currentTime = 0;
@@ -343,10 +344,11 @@ Polymer('polymer-hypervideo', {
       );
     }, false);
 
+    spinner = showSpinner();
     setTimeout(function() {
       initializeVideo();
-      spinner = showSpinner();
       positionDataAnnotations();
+      spinner.remove();
     }, 50);
   }
 });
