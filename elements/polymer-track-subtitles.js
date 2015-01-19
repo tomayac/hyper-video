@@ -9,6 +9,7 @@ Polymer('polymer-track-subtitles', {
     var search = that.$.search;
     var cuesContainer = that.$.cuesContainer;
     var cuesElements = [];
+    that.displaysubtitlesgroup = true;
 
     document.addEventListener('cuesread', function(e) {
       console.log('Received event (document): cuesread');
