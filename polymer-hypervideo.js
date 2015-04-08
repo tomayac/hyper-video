@@ -334,6 +334,7 @@ Polymer('polymer-hypervideo', {
       if (that.alternativeviews) {
         var videos = [video];
         var videoWidth = Math.floor(that.width / 5);
+        var ratio = that.width / that.height;
 
         function showControls(e) {
           return e.target.setAttribute('controls', true);
@@ -424,7 +425,6 @@ Polymer('polymer-hypervideo', {
 
             currentVideo.addEventListener('click', makeBig);
 
-            var ratio = that.width / that.height;
             if (i === 0) {
               currentVideo.classList.add('big');
               currentVideo.addEventListener('mouseover', showControls);
