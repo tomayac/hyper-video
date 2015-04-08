@@ -420,6 +420,7 @@ Polymer('polymer-hypervideo', {
 
             currentVideo.addEventListener('click', makeBig);
 
+            var ratio = that.width / that.height;
             if (i === 0) {
               currentVideo.classList.add('big');
               currentVideo.addEventListener('mouseover', showControls);
@@ -430,6 +431,8 @@ Polymer('polymer-hypervideo', {
             } else {
               currentVideo.classList.add('small');
               currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
+              currentVideo.style.top =
+              (that.height - (videoWidth / ratio) - 50) + 'px';
               currentVideo.width = videoWidth;
               currentVideo.muted = true;
             }
