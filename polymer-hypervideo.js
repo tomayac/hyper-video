@@ -371,6 +371,7 @@ Polymer('polymer-hypervideo', {
             if (currentVideo === e.target) {
               currentVideo.classList.remove('small');
               currentVideo.classList.add('big');
+              currentVideo.width = that.width;
               currentVideo.addEventListener('mouseover', showControls);
               currentVideo.addEventListener('mouseout', hideControls);
               currentVideo.addEventListener('seeked', seekAll);
@@ -382,6 +383,7 @@ Polymer('polymer-hypervideo', {
               currentVideo.removeEventListener('mouseout', hideControls);
               currentVideo.removeEventListener('seeked', seekAll);
               currentVideo.style.left = (j * videoWidth) + 'px';
+              currentVideo.width = videoWidth;
               currentVideo.removeAttribute('controls');
               j++;
             }
@@ -432,7 +434,7 @@ Polymer('polymer-hypervideo', {
               currentVideo.classList.add('small');
               currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
               currentVideo.style.top =
-              (that.height - (videoWidth / ratio) - 50) + 'px';
+                  (that.height - (videoWidth / ratio) - 50) + 'px';
               currentVideo.width = videoWidth;
               currentVideo.muted = true;
             }
