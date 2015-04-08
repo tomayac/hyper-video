@@ -390,7 +390,7 @@ Polymer('polymer-hypervideo', {
 
         that.alternativeviews.split(/\s/).forEach(function(views) {
           views = JSON.parse(views);
-          console.log(views);
+          var content = container.querySelector('content');
           for (var videoSource in views) {
             if (video.currentSrc.indexOf(videoSource) === -1) {
               continue;
@@ -404,7 +404,7 @@ Polymer('polymer-hypervideo', {
               viewVideo.appendChild(viewSource);
               viewVideo.id = id;
               viewVideo.setAttribute('title', alternativeView.title);
-              video.parentNode.insertBefore(viewVideo, video.nextSibling);
+              video.parentNode.insertBefore(viewVideo, content);
               videos.push(viewVideo);
             }
           }
