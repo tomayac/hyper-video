@@ -428,7 +428,7 @@ Polymer('polymer-hypervideo', {
               currentVideo.muted = false;
             } else {
               currentVideo.classList.add('small');
-              currentVideo.style.left = ((i - 1) * videoWidth - videoWidth) +
+              currentVideo.style.left = ((i - 1) * videoWidth - that.width) +
                   'px';
               currentVideo.muted = true;
             }
