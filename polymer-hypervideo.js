@@ -377,6 +377,7 @@ Polymer('polymer-hypervideo', {
               currentVideo.addEventListener('seeked', seekAll);
               currentVideo.style.left = 0;
               currentVideo.width = that.width;
+              currentVideo.height = that.width / ratio;
               currentVideo.style.top = 0;
             } else {
               currentVideo.classList.remove('big');
@@ -388,6 +389,7 @@ Polymer('polymer-hypervideo', {
               currentVideo.style.top =
                   (that.height - (videoWidth / ratio) - 50) + 'px';
               currentVideo.width = videoWidth;
+              currentVideo.height = videoWidth / ratio;
               currentVideo.removeAttribute('controls');
               j++;
             }
