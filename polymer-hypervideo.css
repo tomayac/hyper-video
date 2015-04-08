@@ -11,6 +11,32 @@ video.hypervideo {
           box-shadow: 5px 5px 5px #111;
 }
 
+video.small {
+  width: 100px;
+  position: absolute;
+  top: 281px;
+  cursor: pointer;
+}
+
+video.big {
+  width: 500px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+video {
+  -webkit-transition: all .5s ease-in-out;
+     -moz-transition: all .5s ease-in-out;
+       -o-transition: all .5s ease-in-out;
+          transition: all .5s ease-in-out;
+  border: solid 1px black;
+  -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+      -o-box-sizing: border-box;
+         box-sizing: border-box;
+}
+
 .spinner {
   background-color: black;
   opacity: 0.66;

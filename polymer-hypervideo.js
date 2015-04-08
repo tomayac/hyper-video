@@ -329,6 +329,109 @@ Polymer('polymer-hypervideo', {
           }
         }
       );
+
+      // alternative views
+      if (that.alternativeviews) {
+        var videos = [video];
+        var videoWidth = Math.floor(that.width / 5);
+
+        function showControls(e) {
+          return e.target.setAttribute('controls', true);
+        }
+
+        var hideControls = function hideControls(e) {
+          return e.target.removeAttribute('controls');
+        };
+
+        var playAll = function playAll() {
+          for (var i = 0; i < videos.length; i++) {
+            videos[i].play();
+          }
+        };
+
+        var pauseAll = function pauseAll() {
+          for (var i = 0; i < videos.length; i++) {
+            videos[i].pause();
+          }
+        };
+
+        var seekAll = function seekAll(e) {
+          for (var i = 0; i < videos.length; i++) {
+            var currentVideo = videos[i];
+            if (currentVideo === e.target) {
+              continue;
+            }
+            currentVideo.currentTime = e.target.currentTime;
+          }
+        };
+
+        var makeBig = function makeBig(e) {
+          for (var i = 0, j = 0; i < videos.length; i++) {
+            var currentVideo = videos[i];
+            if (currentVideo === e.target) {
+              currentVideo.classList.remove('small');
+              currentVideo.classList.add('big');
+              currentVideo.addEventListener('mouseover', showControls);
+              currentVideo.addEventListener('mouseout', hideControls);
+              currentVideo.addEventListener('seeked', seekAll);
+              currentVideo.style.left = 0;
+            } else {
+              currentVideo.classList.remove('big');
+              currentVideo.classList.add('small');
+              currentVideo.removeEventListener('mouseover', showControls);
+              currentVideo.removeEventListener('mouseout', hideControls);
+              currentVideo.removeEventListener('seeked', seekAll);
+              currentVideo.style.left = (j * videoWidth) + 'px';
+              currentVideo.removeAttribute('controls');
+              j++;
+            }
+          }
+        };
+
+        that.alternativeviews.split(/\s/).forEach(function(views) {
+          views = JSON.parse(views);
+          console.log(views);
+          for (var videoSource in views) {
+            for (var id in views[videoSource]) {
+              var alternativeView = views[videoSource][id];
+              console.log(alternativeView);
+              var viewVideo = document.createElement('video');
+              var viewSource = document.createElement('source');
+              viewSource.src = alternativeView.src;
+              viewVideo.appendChild(viewSource);
+              viewVideo.id = id;
+              viewVideo.setAttribute('title', alternativeView.title);
+              video.parentNode.appendChild(viewVideo);
+              videos.push(viewVideo);
+            }
+          }
+        });
+
+        (function init() {
+          for (var i = 0; i < videos.length; i++) {
+            var currentVideo = videos[i];
+
+            currentVideo.addEventListener('play', playAll);
+
+            currentVideo.addEventListener('pause', pauseAll);
+
+            currentVideo.addEventListener('click', makeBig);
+
+            if (i === 0) {
+              currentVideo.classList.add('big');
+              currentVideo.addEventListener('mouseover', showControls);
+              currentVideo.addEventListener('mouseout', hideControls);
+              currentVideo.addEventListener('seeked', seekAll);
+              currentVideo.muted = false;
+            } else {
+              currentVideo.classList.add('small');
+              currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
+              currentVideo.muted = true;
+            }
+          }
+        })();
+      }
+
     }, false);
 
     // publish timeupdate events
