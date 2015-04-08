@@ -392,6 +392,9 @@ Polymer('polymer-hypervideo', {
           views = JSON.parse(views);
           console.log(views);
           for (var videoSource in views) {
+            if (video.currentSrc.indexOf(videoSource) === -1) {
+              continue;
+            }
             for (var id in views[videoSource]) {
               var alternativeView = views[videoSource][id];
               console.log(alternativeView);
