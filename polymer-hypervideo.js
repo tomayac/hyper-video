@@ -13,6 +13,7 @@ Polymer('polymer-hypervideo', {
     var that = this;
     var spinner;
     var video = that.$.hypervideo;
+    var container = that.$.container;
 
     var onMutation = function(observer, mutations) {
       var nodes = [];
@@ -262,7 +263,6 @@ Polymer('polymer-hypervideo', {
       var loadingDiv = document.createElement('div');
       loadingDiv.textContent = '*';
       splashSpinner.appendChild(loadingDiv);
-      var container = that.$.container;
       container.appendChild(splashDiv);
       return splashDiv;
     };
