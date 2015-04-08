@@ -448,6 +448,7 @@ Polymer('polymer-hypervideo', {
               currentVideo.addEventListener('mouseout', hideControls);
               currentVideo.addEventListener('seeked', seekAll);
               currentVideo.width = that.width;
+              currentVideo.height = that.height;
               currentVideo.muted = false;
             } else {
               currentVideo.classList.add('small');
@@ -455,6 +456,7 @@ Polymer('polymer-hypervideo', {
               currentVideo.style.top =
                   (that.height - (videoWidth / ratio) - 50) + 'px';
               currentVideo.width = videoWidth;
+              currentVideo.height = videoWidth / ratio;
               currentVideo.muted = true;
             }
           }
