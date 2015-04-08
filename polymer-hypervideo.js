@@ -411,6 +411,7 @@ Polymer('polymer-hypervideo', {
               viewVideo.appendChild(viewSource);
               viewVideo.id = id;
               viewVideo.setAttribute('title', alternativeView.title);
+              viewVideo.classList.add('hypervideo');
               video.parentNode.insertBefore(viewVideo, content);
               videos.push(viewVideo);
             }

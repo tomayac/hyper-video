@@ -14,15 +14,13 @@ video.hypervideo {
 video.small {
   position: absolute;
   cursor: pointer;
-  border: 3px solid #000;
-  margin: 3px;
+  z-index: 1000;
 }
 
 video.big {
   position: absolute;
   top: 0;
   left: 0;
-  border: 3px solid #000;
 }
 
 video {
