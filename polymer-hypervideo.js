@@ -371,11 +371,12 @@ Polymer('polymer-hypervideo', {
             if (currentVideo === e.target) {
               currentVideo.classList.remove('small');
               currentVideo.classList.add('big');
-              currentVideo.width = that.width;
               currentVideo.addEventListener('mouseover', showControls);
               currentVideo.addEventListener('mouseout', hideControls);
               currentVideo.addEventListener('seeked', seekAll);
               currentVideo.style.left = 0;
+              currentVideo.width = that.width;
+              currentVideo.style.top = 0;
             } else {
               currentVideo.classList.remove('big');
               currentVideo.classList.add('small');
@@ -383,6 +384,8 @@ Polymer('polymer-hypervideo', {
               currentVideo.removeEventListener('mouseout', hideControls);
               currentVideo.removeEventListener('seeked', seekAll);
               currentVideo.style.left = (j * videoWidth) + 'px';
+              currentVideo.style.top =
+                  (that.height - (videoWidth / ratio) - 50) + 'px';
               currentVideo.width = videoWidth;
               currentVideo.removeAttribute('controls');
               j++;
@@ -399,7 +402,6 @@ Polymer('polymer-hypervideo', {
             }
             for (var id in views[videoSource]) {
               var alternativeView = views[videoSource][id];
-              console.log(alternativeView);
               var viewVideo = document.createElement('video');
               var viewSource = document.createElement('source');
               viewSource.src = alternativeView.src;
