@@ -404,7 +404,7 @@ Polymer('polymer-hypervideo', {
               viewVideo.appendChild(viewSource);
               viewVideo.id = id;
               viewVideo.setAttribute('title', alternativeView.title);
-              video.parentNode.appendChild(viewVideo);
+              video.parentNode.insertBefore(viewVideo, video.nextSibling);
               videos.push(viewVideo);
             }
           }
@@ -428,7 +428,8 @@ Polymer('polymer-hypervideo', {
               currentVideo.muted = false;
             } else {
               currentVideo.classList.add('small');
-              currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
+              currentVideo.style.left = ((i - 1) * videoWidth - videoWidth) +
+                  'px';
               currentVideo.muted = true;
             }
           }
