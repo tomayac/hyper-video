@@ -425,11 +425,12 @@ Polymer('polymer-hypervideo', {
               currentVideo.addEventListener('mouseover', showControls);
               currentVideo.addEventListener('mouseout', hideControls);
               currentVideo.addEventListener('seeked', seekAll);
+              currentVideo.width = that.width;
               currentVideo.muted = false;
             } else {
               currentVideo.classList.add('small');
               currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
-              currentVideo.style.width = videoWidth;
+              currentVideo.width = videoWidth;
               currentVideo.muted = true;
             }
           }
