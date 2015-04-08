@@ -24,10 +24,10 @@ video.big {
 }
 
 video {
-  -webkit-transition: all .5s ease-in-out;
-     -moz-transition: all .5s ease-in-out;
-       -o-transition: all .5s ease-in-out;
-          transition: all .5s ease-in-out;
+  -webkit-transition: all 5s ease-in-out;
+     -moz-transition: all 5s ease-in-out;
+       -o-transition: all 5s ease-in-out;
+          transition: all 5s ease-in-out;
   border: solid 1px black;
   -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
