@@ -12,14 +12,12 @@ video.hypervideo {
 }
 
 video.small {
-  width: 100px;
-  position: relative;
-  top: -50px;
+  position: absolute;
   cursor: pointer;
 }
 
 video.big {
-  position: relative;
+  position: absolute;
   top: 0;
   left: 0;
 }
