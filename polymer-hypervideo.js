@@ -369,7 +369,11 @@ Polymer('polymer-hypervideo', {
         var transitionend = function transitioned(e) {
           for (var i = 0; i < videos.length; i++) {
             var currentVideo = videos[i];
-            currentVideo.style.zIndex = 'auto';
+            if (currentVideo.classList.contains('small')) {
+              currentVideo.style.zIndex = 10000;
+            } else {
+              currentVideo.style.zIndex = 'auto';
+            }
           }
         }
 
