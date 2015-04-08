@@ -443,20 +443,22 @@ Polymer('polymer-hypervideo', {
             currentVideo.addEventListener('transitionend', transitionend);
 
             if (i === 0) {
+              currentVideo.width = that.width;
+              currentVideo.height = that.height;
+              currentVideo.style.top = 0;
+              currentVideo.style.left = 0;
               currentVideo.classList.add('big');
               currentVideo.addEventListener('mouseover', showControls);
               currentVideo.addEventListener('mouseout', hideControls);
               currentVideo.addEventListener('seeked', seekAll);
-              currentVideo.width = that.width;
-              currentVideo.height = that.height;
               currentVideo.muted = false;
             } else {
-              currentVideo.classList.add('small');
               currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
               currentVideo.style.top =
                   (that.height - (videoWidth / ratio) - 50) + 'px';
               currentVideo.width = videoWidth;
               currentVideo.height = videoWidth / ratio;
+              currentVideo.classList.add('small');
               currentVideo.muted = true;
             }
           }
