@@ -375,10 +375,8 @@ Polymer('polymer-hypervideo', {
               currentVideo.addEventListener('mouseover', showControls);
               currentVideo.addEventListener('mouseout', hideControls);
               currentVideo.addEventListener('seeked', seekAll);
-              currentVideo.style.left = 0;
               currentVideo.width = that.width;
               currentVideo.height = that.width / ratio;
-              currentVideo.style.top = 0;
             } else {
               currentVideo.classList.remove('big');
               currentVideo.classList.add('small');
