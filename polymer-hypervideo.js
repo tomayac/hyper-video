@@ -366,6 +366,13 @@ Polymer('polymer-hypervideo', {
           }
         };
 
+        var transitionend = function transitioned(e) {
+          for (var i = 0; i < videos.length; i++) {
+            var currentVideo = videos[i];
+            currentVideo.style.zIndex = 'auto';
+          }
+        }
+
         var makeBig = function makeBig(e) {
           for (var i = 0, j = 0; i < videos.length; i++) {
             var currentVideo = videos[i];
@@ -379,6 +386,7 @@ Polymer('polymer-hypervideo', {
               currentVideo.height = that.width / ratio;
               currentVideo.style.top = 0;
               currentVideo.style.left = 0;
+              currentVideo.style.zIndex = 10000;
             } else {
               currentVideo.classList.remove('big');
               currentVideo.classList.add('small');
@@ -427,6 +435,8 @@ Polymer('polymer-hypervideo', {
             currentVideo.addEventListener('pause', pauseAll);
 
             currentVideo.addEventListener('click', makeBig);
+
+            currentVideo.addEventListener('transitionend', transitionend);
 
             if (i === 0) {
               currentVideo.classList.add('big');
