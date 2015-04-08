@@ -370,7 +370,7 @@ Polymer('polymer-hypervideo', {
           for (var i = 0; i < videos.length; i++) {
             var currentVideo = videos[i];
             if (currentVideo.classList.contains('small')) {
-              currentVideo.style.zIndex = 10000;
+              currentVideo.style.zIndex = 1000;
             } else {
               currentVideo.style.zIndex = 'auto';
             }
@@ -381,27 +381,27 @@ Polymer('polymer-hypervideo', {
           for (var i = 0, j = 0; i < videos.length; i++) {
             var currentVideo = videos[i];
             if (currentVideo === e.target) {
-              currentVideo.classList.remove('small');
-              currentVideo.classList.add('big');
-              currentVideo.addEventListener('mouseover', showControls);
-              currentVideo.addEventListener('mouseout', hideControls);
-              currentVideo.addEventListener('seeked', seekAll);
               currentVideo.width = that.width;
               currentVideo.height = that.width / ratio;
               currentVideo.style.top = 0;
               currentVideo.style.left = 0;
               currentVideo.style.zIndex = 10000;
+              currentVideo.classList.remove('small');
+              currentVideo.classList.add('big');
+              currentVideo.addEventListener('mouseover', showControls);
+              currentVideo.addEventListener('mouseout', hideControls);
+              currentVideo.addEventListener('seeked', seekAll);
             } else {
+              currentVideo.width = videoWidth;
+              currentVideo.height = videoWidth / ratio;
+              currentVideo.style.top =
+                  (that.height - (videoWidth / ratio) - 50) + 'px';
+              currentVideo.style.left = (j * videoWidth) + 'px';
               currentVideo.classList.remove('big');
               currentVideo.classList.add('small');
               currentVideo.removeEventListener('mouseover', showControls);
               currentVideo.removeEventListener('mouseout', hideControls);
               currentVideo.removeEventListener('seeked', seekAll);
-              currentVideo.style.left = (j * videoWidth) + 'px';
-              currentVideo.style.top =
-                  (that.height - (videoWidth / ratio) - 50) + 'px';
-              currentVideo.width = videoWidth;
-              currentVideo.height = videoWidth / ratio;
               currentVideo.removeAttribute('controls');
               j++;
             }
