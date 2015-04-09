@@ -375,7 +375,7 @@ Polymer('polymer-hypervideo', {
               currentVideo.style.zIndex = 'auto';
             }
           }
-        }
+        };
 
         var makeBig = function makeBig(e) {
           for (var i = 0, j = 0; i < videos.length; i++) {
@@ -394,8 +394,9 @@ Polymer('polymer-hypervideo', {
             } else {
               currentVideo.width = videoWidth;
               currentVideo.height = videoWidth / ratio;
-              currentVideo.style.top =
-                  (that.height - (videoWidth / ratio) - 50) + 'px';
+              // Change position with
+              // polymer-hypervideo::shadow video.small { margin-top: 150px; }
+              currentVideo.style.top = that.height + 'px';
               currentVideo.style.left = (j * videoWidth) + 'px';
               currentVideo.classList.remove('big');
               currentVideo.classList.add('small');
@@ -454,8 +455,9 @@ Polymer('polymer-hypervideo', {
               currentVideo.muted = false;
             } else {
               currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
-              currentVideo.style.top =
-                  (that.height - (videoWidth / ratio) - 50) + 'px';
+              // Change position with
+              // polymer-hypervideo::shadow video.small { margin-top: 150px; }
+              currentVideo.style.top =that.height + 'px';
               currentVideo.width = videoWidth;
               currentVideo.height = videoWidth / ratio;
               currentVideo.classList.add('small');
