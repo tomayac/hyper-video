@@ -6,6 +6,7 @@
 }
 
 video.hypervideo {
+  position: absolute;
   border: 3px solid #000;
   -webkit-box-shadow: 5px 5px 5px #111;
           box-shadow: 5px 5px 5px #111;

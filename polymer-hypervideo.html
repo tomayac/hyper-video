@@ -20,8 +20,8 @@ This element serves as a container element for various hypervideo-related sub-el
 <polymer-element name="polymer-hypervideo" attributes="src alternativeviews width height poster muted youtubevideoid">
   <template>
     <link href="polymer-hypervideo.css" media="all" rel="stylesheet" type="text/css"/>
-    <div style="position:relative">
-      <div id="container">
+    <div style="position:absolute">
+      <div id="container" style="position:absolute">
         <video
             id="hypervideo"
             class="hypervideo"
