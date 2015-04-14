@@ -336,9 +336,9 @@ Polymer('polymer-hypervideo', {
         var videoWidth = Math.floor(that.width / 5);
         var ratio = that.width / that.height;
 
-        function showControls(e) {
+        var showControls = function showControls(e) {
           return e.target.setAttribute('controls', true);
-        }
+        };
 
         var hideControls = function hideControls(e) {
           return e.target.removeAttribute('controls');
