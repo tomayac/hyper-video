@@ -50,6 +50,7 @@ Polymer('polymer-hypervideo', {
           return readCues(e.target.track.cues, data.kind);
         }
       }, false);
+
       track.addEventListener('cuechange', function() {
         console.log('Fired event: hypervideocuechange');
         that.fire(
@@ -59,6 +60,7 @@ Polymer('polymer-hypervideo', {
           }
         );
       });
+
       var trackLoadedInterval = setInterval(function() {
         if (track.readyState >= 2) {
           clearInterval(trackLoadedInterval);
@@ -333,6 +335,7 @@ Polymer('polymer-hypervideo', {
       // alternative views
       if (that.alternativeviews) {
         var videos = [video];
+        var trackVideo;
         var videoWidth = Math.floor(that.width / 5);
         var ratio = that.width / that.height;
 
@@ -344,16 +347,22 @@ Polymer('polymer-hypervideo', {
           return e.target.removeAttribute('controls');
         };
 
-        var playAll = function playAll() {
+        var playAll = function playAll(e) {
+          var currentTime = e.target.currentTime;
           for (var i = 0; i < videos.length; i++) {
-            videos[i].play();
+            var currentVideo = videos[i];
+            currentVideo.currentTime = currentTime;
+            currentVideo.play();
           }
+          trackVideo.currentTime = currentTime;
+          trackVideo.play();
         };
 
         var pauseAll = function pauseAll() {
           for (var i = 0; i < videos.length; i++) {
             videos[i].pause();
           }
+          trackVideo.pause();
         };
 
         var seekAll = function seekAll(e) {
@@ -364,6 +373,7 @@ Polymer('polymer-hypervideo', {
             }
             currentVideo.currentTime = e.target.currentTime;
           }
+          trackVideo.currentTime = e.target.currentTime;
         };
 
         var transitionend = function transitioned(e) {
@@ -428,6 +438,7 @@ Polymer('polymer-hypervideo', {
             if (video.currentSrc.indexOf(videoSource) === -1) {
               continue;
             }
+            var tracks = video.querySelectorAll('track[kind="subtitles"]');
             for (var id in views[videoSource]) {
               var alternativeView = views[videoSource][id];
               var viewVideo = document.createElement('video');
@@ -438,12 +449,38 @@ Polymer('polymer-hypervideo', {
               viewVideo.setAttribute('title', alternativeView.title);
               viewVideo.classList.add('hypervideo');
               video.parentNode.insertBefore(viewVideo, content);
-              var tracks = video.querySelectorAll('track[kind="subtitles"]');
               for (var i = 0, lenI = tracks.length; i < lenI; i++) {
                 var track = tracks[i];
-                viewVideo.appendChild(track.cloneNode());
+                var newTrack = document.createElement('track');
+                newTrack.src = track.src;
+                newTrack.kind = track.kind;
+                viewVideo.appendChild(newTrack);
               }
               videos.push(viewVideo);
+            }
+            // Create a hidden track video for the sole purpose of firing cue
+            // change events because we dynamically need to switch tracks
+            trackVideo = document.createElement('video');
+            trackVideo.style.display = 'none';
+            trackVideo.id = 'trackVideo';
+            trackVideo.src = video.currentSrc;
+            video.parentNode.insertBefore(trackVideo, content);
+            for (var i = 0, lenI = tracks.length; i < lenI; i++) {
+              var track = tracks[i];
+              var newTrack = document.createElement('track');
+              newTrack.addEventListener('cuechange', function() {
+                console.log('Fired event: hypervideocuechange');
+                that.fire(
+                  'hypervideocuechange',
+                  {
+                    activeCues: newTrack.track.activeCues
+                  }
+                );
+              });
+              newTrack.src = track.src;
+              newTrack.kind = track.kind;
+              newTrack.track.mode = 'showing';
+              trackVideo.appendChild(newTrack);
             }
           }
         });
