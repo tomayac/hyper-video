@@ -391,6 +391,12 @@ Polymer('polymer-hypervideo', {
               currentVideo.addEventListener('mouseover', showControls);
               currentVideo.addEventListener('mouseout', hideControls);
               currentVideo.addEventListener('seeked', seekAll);
+              var tracks =
+                  currentVideo.querySelectorAll('track[kind="subtitles"]');
+              for (var k = 0, lenK = tracks.length; k < lenK; k++) {
+                var track = tracks[k];
+                track.track.mode = 'showing';
+              }
             } else {
               currentVideo.width = videoWidth;
               currentVideo.height = videoWidth / ratio;
@@ -404,6 +410,12 @@ Polymer('polymer-hypervideo', {
               currentVideo.removeEventListener('mouseout', hideControls);
               currentVideo.removeEventListener('seeked', seekAll);
               currentVideo.removeAttribute('controls');
+              var tracks =
+                  currentVideo.querySelectorAll('track[kind="subtitles"]');
+              for (var k = 0, lenK = tracks.length; k < lenK; k++) {
+                var track = tracks[k];
+                track.track.mode = 'disabled';
+              }
               j++;
             }
           }
@@ -426,6 +438,11 @@ Polymer('polymer-hypervideo', {
               viewVideo.setAttribute('title', alternativeView.title);
               viewVideo.classList.add('hypervideo');
               video.parentNode.insertBefore(viewVideo, content);
+              var tracks = video.querySelectorAll('track[kind="subtitles"]');
+              for (var i = 0, lenI = tracks.length; i < lenI; i++) {
+                var track = tracks[i];
+                viewVideo.appendChild(track.cloneNode());
+              }
               videos.push(viewVideo);
             }
           }
