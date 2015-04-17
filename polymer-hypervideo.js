@@ -479,7 +479,12 @@ Polymer('polymer-hypervideo', {
               });
               newTrack.src = track.src;
               newTrack.kind = track.kind;
-              newTrack.track.mode = 'showing';
+              if (i === 0) {
+                newTrack.track.mode = 'showing';
+                newTrack.default = true;
+              } else {
+                newTrack.track.mode = 'hidden';
+              }
               trackVideo.appendChild(newTrack);
             }
           }
