@@ -1,8 +1,30 @@
 'use strict';
 
-/* global queryRegExSelector, queryRegExSelectorAll, getYouTubeHtml5VideoUrl */
-Polymer('polymer-hypervideo', {
-  publish: {
+Polymer({
+  is: 'polymer-hypervideo',
+
+  properties: {
+    src: {
+      type: String
+    },
+    alternativeviews: {
+      type: String
+    },
+    width: {
+      type: Number
+    },
+    height: {
+      type: Number
+    },
+    poster: {
+      type: String
+    },
+    muted: {
+      type: Boolean
+    },
+    youTubeVideoId: {
+      type: String
+    },
     currentTime: 0,
     duration: null,
     actorsOffset: {}

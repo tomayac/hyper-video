@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="main.css" media="all" rel="stylesheet" type="text/css"/>
-    <script src="../webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="polymer-hypervideo.html">
+    <link href="../main.css" media="all" rel="stylesheet" type="text/css"/>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../polymer-hypervideo.html">
   </head>
   <body>
     <h1>Hypervideo Demo</h1>
 
     <h2>Polymer Hypervideo (Local video)</h2>
 
-    <polymer-hypervideo src="big_buck_bunny.mp4 big_buck_bunny.webm" width="800" height="450" muted>
+    <polymer-hypervideo src="../assets/big_buck_bunny.mp4 ../assets/big_buck_bunny.webm" width="800" height="450" muted>
 
-      <polymer-track-subtitles src="subtitles.vtt" displaysubtitlesgroup="true" width="800" ></polymer-track-subtitles>
+      <polymer-track-subtitles src="../assets/subtitles.vtt" displaysubtitlesgroup="true" width="800" ></polymer-track-subtitles>
 
-      <polymer-track-chapters src="thumbs.vtt" displaychaptersthumbnails="true" width="800"></polymer-track-chapters>
+      <polymer-track-chapters src="../assets/thumbs.vtt" displaychaptersthumbnails="true" width="800"></polymer-track-chapters>
 
       <polymer-data-overlay style="color:green;" start="20" end="25">
         <img src="fr.png"/>
@@ -22,13 +22,13 @@
       </polymer-data-overlay>
 
       <polymer-data-overlay style="color:red; position:absolute; top:-35px; opacity: .5;" start="25" end="30">
-        <img src="fr.png"/>
+        <img src="../assets/fr.png"/>
         Collision manuelle!
       </polymer-data-overlay>
 
       <polymer-data-overlay style="color:blue;" start="35" end="45">
         Au revoir monde!
-        <img src="fr.png"/>
+        <img src="../assets/fr.png"/>
       </polymer-data-overlay>
 
       <polymer-data-overlay style="color:orange;" start="40" end="50">

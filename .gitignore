@@ -1,4 +1,4 @@
 .DS_Store
-assets/video.mp4
+demo/assets/video.mp4
 node_modules
 bower_components
