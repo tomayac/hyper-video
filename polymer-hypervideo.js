@@ -7,7 +7,7 @@ Polymer({
     src: {
       type: String
     },
-    alternativeviews: {
+    alternativeViews: {
       type: String
     },
     width: {
@@ -23,14 +23,16 @@ Polymer({
       type: Boolean
     },
     youTubeVideoId: {
-      type: String
+      type: Boolean
     },
-    currentTime: 0,
-    duration: null,
-    actorsOffset: {}
+    currentTime: {
+      value: 0
+    },
+    duration: {
+      value:null
+    }
   },
-  created: function() {
-  },
+
   ready: function() {
     var that = this;
     var spinner;
@@ -57,7 +59,7 @@ Polymer({
       that.onMutation(that, onMutation);
     };
 
-    that.onMutation(that, onMutation);
+    //that.onMutation(that, onMutation);
 
     var CORS_PROXY = document.location.origin + '/cors/';
     document.addEventListener('trackready', function(e) {
@@ -570,9 +572,11 @@ Polymer({
       spinner.remove();
     }, 50);
   },
+
   pause: function() {
     return this.$.hypervideo.pause();
   },
+
   play: function() {
     return this.$.hypervideo.play();
   }
