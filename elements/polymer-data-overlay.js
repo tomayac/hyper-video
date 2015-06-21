@@ -1,8 +1,23 @@
 'use strict';
 
-Polymer('polymer-data-overlay', {
+Polymer({
+  is: 'polymer-data-overlay',
+
+  properties: {
+    start: {
+      type: Number
+    },
+    end: {
+      type: Number
+    },
+    styling: {
+      type: String
+    }
+  },
+
   created: function() {
   },
+
   ready: function() {
     var that = this;
 

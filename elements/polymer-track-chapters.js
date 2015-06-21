@@ -1,8 +1,26 @@
 'use strict';
 
-Polymer('polymer-track-chapters', {
+Polymer({
+  is: 'polymer-track-chapters',
+
+  properties: {
+    src: {
+      type: String
+    },
+    displayChaptersThumbnails: {
+      type: Boolean
+    },
+    width: {
+      type: Number
+    },
+    height: {
+      type: Number
+    }
+  },
+
   created: function() {
   },
+
   ready: function() {
     var that = this;
     var container = that.$.container;

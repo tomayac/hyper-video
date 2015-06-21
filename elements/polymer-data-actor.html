@@ -1,9 +1,34 @@
-<polymer-element name="polymer-data-actor" attributes="start end name xywh url" extends="polymer-data-annotation">
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+    <polymer-data-actor></polymer-data-actor>
+
+@element polymer-data-actor
+@demo demo/index.html
+@status alpha
+@homepage http://github.com/tomayac/polymer-hypervideo
+-->
+<dom-module id="polymer-data-actor">
+  <link href="polymer-data-actor.css" media="all" rel="stylesheet" type="text/css"/>
+
   <template>
-    <link href="polymer-data-actor.css" media="all" rel="stylesheet" type="text/css"/>
     <div id="container" class="container">
       <shadow></shadow>
     </div>
   </template>
+
   <script src="polymer-data-actor.js"></script>
-</polymer-element>
+</dom-module>

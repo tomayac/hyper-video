@@ -1,6 +1,19 @@
 'use strict';
 
-Polymer('polymer-visualization-timeline', {
+Polymer({
+  is: 'polymer-visualization-timeline',
+  properties: {
+    orientation: {
+      type: String
+    },
+    width: {
+      type: Number
+    },
+    height: {
+      type: Number
+    }
+  },
+
   overlays: '',
   actors: '',
   chapters: '',
@@ -8,8 +21,10 @@ Polymer('polymer-visualization-timeline', {
   videoWidth: 0,
   duration: 0,
   currentTime: 0,
+
   created: function() {
   },
+
   ready: function() {
     var container = this.$.container;
     var settings = this.$.settings;

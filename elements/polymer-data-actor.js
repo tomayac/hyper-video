@@ -1,8 +1,29 @@
 'use strict';
 
-Polymer('polymer-data-actor', {
+Polymer({
+  is: 'polymer-data-actor',
+
+  properties: {
+    start: {
+      type: Number
+    },
+    end: {
+      type: Number
+    },
+    name: {
+      type: String
+    },
+    xywh: {
+      type: String
+    },
+    url: {
+      type: String
+    }
+  },
+
   created: function() {
   },
+
   ready: function() {
     var that = this;
     var container = that.$.container;

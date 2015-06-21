@@ -1,8 +1,20 @@
 'use strict';
 
-Polymer('polymer-visualization-toc', {
+Polymer({
+  is: 'polymer-visualization-toc',
+
+  properties: {
+    width: {
+      type: Number
+    },
+    height: {
+      type: Number
+    }
+  },
+
   created: function() {
   },
+
   ready: function() {
     var that = this;
     var cuesElements = [];

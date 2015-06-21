@@ -1,8 +1,26 @@
 'use strict';
 
-Polymer('polymer-track-subtitles', {
+Polymer({
+  is: 'polymer-track-subtitles',
+
+  properties: {
+    src: {
+      type: String
+    },
+    displaySubtitlesGroup: {
+      type: Boolean
+    },
+    width: {
+      type: Number
+    },
+    height: {
+      type: Number
+    }
+  },
+
   created: function() {
   },
+
   ready: function() {
     var that = this;
     var container = that.$.container;

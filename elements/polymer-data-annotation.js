@@ -1,8 +1,20 @@
 'use strict';
 
-Polymer('polymer-data-annotation', {
+Polymer({
+  is: 'polymer-data-annotation',
+
+  properties: {
+    start: {
+      type: Number
+    },
+    end: {
+      type: Number
+    }
+  },
+
   created: function() {
   },
+
   ready: function() {
     var that = this;
 
