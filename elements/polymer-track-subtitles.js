@@ -27,7 +27,7 @@ Polymer({
     var search = that.$.search;
     var cuesContainer = that.$.cuesContainer;
     var cuesElements = [];
-    that.displaysubtitlesgroup = true;
+    that.displaySubtitlesGroup = true;
 
     document.addEventListener('cuesread', function(e) {
       console.log('Received event (document): cuesread');
@@ -42,7 +42,7 @@ Polymer({
         container.style.height = that.height + 'px';
       }
       var data = e.detail;
-      if (that.displaysubtitlesgroup && data.kind === 'subtitles') {
+      if (that.displaySubtitlesGroup && data.kind === 'subtitles') {
         displaySubtitlesGroup(data.cueData);
       }
     });

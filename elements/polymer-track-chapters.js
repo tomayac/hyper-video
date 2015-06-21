@@ -28,7 +28,7 @@ Polymer({
     var cuesElements = [];
     var cueData;
     var cuesRead = false;
-    that.displaychaptersthumbnails = true;
+    that.displayChaptersThumbnails = true;
 
     document.addEventListener('hypervideo-loaded-metadata', function() {
       console.log('Received event (document): hypervideo-loaded-metadata');
@@ -41,7 +41,7 @@ Polymer({
         container.style.height = that.height + 'px';
       }
       hyperVideoLoadedMetadata = true;
-      if ((that.displaychaptersthumbnails) &&
+      if ((that.displayChaptersThumbnails) &&
           (hyperVideoLoadedMetadata) &&
           (cuesRead)) {
         displayChaptersThumbnails(cueData);
@@ -56,7 +56,7 @@ Polymer({
         return;
       }
       cueData = data.cueData;
-      if ((that.displaychaptersthumbnails) &&
+      if ((that.displayChaptersThumbnails) &&
           (hyperVideoLoadedMetadata) &&
           (cuesRead)) {
         displayChaptersThumbnails(cueData);
