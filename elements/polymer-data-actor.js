@@ -36,8 +36,8 @@ Polymer({
       container.innerHTML = that.url;
     }
 
-    document.addEventListener('hypervideoloadedmetadata', function(e) {
-      console.log('Received event (document): hypervideoloadedmetadata');
+    document.addEventListener('hypervideo-loaded-metadata', function(e) {
+      console.log('Received event (document): hypervideo-loaded-metadata');
       var data = e.detail;
       if (that.xywh && /\d+,\d+,\d+,\d+/.test(that.xywh)) {
         var components = that.xywh.split(',');
@@ -54,8 +54,8 @@ Polymer({
     });
 
     // @todo: this should be handled by the parent
-    document.addEventListener('hypervideotimeupdate', function(e) {
-      // console.log('Received event (document): hypervideotimeupdate');
+    document.addEventListener('hypervideo-time-update', function(e) {
+      // console.log('Received event (document): hypervideo-time-update');
       that.currentTime = e.detail.currentTime;
       if ((that.start <= that.currentTime) &&
           (that.currentTime < that.end)) {

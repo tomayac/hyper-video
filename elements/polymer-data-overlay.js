@@ -22,8 +22,8 @@ Polymer({
     var that = this;
 
     // @todo: this should be handled by the parent
-    document.addEventListener('hypervideotimeupdate', function(e) {
-      // console.log('Received event (document): hypervideotimeupdate');
+    document.addEventListener('hypervideo-time-update', function(e) {
+      // console.log('Received event (document): hypervideo-time-update');
       that.currentTime = e.detail.currentTime;
       if ((that.start <= that.currentTime) &&
           (that.currentTime < that.end)) {

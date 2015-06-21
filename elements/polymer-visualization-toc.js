@@ -20,8 +20,8 @@ Polymer({
     var cuesElements = [];
     var container = that.$.container;
     // listen for events
-    document.addEventListener('webcomponentstoc', function(e) {
-      console.log('Received event (document): webcomponentstoc');
+    document.addEventListener('web-components-toc', function(e) {
+      console.log('Received event (document): web-components-toc');
       if (that.width) {
         container.style.width = that.width + 'px';
       } else {
@@ -50,9 +50,9 @@ Polymer({
         ol.appendChild(li);
       });
       container.appendChild(fragment);
-      console.log('Fired event: webcomponentsparsed');
+      console.log('Fired event: web-components-parsed');
       that.fire(
-        'webcomponentsparsed',
+        'web-components-parsed',
         {
           webComponents: fragment
         }
@@ -71,17 +71,17 @@ Polymer({
           return;
         }
       }
-      // console.log('Fired event: currenttimeupdate');
+      // console.log('Fired event: current-time-update');
       that.fire(
-        'currenttimeupdate',
+        'current-time-update',
         {
           currentTime: current.dataset.start
         }
       );
     }, false);
 
-    document.addEventListener('hypervideotimeupdate', function(e) {
-      // console.log('Received event (document): hypervideotimeupdate');
+    document.addEventListener('hypervideo-time-update', function(e) {
+      // console.log('Received event (document): hypervideo-time-update');
       var currentTime = e.detail.currentTime;
       for (var i = 0, lenI = cuesElements.length; i < lenI; i++) {
         var cue = cuesElements[i];
@@ -97,8 +97,8 @@ Polymer({
 
     // notify listeners about your existance
     setTimeout(function() {
-      console.log('Fired event: webcomponentstocready');
-      that.fire('webcomponentstocready');
+      console.log('Fired event: web-components-toc-ready');
+      that.fire('web-components-toc-ready');
     }, 250);
   }
 });

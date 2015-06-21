@@ -30,8 +30,8 @@ Polymer({
     var cuesRead = false;
     that.displaychaptersthumbnails = true;
 
-    document.addEventListener('hypervideoloadedmetadata', function() {
-      console.log('Received event (document): hypervideoloadedmetadata');
+    document.addEventListener('hypervideo-loaded-metadata', function() {
+      console.log('Received event (document): hypervideo-loaded-metadata');
       if (that.width) {
         container.style.width = that.width + 'px';
       } else {
@@ -64,17 +64,17 @@ Polymer({
     });
 
     var displayChaptersThumbnails = function(cues) {
-      console.log('Fired event: requeststillframes');
+      console.log('Fired event: request-still-frames');
       that.fire(
-        'requeststillframes',
+        'request-still-frames',
         {
           cues: cues
         }
       );
     };
 
-    document.addEventListener('receivestillframe', function(e) {
-      console.log('Received event (document): receivestillframe');
+    document.addEventListener('receive-still-frame', function(e) {
+      console.log('Received event (document): receive-still-frame');
       var data = e.detail;
       var img = data.img;
       var text = data.text;
@@ -102,17 +102,17 @@ Polymer({
       while (current.nodeName !== 'LI') {
         current = current.parentNode;
       }
-      // console.log('Fired event: currenttimeupdate');
+      // console.log('Fired event: current-time-update');
       that.fire(
-        'currenttimeupdate',
+        'current-time-update',
         {
           currentTime: current.dataset.start
         }
       );
     });
 
-    document.addEventListener('hypervideotimeupdate', function(e) {
-      // console.log('Received event (document): hypervideotimeupdate');
+    document.addEventListener('hypervideo-time-update', function(e) {
+      // console.log('Received event (document): hypervideo-time-update');
       var currentTime = e.detail.currentTime;
       for (var i = 0, lenI = cuesElements.length; i < lenI; i++) {
         var cue = cuesElements[i];
@@ -127,9 +127,9 @@ Polymer({
     }, false);
 
     setTimeout(function() {
-      console.log('Fired event: trackready');
+      console.log('Fired event: track-ready');
       that.fire(
-        'trackready',
+        'track-ready',
         {
           src: that.src,
           kind: 'chapters'

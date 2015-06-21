@@ -152,17 +152,17 @@ Polymer({
           }
           currentTime /= scalingFactor;
         }
-        // console.log('Fired event: currenttimeupdate');
+        // console.log('Fired event: current-time-update');
         return that.fire(
-          'currenttimeupdate',
+          'current-time-update',
           {
             currentTime: currentTime
           }
         );
       }, false);
 
-      document.addEventListener('hypervideotimeupdate', function(e) {
-        // console.log('Received event (document): hypervideotimeupdate');
+      document.addEventListener('hypervideo-time-update', function(e) {
+        // console.log('Received event (document): hypervideo-time-update');
         var currentTime = e.detail.currentTime * scalingFactor;
 
         if (that.orientation === 'landscape') {
@@ -196,8 +196,8 @@ Polymer({
       }
     });
 
-    document.addEventListener('hypervideoloadedmetadata', function(e) {
-      console.log('Received event (document): hypervideoloadedmetadata');
+    document.addEventListener('hypervideo-loaded-metadata', function(e) {
+      console.log('Received event (document): hypervideo-loaded-metadata');
       var data = e.detail;
       that.duration = data.duration;
       that.videoHeight = data.height;
@@ -280,8 +280,8 @@ Polymer({
       }
     }, false);
 
-    document.addEventListener('dataannotations', function(e) {
-      console.log('Received event (document): dataannotations');
+    document.addEventListener('data-annotations', function(e) {
+      console.log('Received event (document): data-annotations');
       var interval = setInterval(function() {
         if (that.duration) {
           clearInterval(interval);
@@ -386,8 +386,8 @@ Polymer({
     };
 
     setTimeout(function() {
-      console.log('Fired event: timelineready');
-      that.fire('timelineready');
+      console.log('Fired event: timeline-ready');
+      that.fire('timeline-ready');
       addTimeMarkers();
     }, 250);
   }

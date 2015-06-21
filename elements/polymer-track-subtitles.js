@@ -98,17 +98,17 @@ Polymer({
       while (current.nodeName !== 'DIV') {
         current = current.parentNode;
       }
-      // console.log('Fired event: currenttimeupdate');
+      // console.log('Fired event: current-time-update');
       that.fire(
-        'currenttimeupdate',
+        'current-time-update',
         {
           currentTime: current.dataset.start
         }
       );
     }, false);
 
-    document.addEventListener('hypervideotimeupdate', function(e) {
-      // console.log('Received event (document): hypervideotimeupdate');
+    document.addEventListener('hypervideo-time-update', function(e) {
+      // console.log('Received event (document): hypervideo-time-update');
       var currentTime = e.detail.currentTime;
       for (var i = 0, lenI = cuesElements.length; i < lenI; i++) {
         var cue = cuesElements[i];
@@ -123,9 +123,9 @@ Polymer({
     }, false);
 
     setTimeout(function() {
-      console.log('Fired event: trackready');
+      console.log('Fired event: track-ready');
       that.fire(
-        'trackready',
+        'track-ready',
         {
           src: that.src,
           kind: 'subtitles'

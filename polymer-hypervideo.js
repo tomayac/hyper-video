@@ -62,8 +62,8 @@ Polymer({
     //that.onMutation(that, onMutation);
 
     var CORS_PROXY = document.location.origin + '/cors/';
-    document.addEventListener('trackready', function(e) {
-      console.log('Received event (document): trackready');
+    document.addEventListener('track-ready', function(e) {
+      console.log('Received event (document): track-ready');
       var data = e.detail;
       var track = document.createElement('track');
       var cuesRead = false;
@@ -76,9 +76,9 @@ Polymer({
       }, false);
 
       track.addEventListener('cuechange', function() {
-        console.log('Fired event: hypervideocuechange');
+        console.log('Fired event: hypervideo-cue-change');
         that.fire(
-          'hypervideocuechange',
+          'hypervideo-cue-change',
           {
             activeCues: track.track.activeCues
           }
@@ -112,13 +112,13 @@ Polymer({
       video.appendChild(track);
     }, false);
 
-    document.addEventListener('webcomponentstocready', function() {
-      console.log('Received event (document): webcomponentstocready');
+    document.addEventListener('web-components-toc-ready', function() {
+      console.log('Received event (document): web-components-toc-ready');
       // get all child <polymer-*> child nodes
       var webComponents = queryRegExSelectorAll(that, /^polymer-/gi);
-      console.log('Fired event: webcomponentstoc');
+      console.log('Fired event: web-components-toc');
       that.fire(
-        'webcomponentstoc',
+        'web-components-toc',
         {
           webComponentsToC: webComponents
         }
@@ -145,9 +145,9 @@ Polymer({
           type: type
         });
       });
-      console.log('Fired event: dataannotations');
+      console.log('Fired event: data-annotations');
       that.fire(
-        'dataannotations',
+        'data-annotations',
         {
           dataAnnotations: annotations
         }
@@ -155,21 +155,21 @@ Polymer({
 
     };
 
-    document.addEventListener('timelineready', function() {
-      console.log('Received event (document): timelineready');
+    document.addEventListener('timeline-ready', function() {
+      console.log('Received event (document): timeline-ready');
       updateTimelineAnnotations();
     }, false);
 
     // listen for events coming from the timeline component
-    document.addEventListener('currenttimeupdate', function(e) {
-      // console.log('Received event (document): currenttimeupdate');
+    document.addEventListener('current-time-update', function(e) {
+      // console.log('Received event (document): current-time-update');
       var data = e.detail;
       video.currentTime = data.currentTime;
       video.play();
     }, false);
 
-    document.addEventListener('requeststillframes', function(e) {
-      console.log('Received event (document): requeststillframes');
+    document.addEventListener('request-still-frames', function(e) {
+      console.log('Received event (document): request-still-frames');
       spinner = showSpinner();
       var cues = e.detail.cues;
       if (!cues) {
@@ -197,9 +197,9 @@ Polymer({
         var url = that.canvas.toDataURL();
         img.src = url;
         var cue = functions[processedStillFrames].cue;
-        console.log('Fired event: receivestillframe');
+        console.log('Fired event: receive-still-frame');
         that.fire(
-          'receivestillframe',
+          'receive-still-frame',
           {
             img: img,
             text: cue.text,
@@ -213,7 +213,7 @@ Polymer({
         } else {
           video.removeEventListener('seeked', getNextStillFrame);
           video.currentTime = 0;
-          that.fire('allstillframesreceived');
+          that.fire('all-still-frames-received');
           spinner.remove();
         }
       };
@@ -322,9 +322,9 @@ Polymer({
           type: kind
         });
       }
-      console.log('Fired event: cuesread');
+      console.log('Fired event: cues-read');
       that.fire(
-        'cuesread',
+        'cues-read',
         {
           cueData: cueData,
           kind: kind
@@ -342,9 +342,9 @@ Polymer({
             (0.05 * that.width)) + 'px';
       }
       var polymerData = queryRegExSelector(that, /^polymer-data-/gi);
-      console.log('Fired event: hypervideoloadedmetadata');
+      console.log('Fired event: hypervideo-loaded-metadata');
       that.fire(
-        'hypervideoloadedmetadata',
+        'hypervideo-loaded-metadata',
         {
           duration: that.duration,
           height: that.height,
@@ -493,9 +493,9 @@ Polymer({
               var track = tracks[i];
               var newTrack = document.createElement('track');
               newTrack.addEventListener('cuechange', function() {
-                console.log('Fired event: hypervideocuechange');
+                console.log('Fired event: hypervideo-cue-change');
                 that.fire(
-                  'hypervideocuechange',
+                  'hypervideo-cue-change',
                   {
                     activeCues: newTrack.track.activeCues
                   }
@@ -556,9 +556,9 @@ Polymer({
     video.addEventListener('timeupdate', function() {
       // console.log('Received event (video): timeupdate');
       that.currentTime = video.currentTime;
-      // console.log('Fired event: hypervideotimeupdate');
+      // console.log('Fired event: hypervideo-time-update');
       that.fire(
-        'hypervideotimeupdate',
+        'hypervideo-time-update',
         {
           currentTime: that.currentTime
         }
