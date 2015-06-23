@@ -343,11 +343,14 @@ Polymer({
       }
       var polymerData = queryRegExSelector(that, /^polymer-data-/gi);
       console.log('Fired event: hypervideo-loaded-metadata');
+      var videoWidth = Math.floor(that.width / 5);
+      var ratio = that.width / that.height;
+      var offset = that.alternativeViews ? videoWidth / ratio : 0;
       that.fire(
         'hypervideo-loaded-metadata',
         {
           duration: that.duration,
-          height: that.height,
+          height: that.height + offset,
           width: that.width,
           actorsOffset: {
             left: polymerData ? polymerData.style.left.replace('px', '') : null,
@@ -357,12 +360,9 @@ Polymer({
       );
 
       // alternative views
-      if (that.alternativeviews) {
+      if (that.alternativeViews) {
         var videos = [video];
         var trackVideo;
-        var videoWidth = Math.floor(that.width / 5);
-        var ratio = that.width / that.height;
-
         var showControls = function showControls(e) {
           return e.target.setAttribute('controls', true);
         };
@@ -455,7 +455,7 @@ Polymer({
           }
         };
 
-        that.alternativeviews.split(/\s/).forEach(function(views) {
+        that.alternativeViews.split(/\s/).forEach(function(views) {
           views = JSON.parse(views);
           var content = container.querySelector('content');
           for (var videoSource in views) {

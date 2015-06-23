@@ -20,7 +20,8 @@
 }
 
 .container {
-  margin-top: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
   background-color: white;
   opacity: .75;
   padding: 0px;

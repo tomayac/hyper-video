@@ -6,6 +6,7 @@
 }
 
 .container {
+  z-index: 10000;
   background-color: white;
   opacity: .75;
   border: solid black 1px;
