@@ -272,7 +272,7 @@ Polymer({
       }
     });
 
-    document.addEventListener('cuesread', function(e) {
+    document.addEventListener('cues-read', function(e) {
       console.log('Received event (document): cuesread');
       var data = e.detail;
       if (data.kind === 'chapters') {

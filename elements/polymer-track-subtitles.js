@@ -27,13 +27,19 @@ Polymer({
     var search = that.$.search;
     var cuesContainer = that.$.cuesContainer;
     var cuesElements = [];
-    that.displaySubtitlesGroup = true;
 
-    document.addEventListener('cuesread', function(e) {
+    document.addEventListener('hypervideo-loaded-metadata', function(e) {
+      console.log('Received event (document): hypervideo-loaded-metadata');
+      var data = e.detail;
+      container.style.top = 'calc(' + data.height + 'px + .5em)';
+    });
+
+
+    document.addEventListener('cues-read', function(e) {
       console.log('Received event (document): cuesread');
       if (that.width) {
         container.style.width = that.width + 'px';
-        search.style.width = 'calc(' + that.width + 'px - 2em)';
+        search.style.width = 'calc(' + that.width + 'px - 1em)';
       } else {
         container.style.width = '50%';
         search.style.width = '50%';
@@ -43,13 +49,13 @@ Polymer({
       }
       var data = e.detail;
       if (that.displaySubtitlesGroup && data.kind === 'subtitles') {
-        displaySubtitlesGroup(data.cueData);
+        createSubtitlesGroup(data.cueData);
       }
     });
 
-    var displaySubtitlesGroup = function(cues) {
+    var createSubtitlesGroup = function(cues) {
       // Full-text search
-      search.style.display = 'block';
+      container.style.display = 'block';
       var doSearch = function() {
         var query = search.value;
         var regExp;
@@ -81,9 +87,9 @@ Polymer({
         div.dataset.start = cue.start;
         div.dataset.end = cue.end;
         tempDiv.innerHTML = cue.text;
-        var speaker = cue.text.replace(/^<v\s+(\w+(?:\s+\w+)?)>.*?$/g,
-            '<strong>$1:</strong> ');
-        div.innerHTML = speaker + tempDiv.textContent;
+        var speaker = cue.text.replace(/^<v\s+(\w+(?:\s+\w+)?)>\s+(.+?)$/g,
+            '<strong>$1:</strong> $2');
+        div.innerHTML = speaker;
         cuesContainer.appendChild(div);
         cuesElements.push(div);
       });

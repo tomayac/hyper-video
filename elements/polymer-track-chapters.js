@@ -28,7 +28,6 @@ Polymer({
     var cuesElements = [];
     var cueData;
     var cuesRead = false;
-    that.displayChaptersThumbnails = true;
 
     document.addEventListener('hypervideo-loaded-metadata', function() {
       console.log('Received event (document): hypervideo-loaded-metadata');
@@ -44,11 +43,11 @@ Polymer({
       if ((that.displayChaptersThumbnails) &&
           (hyperVideoLoadedMetadata) &&
           (cuesRead)) {
-        displayChaptersThumbnails(cueData);
+        requestStillFrames(cueData);
       }
     });
 
-    document.addEventListener('cuesread', function(e) {
+    document.addEventListener('cues-read', function(e) {
       console.log('Received event (document): cuesread');
       cuesRead = true;
       var data = e.detail;
@@ -59,11 +58,11 @@ Polymer({
       if ((that.displayChaptersThumbnails) &&
           (hyperVideoLoadedMetadata) &&
           (cuesRead)) {
-        displayChaptersThumbnails(cueData);
+        requestStillFrames(cueData);
       }
     });
 
-    var displayChaptersThumbnails = function(cues) {
+    var requestStillFrames = function(cues) {
       console.log('Fired event: request-still-frames');
       that.fire(
         'request-still-frames',
