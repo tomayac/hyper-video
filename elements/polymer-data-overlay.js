@@ -9,9 +9,6 @@ Polymer({
     },
     end: {
       type: Number
-    },
-    styling: {
-      type: String
     }
   },
 
