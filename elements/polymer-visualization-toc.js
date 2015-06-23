@@ -20,6 +20,13 @@ Polymer({
     var cuesElements = [];
     var container = that.$.container;
     // listen for events
+
+    document.addEventListener('hypervideo-loaded-metadata', function(e) {
+      console.log('Received event (document): hypervideo-loaded-metadata');
+      var data = e.detail;
+      container.style.top = 'calc(' + data.height + 'px + .5em)';
+    });
+
     document.addEventListener('web-components-toc', function(e) {
       console.log('Received event (document): web-components-toc');
       if (that.width) {
