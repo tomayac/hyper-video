@@ -36,7 +36,7 @@ Polymer({
 
 
     document.addEventListener('cues-read', function(e) {
-      console.log('Received event (document): cuesread');
+      console.log('Received event (document): cues-read');
       if (that.width) {
         container.style.width = that.width + 'px';
         search.style.width = 'calc(' + that.width + 'px - 1em)';

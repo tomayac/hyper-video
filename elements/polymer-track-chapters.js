@@ -50,7 +50,7 @@ Polymer({
     });
 
     document.addEventListener('cues-read', function(e) {
-      console.log('Received event (document): cuesread');
+      console.log('Received event (document): cues-read');
       cuesRead = true;
       var data = e.detail;
       if (data.kind !== 'chapters') {
