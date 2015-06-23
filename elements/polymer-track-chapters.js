@@ -29,8 +29,10 @@ Polymer({
     var cueData;
     var cuesRead = false;
 
-    document.addEventListener('hypervideo-loaded-metadata', function() {
+    document.addEventListener('hypervideo-loaded-metadata', function(e) {
       console.log('Received event (document): hypervideo-loaded-metadata');
+      var data = e.detail;
+      container.style.top = 'calc(' + data.height + 'px + .5em)';
       if (that.width) {
         container.style.width = that.width + 'px';
       } else {
