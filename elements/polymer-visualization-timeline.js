@@ -2,6 +2,7 @@
 
 Polymer({
   is: 'polymer-visualization-timeline',
+
   properties: {
     orientation: {
       type: String
@@ -199,6 +200,7 @@ Polymer({
     document.addEventListener('hypervideo-loaded-metadata', function(e) {
       console.log('Received event (document): hypervideo-loaded-metadata');
       var data = e.detail;
+      wrapper.style.top = 'calc(' + data.height + 'px + .5em)';
       that.duration = data.duration;
       that.videoHeight = data.height;
       that.videoWidth = data.width;
