@@ -283,7 +283,7 @@ Polymer({
     }, false);
 
     document.addEventListener('data-annotations', function(e) {
-      console.log('Received event (document): data-annotations', e.detail);
+      console.log('Received event (document): data-annotations');
       var interval = setInterval(function() {
         if (that.duration) {
           clearInterval(interval);
