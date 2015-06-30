@@ -266,7 +266,7 @@ Polymer({
         video.poster = that.poster;
       }
       // mute video
-      if (that.muted !== null && that.muted !== 'false') {
+      if (that.muted) {
         video.muted = true;
       }
     };
@@ -535,7 +535,7 @@ Polymer({
               currentVideo.addEventListener('mouseover', showControls);
               currentVideo.addEventListener('mouseout', hideControls);
               currentVideo.addEventListener('seeked', seekAll);
-              currentVideo.muted = false;
+              currentVideo.muted = that.muted;
             } else {
               currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
               // Change position with
