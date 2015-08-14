@@ -14,21 +14,21 @@ This element serves as a container element for various hypervideo-related sub-el
 
 ##### Example
 
-    <polymer-hypervideo
+    <hyper-video
         src="big_buck_bunny.mp4 big_buck_bunny.webm"
         width="800"
         height="450"
         muted>
-    </polymer-hypervideo>
+    </hyper-video>
 
-@element polymer-hypervideo
+@element hyper-video
 @demo demo/index.html
 @status alpha
-@homepage http://github.com/tomayac/polymer-hypervideo
+@homepage http://github.com/tomayac/hyper-video
 -->
-<dom-module id="polymer-hypervideo" hidden>
+<dom-module id="hyper-video" hidden>
 
-  <link href="styles/polymer-hypervideo.css" media="all" rel="stylesheet" type="text/css"/>
+  <link href="styles/hyper-video.css" media="all" rel="stylesheet" type="text/css"/>
 
   <template>
     <div style="position: relative;">
@@ -44,15 +44,15 @@ This element serves as a container element for various hypervideo-related sub-el
     </div>
   </template>
 
-  <script src="polymer-hypervideo.js"></script>
+  <script src="hyper-video.js"></script>
   <script src="./elements/util.js"></script>
 
-  <link rel="import" href="elements/polymer-data-actor.html">
-  <link rel="import" href="elements/polymer-data-annotation.html">
-  <link rel="import" href="elements/polymer-data-overlay.html">
-  <link rel="import" href="elements/polymer-track-chapters.html">
-  <link rel="import" href="elements/polymer-track-subtitles.html">
-  <link rel="import" href="elements/polymer-visualization-timeline.html">
-  <link rel="import" href="elements/polymer-visualization-toc.html">
+  <link rel="import" href="elements/data-actor.html">
+  <link rel="import" href="elements/data-annotation.html">
+  <link rel="import" href="elements/data-overlay.html">
+  <link rel="import" href="elements/track-chapters.html">
+  <link rel="import" href="elements/track-subtitles.html">
+  <link rel="import" href="elements/visualization-timeline.html">
+  <link rel="import" href="elements/visualization-toc.html">
 
 </dom-module

@@ -14,21 +14,23 @@ Element providing solution to no problem in particular.
 
 ##### Example
 
-    <polymer-data-actor></polymer-data-actor>
+    <track-subtitles></track-subtitles>
 
-@element polymer-data-actor
+@element track-subtitles
 @demo demo/index.html
 @status alpha
-@homepage http://github.com/tomayac/polymer-hypervideo
+@homepage http://github.com/tomayac/hyper-video
 -->
-<dom-module id="polymer-data-actor">
-  <link href="polymer-data-actor.css" media="all" rel="stylesheet" type="text/css"/>
+<dom-module id="track-subtitles">
+
+  <link href="track-subtitles.css" media="all" rel="stylesheet" type="text/css"/>
 
   <template>
-    <div id="container" class="container">
-      <content></content>
+    <div style="display:none;" id="container" class="container">
+      <input id="search" class="search" type="search" placeholder="Query"/>
+      <div id="cuesContainer" class="cuesContainer"></div>
     </div>
   </template>
 
-  <script src="polymer-data-actor.js"></script>
+  <script src="track-subtitles.js"></script>
 </dom-module>

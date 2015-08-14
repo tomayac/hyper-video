@@ -1,4 +1,4 @@
-&lt;polymer-hypervideo&gt;
+&lt;hyper-video&gt;
 ==========================
 
 Live Demo
@@ -13,14 +13,14 @@ This assumes that you have [bower](http://bower.io/) and
 ```sh
 $ mkdir web-components
 $ cd web-components
-$ git clone git@github.com:tomayac/polymer-hypervideo.git
-$ cd polymer-hypervideo
+$ git clone git@github.com:tomayac/hyper-video.git
+$ cd hyper-video
 $ bower install
 $ polyserve
 ```
 
-Finally visit [http://localhost:8080/components/polymer-hypervideo/](http://localhost:8080/components/polymer-hypervideo/)
-and click the [demo](http://localhost:8080/components/polymer-hypervideo/demo/) link in the upper right corner.
+Finally visit [http://localhost:8080/components/hyper-video/](http://localhost:8080/components/hyper-video/)
+and click the [demo](http://localhost:8080/components/hyper-video/demo/) link in the upper right corner.
 
 Basic Usage
 ===========

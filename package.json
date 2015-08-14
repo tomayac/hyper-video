@@ -1,5 +1,5 @@
 {
-  "name": "polymer-hypervideo",
+  "name": "hyper-video",
   "version": "0.0.1",
   "description": "Hypervideo creation based on Web Components using the Polymer framework",
   "main": "app.js",

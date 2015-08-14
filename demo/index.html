@@ -12,60 +12,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>polymer-hypervideo Demo</title>
+    <title>hyper-video Demo</title>
     <link href="styles/main.css" media="all" rel="stylesheet" type="text/css"/>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="../polymer-hypervideo.html">
+    <link rel="import" href="../hyper-video.html">
   </head>
   <body>
     <h1>Hypervideo Demo</h1>
 
-    <h2>Polymer Hypervideo (Local video)</h2>
+    <h2>Hypervideo (Local video)</h2>
 
-    <polymer-hypervideo src="assets/big_buck_bunny.mp4 assets/big_buck_bunny.webm" width="800" height="450" muted alternative-views='{"assets/big_buck_bunny.mp4":{"1":{"title":"a","src":"assets/big_buck_bunny_1.mp4"},"2":{"title":"b","src":"assets/big_buck_bunny_2.mp4"}}} {"assets/big_buck_bunny.webm":{"1":{"title":"a","src":"assets/big_buck_bunny_1.webm"},"2":{"title":"b","src":"assets/big_buck_bunny_2.webm"}}}' >
+    <hyper-video src="assets/big_buck_bunny.mp4 assets/big_buck_bunny.webm" width="800" height="450" muted alternative-views='{"assets/big_buck_bunny.mp4":{"1":{"title":"a","src":"assets/big_buck_bunny_1.mp4"},"2":{"title":"b","src":"assets/big_buck_bunny_2.mp4"}}} {"assets/big_buck_bunny.webm":{"1":{"title":"a","src":"assets/big_buck_bunny_1.webm"},"2":{"title":"b","src":"assets/big_buck_bunny_2.webm"}}}' >
 
-      <polymer-track-subtitles src="assets/subtitles.vtt" display-subtitles-group width="800" ></polymer-track-subtitles>
+      <track-subtitles src="assets/subtitles.vtt" display-subtitles-group width="800" ></track-subtitles>
 
-      <polymer-track-chapters src="assets/thumbs.vtt" display-chapters-thumbnails width="800"></polymer-track-chapters>
+      <track-chapters src="assets/thumbs.vtt" display-chapters-thumbnails width="800"></track-chapters>
 
-      <polymer-data-overlay style="color:green;" start="20" end="25">
+      <data-overlay style="color:green;" start="20" end="25">
         <img src="assets/fr.png"/>
         Bonjour monde!
-      </polymer-data-overlay>
+      </data-overlay>
 
-      <polymer-data-overlay style="color:red; position:absolute; top:-35px; opacity: .5;" start="25" end="30">
+      <data-overlay style="color:red; position:absolute; top:-35px; opacity: .5;" start="25" end="30">
         <img src="assets/fr.png"/>
         Collision manuelle!
-      </polymer-data-overlay>
+      </data-overlay>
 
-      <polymer-data-overlay style="color:blue;" start="35" end="45">
+      <data-overlay style="color:blue;" start="35" end="45">
         Au revoir monde!
         <img src="assets/fr.png"/>
-      </polymer-data-overlay>
+      </data-overlay>
 
-      <polymer-data-overlay style="color:orange;" start="40" end="50">
+      <data-overlay style="color:orange;" start="40" end="50">
         Collision auto
-      </polymer-data-overlay>
+      </data-overlay>
 
-      <polymer-data-actor start="10" end="15" name="Big Buck Bunny" url="http://commons.wikimedia.org/wiki/File:Big.Buck.Bunny.-.Bunny.Portrait.png"></polymer-data-actor>
+      <data-actor start="10" end="15" name="Big Buck Bunny" url="http://commons.wikimedia.org/wiki/File:Big.Buck.Bunny.-.Bunny.Portrait.png"></data-actor>
 
-      <polymer-data-actor start="10" end="35" name="Chirp (Owl)" xywh="170,20,70,80"  url="http://commons.m.wikimedia.org/wiki/File:Chirp1_-_BBB_-_reduced_snapshot.png"></polymer-data-actor>
+      <data-actor start="10" end="35" name="Chirp (Owl)" xywh="170,20,70,80"  url="http://commons.m.wikimedia.org/wiki/File:Chirp1_-_BBB_-_reduced_snapshot.png"></data-actor>
 
-      <polymer-data-actor start="40" end="35" name="Jane Doe"></polymer-data-actor>
+      <data-actor start="40" end="35" name="Jane Doe"></data-actor>
 
-      <polymer-data-actor start="40" end="50" name="Owl"></polymer-data-actor>
+      <data-actor start="40" end="50" name="Owl"></data-actor>
 
-      <polymer-data-annotation start="30" end="38" kind="generic">
+      <data-annotation start="30" end="38" kind="generic">
         Room for your notes
-      </polymer-data-annotation>
+      </data-annotation>
 
-      <polymer-visualization-timeline orientation="landscape" width="800" height="150"></polymer-visualization-timeline>
+      <visualization-timeline orientation="landscape" width="800" height="150"></visualization-timeline>
 <!--
-      <polymer-visualization-timeline orientation="portrait" width="800" height="400"></polymer-visualization-timeline>
+      <visualization-timeline orientation="portrait" width="800" height="400"></visualization-timeline>
 -->
-      <polymer-visualization-toc width="800"></polymer-visualization-toc>
+      <visualization-toc width="800"></visualization-toc>
 
-    </polymer-hypervideo>
+    </hyper-video>
 
   </body>
 </html>

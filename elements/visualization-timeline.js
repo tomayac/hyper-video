@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'polymer-visualization-timeline',
+  is: 'visualization-timeline',
 
   properties: {
     orientation: {

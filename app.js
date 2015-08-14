@@ -37,5 +37,5 @@ app.get(/^\/cors\/(.+)$/, function(req, res) {
 
 // start the server
 var port = process.env.PORT || 5000;
-console.log('Polymer-Hypervideo running on ' + port);
+console.log('Hyper-Video running on ' + port);
 server.listen(port);

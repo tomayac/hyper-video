@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'polymer-visualization-toc',
+  is: 'visualization-toc',
 
   properties: {
     width: {

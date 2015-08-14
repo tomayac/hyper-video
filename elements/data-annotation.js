@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'polymer-data-annotation',
+  is: 'data-annotation',
 
   properties: {
     start: {

@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'polymer-track-subtitles',
+  is: 'track-subtitles',
 
   properties: {
     src: {

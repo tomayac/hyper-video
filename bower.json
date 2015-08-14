@@ -1,16 +1,16 @@
 {
-  "name": "polymer-hypervideo",
-  "version": "0.0.0",
-  "homepage": "https://github.com/tomayac/polymer-hypervideo",
+  "name": "hyper-video",
+  "version": "1.0.0",
+  "homepage": "https://github.com/tomayac/hyper-video",
   "authors": [
     "Thomas Steiner <tomac@google.com>"
   ],
-  "description": "Hypervideo polymer element",
-  "main": "polymer-hypervideo.html",
+  "description": "Hypervideo creation based on Web Components using the Polymer framework",
+  "main": "hyper-video.html",
   "keywords": [
     "hypervideo"
   ],
-  "main": "polymer-hypervideo.html",
+  "main": "hyper-video.html",
   "license": "Apache 2.0",
   "ignore": [
     "/.*",
@@ -18,7 +18,7 @@
     "/demo/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.0.0"
+    "polymer": "Polymer/polymer#^1.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

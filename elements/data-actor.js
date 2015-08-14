@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'polymer-data-actor',
+  is: 'data-actor',
 
   properties: {
     start: {

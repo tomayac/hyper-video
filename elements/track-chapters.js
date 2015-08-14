@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'polymer-track-chapters',
+  is: 'track-chapters',
 
   properties: {
     src: {

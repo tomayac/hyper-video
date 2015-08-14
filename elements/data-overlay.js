@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'polymer-data-overlay',
+  is: 'data-overlay',
 
   properties: {
     start: {

@@ -14,22 +14,21 @@ Element providing solution to no problem in particular.
 
 ##### Example
 
-    <polymer-track-chapters></polymer-track-chapters>
+    <data-overlay></data-overlay>
 
-@element polymer-track-chapters
+@element data-overlay
 @demo demo/index.html
 @status alpha
-@homepage http://github.com/tomayac/polymer-hypervideo
+@homepage http://github.com/tomayac/hyper-video
 -->
-<dom-module id="polymer-track-chapters">
-
-  <link href="polymer-track-chapters.css" media="all" rel="stylesheet" type="text/css"/>
+<dom-module id="data-overlay">
+  <link href="data-overlay.css" media="all" rel="stylesheet" type="text/css"/>
 
   <template>
-    <div>
-      <ul id="container" class="container"></ul>
+    <div id="container" class="container">
+      <content></content>
     </div>
   </template>
 
-  <script src="polymer-track-chapters.js"></script>
+  <script src="data-overlay.js"></script>
 </dom-module>

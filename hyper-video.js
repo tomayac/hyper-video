@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'polymer-hypervideo',
+  is: 'hyper-video',
 
   properties: {
     src: {
@@ -46,7 +46,7 @@ Polymer({
         var mutation = mutations[i];
         if (mutation.addedNodes) {
           for (var j = 0, lenJ = mutation.addedNodes.length; j < lenJ; j++) {
-            if (/^polymer-data-/gi.test(mutation.addedNodes[j].nodeName)) {
+            if (/^data-/gi.test(mutation.addedNodes[j].nodeName)) {
               nodes.push(mutation.addedNodes[j]);
             }
           }
@@ -114,8 +114,9 @@ Polymer({
 
     document.addEventListener('web-components-toc-ready', function() {
       console.log('Received event (document): web-components-toc-ready');
-      // get all child <polymer-*> child nodes
-      var webComponents = queryRegExSelectorAll(that, /^polymer-/gi);
+      // get all child <data-*> or <track-*> or <visualization-*> child nodes
+      var webComponents =
+          queryRegExSelectorAll(that, /^(?:data|track|visualization)-/gi);
       console.log('Fired event: web-components-toc');
       that.fire(
         'web-components-toc',
@@ -126,9 +127,9 @@ Polymer({
     }, false);
 
     var updateTimelineAnnotations = function(opt_nodes) {
-      // get all child <polymer-data-*> child nodes
+      // get all child <data-*> child nodes
       var dataAnnotations =
-          opt_nodes || queryRegExSelectorAll(that, /^polymer-data-/gi);
+          opt_nodes || queryRegExSelectorAll(that, /^data-/gi);
       var annotations = [];
       dataAnnotations.forEach(function(annotation) {
         var type;
@@ -296,7 +297,7 @@ Polymer({
     var positionDataAnnotations = function(opt_nodes) {
       // positions data annotations on top of the video
       var polymerData =
-          opt_nodes || queryRegExSelectorAll(that, /^polymer-data-/gi);
+          opt_nodes || queryRegExSelectorAll(that, /^data-/gi);
       polymerData.forEach(function(node) {
         node.style.position = 'absolute';
         node.style.top = (video.offsetTop + 0.66 * video.offsetHeight) +
@@ -336,12 +337,12 @@ Polymer({
       console.log('Received event (video): loadedmetadata');
       that.duration = video.duration;
       // adjust the timeline dimensions according to the video duration
-      var polymerTimelines = that.querySelectorAll('polymer-timeline');
+      var polymerTimelines = that.querySelectorAll('timeline');
       for (var i = 0, lenI = polymerTimelines.length; i < lenI; i++) {
         polymerTimelines[i].style.left = (video.offsetLeft +
             (0.05 * that.width)) + 'px';
       }
-      var polymerData = queryRegExSelector(that, /^polymer-data-/gi);
+      var polymerData = queryRegExSelector(that, /^data-/gi);
       console.log('Fired event: hypervideo-loaded-metadata');
       var videoWidth = Math.floor(that.width / 5);
       var ratio = that.width / that.height;
@@ -434,8 +435,6 @@ Polymer({
             } else {
               currentVideo.width = videoWidth;
               currentVideo.height = videoWidth / ratio;
-              // Change position with
-              // polymer-hypervideo::shadow video.small { margin-top: 150px; }
               currentVideo.style.top = that.height + 'px';
               currentVideo.style.left = (j * videoWidth) + 'px';
               currentVideo.classList.remove('big');
@@ -538,8 +537,6 @@ Polymer({
               currentVideo.muted = that.muted;
             } else {
               currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
-              // Change position with
-              // polymer-hypervideo::shadow video.small { margin-top: 150px; }
               currentVideo.style.top =that.height + 'px';
               currentVideo.width = videoWidth;
               currentVideo.height = videoWidth / ratio;

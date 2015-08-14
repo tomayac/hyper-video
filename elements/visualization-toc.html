@@ -14,27 +14,19 @@ Element providing solution to no problem in particular.
 
 ##### Example
 
-    <polymer-visualization-timeline></polymer-visualization-timeline>
+    <visualization-toc></visualization-toc>
 
-@element polymer-visualization-timeline
+@element visualization-toc
 @demo demo/index.html
 @status alpha
-@homepage http://github.com/tomayac/polymer-hypervideo
+@homepage http://github.com/tomayac/hyper-video
 -->
-<dom-module id="polymer-visualization-timeline">
-  <link href="polymer-visualization-timeline.css" media="all" rel="stylesheet" type="text/css"/>
+<dom-module id="visualization-toc">
+  <link href="visualization-toc.css" media="all" rel="stylesheet" type="text/css"/>
 
   <template>
-    <div id="wrapper" class="wrapper">
-      <div id="timeline" class="timeline">
-        <div id="container" class="container"></div>
-      </div>
-      <div id="settings" class="settings">
-        <input id="zoom" class="zoom" type="range" min="12" max="240" value="12" step="0.5"/>
-        <label for="zoom">Zoom</label>
-      </div>
-    </div>
+    <div class="container" id="container"></div>
   </template>
 
-  <script src="polymer-visualization-timeline.js"></script>
+  <script src="visualization-toc.js"></script>
 </dom-module>
