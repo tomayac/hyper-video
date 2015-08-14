@@ -4,6 +4,9 @@
 Live Demo
 =========
 
+You can see a [live demo](http://tomayac.github.io/hyper-video/)
+of the Web Component in action hosted on GitHub pages.
+
 Installation
 ============
 
