@@ -13,7 +13,7 @@ body {
 
 h1 {
   font-weight: bold;
-  color: white;
+  color: blue;
   font-size: 1.2em;
   margin: 5px;
   clear: both;
@@ -21,7 +21,7 @@ h1 {
 
 h2 {
   font-weight: bold;
-  color: gray;
+  color: darkblue;
   font-size: 1.1em;
   margin: 5px;
   clear: both;
