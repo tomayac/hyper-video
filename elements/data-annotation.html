@@ -22,6 +22,19 @@ Element providing solution to no problem in particular.
 @homepage http://github.com/tomayac/hyper-video
 -->
 <dom-module id="data-annotation">
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+
+    .container {
+      z-index: 10000;
+      background-color: white;
+      opacity: .75;
+      padding: 1px;
+    }
+  </style>
 
   <template>
     <link href="data-annotation.css" media="all" rel="stylesheet" type="text/css"/>
@@ -30,5 +43,39 @@ Element providing solution to no problem in particular.
     </div>
   </template>
 
-  <script src="data-annotation.js"></script>
 </dom-module>
+
+<script>
+  'use strict';
+
+  Polymer({
+    is: 'data-annotation',
+
+    properties: {
+      start: {
+        type: Number
+      },
+      end: {
+        type: Number
+      }
+    },
+
+    created: function() {
+    },
+
+    ready: function() {
+      var that = this;
+
+      document.addEventListener('hypervideo-time-update', function(e) {
+        // console.log('Received event (document): hypervideo-time-update');
+        that.currentTime = e.detail.currentTime;
+        if ((that.start <= that.currentTime) &&
+            (that.currentTime < that.end)) {
+          that.style.display = 'block';
+        } else {
+          that.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>

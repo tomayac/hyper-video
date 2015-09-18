@@ -23,12 +23,63 @@ Element providing solution to no problem in particular.
 -->
 <dom-module id="data-overlay">
 
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+
+    .container {
+      z-index: 10000;
+      background-color: white;
+      opacity: .75;
+      border: solid black 1px;
+      padding: 1px;
+    }
+  </style>
+
   <template>
+
     <link href="data-overlay.css" media="all" rel="stylesheet" type="text/css"/>
     <div id="container" class="container">
       <content></content>
     </div>
   </template>
 
-  <script src="data-overlay.js"></script>
 </dom-module>
+
+<script>
+  'use strict';
+
+  Polymer({
+    is: 'data-overlay',
+
+    properties: {
+      start: {
+        type: Number
+      },
+      end: {
+        type: Number
+      }
+    },
+
+    created: function() {
+    },
+
+    ready: function() {
+      var that = this;
+
+      // @todo: this should be handled by the parent
+      document.addEventListener('hypervideo-time-update', function(e) {
+        // console.log('Received event (document): hypervideo-time-update');
+        that.currentTime = e.detail.currentTime;
+        if ((that.start <= that.currentTime) &&
+            (that.currentTime < that.end)) {
+          that.style.display = 'block';
+        } else {
+          that.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>
