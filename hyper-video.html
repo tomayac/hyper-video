@@ -170,7 +170,12 @@ This element serves as a container element for various hypervideo-related sub-el
           value: 0
         },
         duration: {
-          value:null
+          value: null
+        },
+        /** @private */
+        _videos: {
+          type: Array,
+          value: []
         }
       },
 
@@ -199,8 +204,6 @@ This element serves as a container element for various hypervideo-related sub-el
           }
           that.onMutation(that, onMutation);
         };
-
-        //that.onMutation(that, onMutation);
 
         var CORS_PROXY = document.location.origin + '/cors/';
         document.addEventListener('track-ready', function(e) {
@@ -251,6 +254,15 @@ This element serves as a container element for various hypervideo-related sub-el
             that.canvas = canvas;
           }
           video.appendChild(track);
+          that._videos.forEach(function(_video) {
+            if (_video === video || track.kind !== 'subtitles') {
+              return;
+            }
+            var newTrack = track.cloneNode();
+            newTrack.track.mode = 'hidden';
+            _video.appendChild(newTrack);
+          });
+
         }, false);
 
         document.addEventListener('web-components-toc-ready', function() {
@@ -335,7 +347,7 @@ This element serves as a container element for various hypervideo-related sub-el
             that.ctx.drawImage(video, 0, 0, video.clientWidth,
                 video.clientHeight);
             var img = document.createElement('img');
-            img.setAttribute('class', 'hypervideo');
+            img.classList.add('hypervideo');
             var url = that.canvas.toDataURL();
             img.src = url;
             var cue = functions[processedStillFrames].cue;
@@ -506,10 +518,10 @@ This element serves as a container element for various hypervideo-related sub-el
 
           // alternative views
           if (that.alternativeViews) {
-            var videos = [video];
+            that._videos.push(video);
             var trackVideo;
             var showControls = function showControls(e) {
-              return e.target.setAttribute('controls', true);
+              return e.target.controls = true;
             };
 
             var hideControls = function hideControls(e) {
@@ -518,8 +530,8 @@ This element serves as a container element for various hypervideo-related sub-el
 
             var playAll = function playAll(e) {
               var currentTime = e.target.currentTime;
-              for (var i = 0; i < videos.length; i++) {
-                var currentVideo = videos[i];
+              for (var i = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
                 currentVideo.currentTime = currentTime;
                 currentVideo.play();
               }
@@ -528,15 +540,15 @@ This element serves as a container element for various hypervideo-related sub-el
             };
 
             var pauseAll = function pauseAll() {
-              for (var i = 0; i < videos.length; i++) {
-                videos[i].pause();
+              for (var i = 0; i < that._videos.length; i++) {
+                that._videos[i].pause();
               }
               trackVideo.pause();
             };
 
             var seekAll = function seekAll(e) {
-              for (var i = 0; i < videos.length; i++) {
-                var currentVideo = videos[i];
+              for (var i = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
                 if (currentVideo === e.target) {
                   continue;
                 }
@@ -546,8 +558,8 @@ This element serves as a container element for various hypervideo-related sub-el
             };
 
             var transitionend = function transitioned(e) {
-              for (var i = 0; i < videos.length; i++) {
-                var currentVideo = videos[i];
+              for (var i = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
                 if (currentVideo.classList.contains('small')) {
                   currentVideo.style.zIndex = 1000;
                 } else {
@@ -557,14 +569,14 @@ This element serves as a container element for various hypervideo-related sub-el
             };
 
             var makeBig = function makeBig(e) {
-              for (var i = 0, j = 0; i < videos.length; i++) {
-                var currentVideo = videos[i];
+              for (var i = 0, j = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
                 if (currentVideo === e.target) {
                   currentVideo.width = that.width;
                   currentVideo.height = that.width / ratio;
                   currentVideo.style.top = 0;
                   currentVideo.style.left = 0;
-                  currentVideo.style.zIndex = 10000;
+                  currentVideo.style.zIndex = 1000;
                   currentVideo.classList.remove('small');
                   currentVideo.classList.add('big');
                   currentVideo.addEventListener('mouseover', showControls);
@@ -624,11 +636,13 @@ This element serves as a container element for various hypervideo-related sub-el
                     newTrack.kind = track.kind;
                     viewVideo.appendChild(newTrack);
                   }
-                  videos.push(viewVideo);
+                  that._videos.push(viewVideo);
                 }
-                // Create a hidden track video for the sole purpose of firing cue
-                // change events because we dynamically need to switch tracks
+                // Create a hidden track video for the sole purpose of firing
+                // cue change events because we dynamically need to switch
+                // tracks
                 trackVideo = document.createElement('video');
+                trackVideo.muted = true;
                 trackVideo.style.display = 'none';
                 trackVideo.id = 'trackVideo';
                 trackVideo.src = video.currentSrc;
@@ -659,8 +673,8 @@ This element serves as a container element for various hypervideo-related sub-el
             });
 
             (function init() {
-              for (var i = 0; i < videos.length; i++) {
-                var currentVideo = videos[i];
+              for (var i = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
 
                 currentVideo.addEventListener('play', playAll);
 
