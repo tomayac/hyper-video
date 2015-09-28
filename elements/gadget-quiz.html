@@ -28,7 +28,7 @@ Element providing solution to no problem in particular.
     <style>
       .quiz-question {
         background-color: black;
-        opacity: .7;
+        opacity: .8;
         color: white;
         font-family: sans-serif;
         font-size: 1em;
@@ -37,7 +37,6 @@ Element providing solution to no problem in particular.
         left: 0px;
         padding: 1em;
         justify-content: center;
-        text-align: center;
         flex-direction: column;
         z-index: 10000;
       }
@@ -79,10 +78,11 @@ Element providing solution to no problem in particular.
         });
 
         container.addEventListener('click', function(e) {
-          if (e.target.nodeName.toLowerCase() !== 'button') {
+          var button = e.target;
+          if ((button.nodeName.toLowerCase() !== 'button') ||
+              (button.type === 'submit')) {
             return;
           }
-          var button = e.target;
           for (var i = 0, lenI = cuesElements.length; i < lenI; i++) {
             var cue = cuesElements[i];
             cue.style.display = 'none';
@@ -90,6 +90,42 @@ Element providing solution to no problem in particular.
           hypervideo.seekTo(parseFloat(button.dataset.end) + 0.5);
           hypervideo.play();
         });
+
+        var evaluateForm = function(e) {
+          e.preventDefault();
+          var form = e.target;
+          if (form.action) {
+            var url = form.action;
+            if (!/^https?:\/\//.test(url)) {
+              url = document.location.href + url;
+            }
+            url = 'http://crossorigin.me/' + url;
+            var formData = new FormData(form);
+            fetch(url, {
+              method: 'post',
+              body: formData
+            }).then(function(response) {
+              if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+                return;
+              }
+              return response.text();
+            }).then(function(data) {
+              form.querySelector('.result').innerHTML = data;
+              if (form.querySelector('button[type="button"]')) {
+                return;
+              }
+              var button = document.createElement('button');
+              button.type = 'button';
+              button.dataset.end = form.dataset.end;
+              button.textContent = 'Continue';
+              form.appendChild(button);
+            }).catch(function(err) {
+              console.log('Fetch Error :-S', err);
+            });
+          }
+        };
 
         document.addEventListener('cues-read', function(e) {
           console.log('Received event (document): cues-read');
@@ -104,13 +140,38 @@ Element providing solution to no problem in particular.
             div.dataset.end = cue.end;
             div.classList.add('quiz-question', 'style-scope', 'gadget-quiz');
             div.style.display = 'none';
-            div.style.width = width + 'px';
-            div.style.height = height + 'px';
-            div.innerHTML =
-                '<div>' +
-                  '<p>' + cue.text + '</p>' +
-                  '<button data-end="' + cue.end + '">Continue</button>' +
-                '</div>';
+            var wrapper = document.createElement('div');
+            wrapper.innerHTML = cue.text;
+            div.appendChild(wrapper);
+            var form = div.querySelector('form');
+            if (form) {
+              if (form.action) {
+                var submit = document.createElement('button');
+                submit.textContent = 'Submit';
+                submit.type = 'submit';
+                form.dataset.end = cue.end;
+                form.addEventListener('submit', evaluateForm);
+                form.appendChild(document.createElement('br'));
+                form.appendChild(submit);
+                var result = document.createElement('div');
+                result.classList.add('result');
+                form.appendChild(result);
+              } else {
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.dataset.end = cue.end;
+                button.textContent = 'Continue';
+                form.appendChild(document.createElement('br'));
+                form.appendChild(button);
+              }
+            } else {
+              var button = document.createElement('button');
+              button.type = 'button';
+              button.dataset.end = cue.end;
+              button.textContent = 'Continue';
+              wrapper.appendChild(document.createElement('br'));
+              wrapper.appendChild(button);
+            }
             container.appendChild(div);
             cuesElements[i] = div;
           });
@@ -125,6 +186,8 @@ Element providing solution to no problem in particular.
             var end = cue.dataset.end;
             if (start <= currentTime && currentTime < end) {
               cue.style.display = 'flex';
+              cue.style.width = width + 'px';
+              cue.style.height = height + 'px';
               e.target.pause();
             } else {
               cue.style.display = 'none';
