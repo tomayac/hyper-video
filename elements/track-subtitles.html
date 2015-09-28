@@ -99,6 +99,10 @@ Element providing solution to no problem in particular.
 
 
         document.addEventListener('cues-read', function(e) {
+          var data = e.detail;
+          if (data.kind !== 'subtitles') {
+            return;
+          }
           console.log('Received event (document): cues-read');
           if (that.width) {
             container.style.width = that.width + 'px';
@@ -110,8 +114,7 @@ Element providing solution to no problem in particular.
           if (that.height) {
             container.style.height = that.height + 'px';
           }
-          var data = e.detail;
-          if (that.displaySubtitlesGroup && data.kind === 'subtitles') {
+          if (that.displaySubtitlesGroup) {
             createSubtitlesGroup(data.cueData);
           }
         });
@@ -175,7 +178,7 @@ Element providing solution to no problem in particular.
               currentTime: current.dataset.start
             }
           );
-        }, false);
+        });
 
         document.addEventListener('hypervideo-time-update', function(e) {
           // console.log('Received event (document): hypervideo-time-update');
@@ -190,7 +193,7 @@ Element providing solution to no problem in particular.
               cue.classList.remove('current');
             }
           }
-        }, false);
+        });
 
         setTimeout(function() {
           console.log('Fired event: track-ready');
@@ -207,4 +210,3 @@ Element providing solution to no problem in particular.
   </script>
 
 </dom-module>
-

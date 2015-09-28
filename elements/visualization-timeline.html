@@ -227,14 +227,14 @@ Element providing solution to no problem in particular.
             };
             fontSize = parseInt(getComputedStyle(container).fontSize
                 .replace('px', ''), 10);
-          }, false);
+          });
 
           container.addEventListener('mouseleave', function() {
             console.log('Received event (container): mouseleave');
             timeMarker.style.display = 'none';
             timeMarker.style.marginLeft = currentTimeMarkerPosition.x;
             timeMarker.style.marginTop = currentTimeMarkerPosition.y;
-          }, false);
+          });
 
           container.addEventListener('mousemove', function(e) {
             console.log('Received event (container): mousemove');
@@ -261,7 +261,7 @@ Element providing solution to no problem in particular.
               x: timeMarker.style.marginLeft || '0em',
               y: timeMarker.style.marginTop || '0em'
             };
-          }, false);
+          });
 
           container.addEventListener('click', function(e) {
             console.log('Received event (container): click');
@@ -294,7 +294,7 @@ Element providing solution to no problem in particular.
                 currentTime: currentTime
               }
             );
-          }, false);
+          });
 
           document.addEventListener('hypervideo-time-update', function(e) {
             // console.log('Received event (document): hypervideo-time-update');
@@ -414,7 +414,7 @@ Element providing solution to no problem in particular.
           if (data.kind === 'chapters') {
             eventsReceived.data = data.cueData;
           }
-        }, false);
+        });
 
         document.addEventListener('data-annotations', function(e) {
           console.log('Received event (document): data-annotations');
@@ -428,7 +428,7 @@ Element providing solution to no problem in particular.
               addAnnotations(e.detail.dataAnnotations);
             }
           }, 50);
-        }, false);
+        });
 
         var addAnnotations = function(annotations) {
           fontSize = parseInt(getComputedStyle(container).fontSize
@@ -538,4 +538,3 @@ Element providing solution to no problem in particular.
   </script>
 
 </dom-module>
-

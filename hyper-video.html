@@ -176,7 +176,19 @@ This element serves as a container element for various hypervideo-related sub-el
         _videos: {
           type: Array,
           value: []
+        },
+        /** @private */
+        _currentTime: {
+          type: Number,
+          observer: '_currentTimeChanged'
         }
+      },
+
+      _currentTimeChanged: function(newValue) {
+        this._videos && this._videos.forEach(function(video) {
+          video.currentTime = newValue;
+        });
+        this.currentTime = newValue;
       },
 
       ready: function() {
@@ -217,7 +229,7 @@ This element serves as a container element for various hypervideo-related sub-el
               cuesRead = true;
               return readCues(e.target.track.cues, data.kind);
             }
-          }, false);
+          });
 
           track.addEventListener('cuechange', function() {
             console.log('Fired event: hypervideo-cue-change');
@@ -252,6 +264,8 @@ This element serves as a container element for various hypervideo-related sub-el
             var ctx = canvas.getContext('2d');
             that.ctx = ctx;
             that.canvas = canvas;
+          } else if (track.kind === 'metadata') {
+            track.track.mode = 'hidden';
           }
           video.appendChild(track);
           that._videos.forEach(function(_video) {
@@ -263,7 +277,7 @@ This element serves as a container element for various hypervideo-related sub-el
             _video.appendChild(newTrack);
           });
 
-        }, false);
+        });
 
         document.addEventListener('web-components-toc-ready', function() {
           console.log('Received event (document): web-components-toc-ready');
@@ -277,7 +291,7 @@ This element serves as a container element for various hypervideo-related sub-el
               webComponentsToC: webComponents
             }
           );
-        }, false);
+        });
 
         var updateTimelineAnnotations = function(opt_nodes) {
           // get all child <data-*> child nodes
@@ -312,7 +326,7 @@ This element serves as a container element for various hypervideo-related sub-el
         document.addEventListener('timeline-ready', function() {
           console.log('Received event (document): timeline-ready');
           updateTimelineAnnotations();
-        }, false);
+        });
 
         // listen for events coming from the timeline component
         document.addEventListener('current-time-update', function(e) {
@@ -320,7 +334,7 @@ This element serves as a container element for various hypervideo-related sub-el
           var data = e.detail;
           video.currentTime = data.currentTime;
           video.play();
-        }, false);
+        });
 
         document.addEventListener('request-still-frames', function(e) {
           console.log('Received event (document): request-still-frames');
@@ -472,8 +486,8 @@ This element serves as a container element for various hypervideo-related sub-el
           for (var i = 0, lenI = cues.length; i < lenI; i++) {
             var cue = cues.item ? cues.item(i) : cues[i];
             cueData.push({
-              start: parseInt(cue.startTime, 10),
-              end: parseInt(cue.endTime, 10),
+              start: parseFloat(cue.startTime),
+              end: parseFloat(cue.endTime),
               text: cue.text,
               id: cue.id,
               type: kind
@@ -706,7 +720,7 @@ This element serves as a container element for various hypervideo-related sub-el
             })();
           }
 
-        }, false);
+        });
 
         // publish timeupdate events
         video.addEventListener('timeupdate', function() {
@@ -719,7 +733,7 @@ This element serves as a container element for various hypervideo-related sub-el
               currentTime: that.currentTime
             }
           );
-        }, false);
+        });
 
         spinner = showSpinner();
         setTimeout(function() {
@@ -735,6 +749,10 @@ This element serves as a container element for various hypervideo-related sub-el
 
       play: function() {
         return this.$.hypervideo.play();
+      },
+
+      seekTo: function(time) {
+        return this._currentTime = time;
       }
     });
   </script>
@@ -777,49 +795,6 @@ This element serves as a container element for various hypervideo-related sub-el
       walk(root);
       return nodes[0] ? nodes[0] : null;
     };
-
-
-    /*
-    var queryRegExSelectorAll = function(root, regEx) {
-      var treeWalker = document.createTreeWalker(
-        root,
-        NodeFilter.SHOW_ELEMENT,
-        {
-          acceptNode: function(node) {
-            regEx.lastIndex = 0;
-            return regEx.test(node.nodeName) ?
-                NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-          }
-        },
-        false
-      );
-      var nodes = [];
-      while(treeWalker.nextNode()) {
-        nodes.push(treeWalker.currentNode);
-      }
-      return nodes;
-    };
-
-    var queryRegExSelector = function(root, regEx) {
-      var treeWalker = document.createTreeWalker(
-        root,
-        NodeFilter.SHOW_ELEMENT,
-        {
-          acceptNode: function(node) {
-            regEx.lastIndex = 0;
-            return regEx.test(node.nodeName) ?
-                NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-          }
-        },
-        false
-      );
-      if (treeWalker.nextNode()) {
-        return treeWalker.currentNode;
-      } else {
-        return null;
-      }
-    };
-    */
 
     var getYouTubeHtml5VideoUrl = function(videoId, callback) {
       var decodeQueryString = function(queryString) {
@@ -899,4 +874,4 @@ This element serves as a container element for various hypervideo-related sub-el
 <link rel="import" href="elements/track-subtitles.html">
 <link rel="import" href="elements/visualization-timeline.html">
 <link rel="import" href="elements/visualization-toc.html">
-
+<link rel="import" href="elements/gadget-quiz.html">
