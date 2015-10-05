@@ -67,7 +67,9 @@ Element providing solution to no problem in particular.
         var cuesElements = [];
         var width;
         var height;
+        var duration;
         var hypervideo;
+        var timeToleranceThreshold = 0.25;
 
         document.addEventListener('hypervideo-loaded-metadata', function(e) {
           console.log('Received event (document): hypervideo-loaded-metadata');
@@ -75,6 +77,7 @@ Element providing solution to no problem in particular.
           var data = e.detail;
           width = data.width;
           height = data.height;
+          duration = data.duration;
         });
 
         container.addEventListener('click', function(e) {
@@ -87,8 +90,15 @@ Element providing solution to no problem in particular.
             var cue = cuesElements[i];
             cue.style.display = 'none';
           }
-          hypervideo.seekTo(parseFloat(button.dataset.end) + 0.5);
-          hypervideo.play();
+          if (button.classList.contains('continue')) {
+            hypervideo.seekTo(parseFloat(button.dataset.end) + timeToleranceThreshold < duration ?
+                parseFloat(button.dataset.end) + timeToleranceThreshold :
+                parseFloat(button.dataset.end));
+            hypervideo.play();
+          } else if (button.classList.contains('review')) {
+            hypervideo.seekTo(parseFloat(button.dataset.start));
+            hypervideo.play();
+          }
         });
 
         var evaluateForm = function(e) {
@@ -112,15 +122,16 @@ Element providing solution to no problem in particular.
               }
               return response.text();
             }).then(function(data) {
-              form.querySelector('.result').innerHTML = data;
-              if (form.querySelector('button[type="button"]')) {
+              form.parentNode.querySelector('.result').innerHTML = data;
+              if (form.querySelector('button[type="button"][class="continue"]')) {
                 return;
               }
-              var button = document.createElement('button');
-              button.type = 'button';
-              button.dataset.end = form.dataset.end;
-              button.textContent = 'Continue';
-              form.appendChild(button);
+              var continueButton = document.createElement('button');
+              continueButton.classList.add('continue');
+              continueButton.type = 'button';
+              continueButton.dataset.end = form.dataset.end;
+              continueButton.textContent = 'Continue';
+              form.appendChild(continueButton);
             }).catch(function(err) {
               console.log('Fetch Error :-S', err);
             });
@@ -146,31 +157,43 @@ Element providing solution to no problem in particular.
             var form = div.querySelector('form');
             if (form) {
               if (form.action) {
-                var submit = document.createElement('button');
-                submit.textContent = 'Submit';
-                submit.type = 'submit';
+                var submitButton = document.createElement('button');
+                submitButton.textContent = 'Submit';
+                submitButton.type = 'submit';
                 form.dataset.end = cue.end;
                 form.addEventListener('submit', evaluateForm);
                 form.appendChild(document.createElement('br'));
-                form.appendChild(submit);
+                form.appendChild(submitButton);
                 var result = document.createElement('div');
                 result.classList.add('result');
-                form.appendChild(result);
+                wrapper.appendChild(result);
               } else {
-                var button = document.createElement('button');
-                button.type = 'button';
-                button.dataset.end = cue.end;
-                button.textContent = 'Continue';
+                var continueButton = document.createElement('button');
+                continueButton.classList.add('continue');
+                continueButton.type = 'button';
+                continueButton.dataset.end = cue.end;
+                continueButton.textContent = 'Continue';
                 form.appendChild(document.createElement('br'));
-                form.appendChild(button);
+                form.appendChild(continueButton);
               }
             } else {
-              var button = document.createElement('button');
-              button.type = 'button';
-              button.dataset.end = cue.end;
-              button.textContent = 'Continue';
+              var continueButton = document.createElement('button');
+              continueButton.classList.add('continue');
+              continueButton.type = 'button';
+              continueButton.dataset.end = cue.end;
+              continueButton.textContent = 'Continue';
               wrapper.appendChild(document.createElement('br'));
-              wrapper.appendChild(button);
+              wrapper.appendChild(continueButton);
+            }
+            var reviewSceneButton = document.createElement('button');
+            reviewSceneButton.classList.add('review');
+            reviewSceneButton.type = 'button';
+            reviewSceneButton.dataset.start = cue.start;
+            reviewSceneButton.textContent = 'Watch again';
+            if (form) {
+              form.appendChild(reviewSceneButton);
+            } else {
+              wrapper.appendChild(reviewSceneButton);
             }
             container.appendChild(div);
             cuesElements[i] = div;
@@ -182,9 +205,11 @@ Element providing solution to no problem in particular.
           var currentTime = e.detail.currentTime;
           for (var i = 0, lenI = cuesElements.length; i < lenI; i++) {
             var cue = cuesElements[i];
-            var start = cue.dataset.start;
-            var end = cue.dataset.end;
-            if (start <= currentTime && currentTime < end) {
+            // Define a tolerance interval around the cue end
+            var start = parseFloat(cue.dataset.end) - timeToleranceThreshold > 0 ?
+                parseFloat(cue.dataset.end) - timeToleranceThreshold : 0;
+            var end = parseFloat(cue.dataset.end) + timeToleranceThreshold;
+            if (start < currentTime && currentTime < end) {
               cue.style.display = 'flex';
               cue.style.width = width + 'px';
               cue.style.height = height + 'px';
