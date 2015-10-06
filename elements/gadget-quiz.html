@@ -124,15 +124,6 @@ Element providing solution to no problem in particular.
               return response.text();
             }).then(function(data) {
               form.parentNode.querySelector('.result').innerHTML = data;
-              if (form.querySelector('button[type="button"][class="continue"]')) {
-                return;
-              }
-              var continueButton = document.createElement('button');
-              continueButton.classList.add('continue');
-              continueButton.type = 'button';
-              continueButton.dataset.end = form.dataset.end;
-              continueButton.textContent = 'Continue';
-              form.appendChild(continueButton);
             }).catch(function(err) {
               console.log('Fetch Error :-S', err);
             });
@@ -156,45 +147,40 @@ Element providing solution to no problem in particular.
             wrapper.innerHTML = cue.text;
             div.appendChild(wrapper);
             var form = div.querySelector('form');
-            if (form) {
-              if (form.action) {
-                var submitButton = document.createElement('button');
-                submitButton.textContent = 'Submit';
-                submitButton.type = 'submit';
-                form.dataset.end = cue.end;
-                form.addEventListener('submit', evaluateForm);
-                form.appendChild(document.createElement('br'));
-                form.appendChild(submitButton);
-                var result = document.createElement('div');
-                result.classList.add('result');
-                wrapper.appendChild(result);
-              } else {
-                var continueButton = document.createElement('button');
-                continueButton.classList.add('continue');
-                continueButton.type = 'button';
-                continueButton.dataset.end = cue.end;
-                continueButton.textContent = 'Continue';
-                form.appendChild(document.createElement('br'));
-                form.appendChild(continueButton);
-              }
-            } else {
-              var continueButton = document.createElement('button');
-              continueButton.classList.add('continue');
-              continueButton.type = 'button';
-              continueButton.dataset.end = cue.end;
-              continueButton.textContent = 'Continue';
-              wrapper.appendChild(document.createElement('br'));
-              wrapper.appendChild(continueButton);
-            }
             var reviewSceneButton = document.createElement('button');
             reviewSceneButton.classList.add('review');
             reviewSceneButton.type = 'button';
             reviewSceneButton.dataset.start = cue.start;
             reviewSceneButton.textContent = 'Watch again';
             if (form) {
+              form.appendChild(document.createElement('br'));
               form.appendChild(reviewSceneButton);
+              var continueButton = document.createElement('button');
+              continueButton.classList.add('continue');
+              continueButton.type = 'button';
+              continueButton.dataset.end = cue.end;
+              continueButton.textContent = 'Continue';
+              form.appendChild(continueButton);
+              if (form.action) {
+                var submitButton = document.createElement('button');
+                submitButton.textContent = 'Submit';
+                submitButton.type = 'submit';
+                form.dataset.end = cue.end;
+                form.addEventListener('submit', evaluateForm);
+                form.appendChild(submitButton);
+                var result = document.createElement('div');
+                result.classList.add('result');
+                wrapper.appendChild(result);
+              }
             } else {
+              wrapper.appendChild(document.createElement('br'));
               wrapper.appendChild(reviewSceneButton);
+              var continueButton = document.createElement('button');
+              continueButton.classList.add('continue');
+              continueButton.type = 'button';
+              continueButton.dataset.end = cue.end;
+              continueButton.textContent = 'Continue';
+              wrapper.appendChild(continueButton);
             }
             container.appendChild(div);
             cuesElements[i] = div;

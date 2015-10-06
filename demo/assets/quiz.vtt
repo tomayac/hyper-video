@@ -1,14 +1,14 @@
 WEBVTT
 
 1
-00:00:00.000 --> 00:00:05.500
+00:00:03.500 --> 00:00:05.000
 <form action="http://www.apple.com/library/test/success.html">
   <p>Whose day does the plot follow?</p>
   <input name="response" placeholder="Response">
 </form>
 
 2
-00:00:09.000 --> 00:00:09.500
+00:00:06.000 --> 00:00:09.000
 <form>
   <p>Whom does he meet?</p>
   <input type="checkbox" name="checkbox" id="check1" value="Frank"><label for="check1">Frank</label><br>
@@ -17,7 +17,7 @@ WEBVTT
 </form>
 
 3
-00:00:14.000 --> 00:00:14.500
+00:00:11.000 --> 00:00:14.000
 <form action="http://www.apple.com/library/test/success.html">
   <p>Who is Frank?</p>
   <input type="radio" name="radio" id="radio1" value="An owl"><label for="radio1">An owl</label><br>
@@ -25,6 +25,6 @@ WEBVTT
   <input type="radio" name="radio" id="radio3" value="A rabbit"><label for="radio3">A rabbit</label>
 </form>
 
-3
-00:00:18.000 --> 00:00:18.500
+4
+00:00:14.500 --> 00:00:18.000
 What do the rodents do?
