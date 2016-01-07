@@ -10,14 +10,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../polymer/polymer.html">
 
 <!--
-Element providing solution to no problem in particular.
+This elements is mainly used for debugging;
+it displays all the subcomponents of the hyper-video.
+Furthermore, annotation subcomponents (``data-`` elements)
+are highlighted whenever they are active.
 
 ##### Example
 
-    <visualization-toc></visualization-toc>
+    <hyper-video src="big_buck_bunny.webm">
+      <visualization-toc></visualization-toc>
+    </hyper-video>
 
 @element visualization-toc
-@demo demo/index.html
+@demo demo/visualization-toc.html
 @status alpha
 @homepage http://github.com/tomayac/hyper-video
 -->
@@ -64,10 +69,16 @@ Element providing solution to no problem in particular.
     Polymer({
       is: 'visualization-toc',
 
-      properties: {
+    properties: {
+        /**
+         * Used to specify the width of the table of content.
+         */
         width: {
           type: Number
         },
+        /**
+         * Used to specify the height of the table of content.
+         */
         height: {
           type: Number
         }
