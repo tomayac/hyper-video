@@ -349,8 +349,10 @@ TODO document JSON format
               return;
             }
             var newTrack = track.cloneNode();
-            newTrack.track.mode = 'hidden';
             _video.appendChild(newTrack);
+            newTrack.addEventListener("load", function(evt) {
+                newTrack.track.mode = 'disabled';
+            });
           });
 
         });
