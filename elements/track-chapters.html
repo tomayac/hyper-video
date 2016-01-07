@@ -10,14 +10,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../polymer/polymer.html">
 
 <!--
-Element providing solution to no problem in particular.
+This elements loads a chapters track from a WebVTT file,
+and optionally displays a visual table of contents.
 
 ##### Example
 
-    <track-chapters></track-chapters>
+    <hyper-video src="big_buck_bunny.webm">
+      <track-chapters
+        src="chapters.vtt"
+        display-chapter-thumbnails
+      ></track-chapters>
+    </hyper-video>
 
 @element track-chapters
-@demo demo/index.html
+@demo demo/track-chapters.html
 @status alpha
 @homepage http://github.com/tomayac/hyper-video
 -->
@@ -81,15 +87,27 @@ Element providing solution to no problem in particular.
       is: 'track-chapters',
 
       properties: {
+        /**
+         * Used to specify the WebVTT file containing the chapters annotations.
+         */
         src: {
           type: String
         },
+        /**
+         * Used to display the visual table of contents.
+         */
         displayChaptersThumbnails: {
           type: Boolean
         },
+        /**
+         * Used to specify the with of the visual table of contents.
+         */
         width: {
           type: Number
         },
+        /**
+         * Used to specify the height of the visual table of contents.
+         */
         height: {
           type: Number
         }
