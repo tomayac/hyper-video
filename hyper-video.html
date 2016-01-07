@@ -10,7 +10,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 
 <!--
-This element serves as a container element for various hypervideo-related sub-elements.
+A hyper-video is a document mixing video content and annotations on that video.
+This elements allows to produce a hyper-video using HTML5 Video support,
+and annotation represented in various formats, including
+  - the standard [WebVTT](https://w3c.github.io/webvtt/) format,
+  - embedbed HTML5 components,
+  - the [Cinelab](http://advene.org/cinelab/) format,
+  - RDF annotations published as [TPF](www.hydra-cg.com/spec/latest/triple-pattern-fragments/).
 
 ##### Example
 
@@ -19,10 +25,25 @@ This element serves as a container element for various hypervideo-related sub-el
         width="800"
         height="450"
         muted>
+      <!-- here, put sub-components to enrich the hyper-video -- >
     </hyper-video>
 
+#### Alternative views
+
+In addition to the main video,
+secondary videos providing an alternative point of view on the main video can be displayed.
+
+Those alternative should have the same duration as the main video.
+They are displayed in sync with the main video, in a smaller size,
+below the main video.
+By clicking on an alternative video,
+the user can switch position beween the main video and one of the alternatives.
+
+They are specified in the [alternativeViews](#alternativeViews) attribute.
+TODO document JSON format
+
 @element hyper-video
-@demo demo/index.html
+@demo demo/hyper-video.html
 @status alpha
 @homepage http://github.com/tomayac/hyper-video
 -->
@@ -145,30 +166,63 @@ This element serves as a container element for various hypervideo-related sub-el
       is: 'hyper-video',
 
       properties: {
+
+        /**
+         * Used to specify the source URL(s) of the main video,
+         * as a whitespace separated list of URLs.
+         *
+         * Alternatively, you can use [youTubeVideoId](#youTubeVideoId).
+         */
         src: {
           type: String
         },
+        /**
+         * Used to specify alternative views (see above).
+         */
         alternativeViews: {
           type: String
         },
+        /**
+         * Used to specify the width of the main video.
+         */
         width: {
           type: Number
         },
+        /**
+         * Used to specify the height of the main video.
+         */
         height: {
           type: Number
         },
+        /**
+         * Used to specify the poster attribute of the main video.
+         */
         poster: {
           type: String
         },
+        /**
+         * Used to set the muted flag on the main video.
+         */
         muted: {
           type: Boolean
         },
+        /**
+         * Used to specify the main video by its Youtube identifier.
+         *
+         * Alternatively, you can use [src](#src).
+         */
         youTubeVideoId: {
           type: Boolean
         },
+        /**
+         * Provides the time currently playing on the main video.
+         */
         currentTime: {
           value: 0
         },
+        /**
+         * Provides the duration of the main video.
+         */
         duration: {
           value: null
         },
@@ -218,6 +272,16 @@ This element serves as a container element for various hypervideo-related sub-el
         };
 
         var CORS_PROXY = document.location.origin + '/cors/';
+        /**
+         * Subcomponent can fire this event,
+         * with a attributes ``src`` and ``kind``,
+         * to request the hyper-video to create a ``<track>`` subelements under the main video.
+         *
+         * NB: tracks of kind ``subtitles`` are duplicated on all alterative views,
+         * but displayed only when the alternative view is enlarged.
+         *
+         * @event track-ready
+         */
         document.addEventListener('track-ready', function(e) {
           console.log('Received event (document): track-ready');
           var data = e.detail;
@@ -231,6 +295,18 @@ This element serves as a container element for various hypervideo-related sub-el
             }
           });
 
+          /**
+           * Fired whenever there is a change of active annotations in one track.
+           * (corresponds to the ``cue-change`` event on ``video``).
+           *
+           * The detail of the event contains an attribute ``activeCues``.
+           *
+           * NB: if several tracks are used,
+           * one such event will be generated for *each* track.
+           * 
+           * @event hypervideo-cue-change
+           */
+           /* TODO shouldn't the track be also included in the event? */
           track.addEventListener('cuechange', function() {
             console.log('Fired event: hypervideo-cue-change');
             that.fire(
@@ -279,6 +355,8 @@ This element serves as a container element for various hypervideo-related sub-el
 
         });
 
+
+        /* TODO should we document event web-component-toc? */
         document.addEventListener('web-components-toc-ready', function() {
           console.log('Received event (document): web-components-toc-ready');
           // get all child <data-*> or <track-*> or <visualization-*> child nodes
@@ -293,6 +371,7 @@ This element serves as a container element for various hypervideo-related sub-el
           );
         });
 
+        /* TODO should be document event data-annotations?*/                                           
         var updateTimelineAnnotations = function(opt_nodes) {
           // get all child <data-*> child nodes
           var dataAnnotations =
@@ -328,7 +407,13 @@ This element serves as a container element for various hypervideo-related sub-el
           updateTimelineAnnotations();
         });
 
-        // listen for events coming from the timeline component
+        /**
+         * Subcomponent can fire this event,
+         * with an attribute ``currentTime``,
+         * to request the hyper-video to seek a particular time.
+         *
+         * @event current-time-update
+         */
         document.addEventListener('current-time-update', function(e) {
           // console.log('Received event (document): current-time-update');
           var data = e.detail;
@@ -336,6 +421,34 @@ This element serves as a container element for various hypervideo-related sub-el
           video.play();
         });
 
+        /**
+         * Subcomponents can fire this event,
+         * with an attribute ``cues`` containing an array of cues,
+         * to request the capture of a particular frame of the main video.
+         *
+         * See also [receive-still-frames](#receive-still-frames)
+         * and [all-still-frames-received](#all-still-frames-received).
+         * 
+         * @event request-still-frames
+         */                                              
+        /**
+         * Fired when one still-frame required by a [request-still-frames](#request-still-frames) event
+         * is available.
+         *
+         * The detail of the event contains the following attributes:
+         * - ``img``: the image
+         * - ``text``: the text of the corresponding cue
+         * - ``start``: the start-time of the corresponding cue
+         * - ``end``: the end-time of the corresponding cue
+         * 
+         * @event receive-still-frames
+         */                                              
+        /**
+         * Fired when all still-frames required by a [request-still-frames](#request-still-frames)
+         * event have been retrieved available.
+         * 
+         * @event all-still-frames-received
+         */                                              
         document.addEventListener('request-still-frames', function(e) {
           console.log('Received event (document): request-still-frames');
           spinner = showSpinner();
@@ -478,6 +591,8 @@ This element serves as a container element for various hypervideo-related sub-el
           });
         };
 
+        /* TODO should we document event cues-read? maybe only in the Private API?
+           shouldn't it rather be a callback or a Promise anyway? */
         var readCues = function(cues, kind) {
           if (!cues) {
             return;
@@ -503,6 +618,18 @@ This element serves as a container element for various hypervideo-related sub-el
           );
         };
 
+        /**
+         * Fired when the video metadata has been loaded
+         * (corresponds to the ``loadedmetadata`` event on ``video``).
+         *
+         * The detail of the event contains the following attributes:
+         * - ``duration``: the duration of the main video
+         * - ``height``: the height of the main video
+         * - ``width``: the width of the main video
+         * 
+         * @event hypervideo-loaded-metadata
+         */
+         /* TODO also document actorsOffset in the list above? */
         video.addEventListener('loadedmetadata', function() {
           console.log('Received event (video): loadedmetadata');
           that.duration = video.duration;
@@ -723,6 +850,14 @@ This element serves as a container element for various hypervideo-related sub-el
         });
 
         // publish timeupdate events
+        /**
+         * Fired on a regular basis when the current time of the main video changes
+         * (corresponds to the ``timeupdate`` event on ``video``).
+         *
+         * The detail of this event has an attribute ``currentTime``.
+         *
+         * @event hypervideo-time-update
+         */
         video.addEventListener('timeupdate', function() {
           // console.log('Received event (video): timeupdate');
           that.currentTime = video.currentTime;
@@ -743,14 +878,25 @@ This element serves as a container element for various hypervideo-related sub-el
         }, 50);
       },
 
+      foo: 1,
+
+      /**
+       * Calls the ``pause`` method of the main video.
+       */
       pause: function() {
         return this.$.hypervideo.pause();
       },
 
+      /**
+       * Calls the ``play`` method of the main video.
+       */
       play: function() {
         return this.$.hypervideo.play();
       },
 
+      /**
+       * Calls the ``seekTo`` method of the main video.
+       */
       seekTo: function(time) {
         return this._currentTime = time;
       }
