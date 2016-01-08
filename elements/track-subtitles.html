@@ -10,14 +10,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../polymer/polymer.html">
 
 <!--
-Element providing solution to no problem in particular.
+This elements loads a subtitles track from a WebVTT file,
+and optionally displays a searchable list of the subtitles. 
 
 ##### Example
 
-    <track-subtitles></track-subtitles>
+    <hyper-video src="big_buck_bunny.webm">
+      <track-subtitles
+        src="transcript.vtt"
+        display-subtitles-group
+      ></track-subtitles>
+    </hyper-video>
 
 @element track-subtitles
-@demo demo/index.html
+@demo demo/track-subtitles.html
 @status alpha
 @homepage http://github.com/tomayac/hyper-video
 -->
@@ -67,15 +73,27 @@ Element providing solution to no problem in particular.
       is: 'track-subtitles',
 
       properties: {
+        /**
+         * Used to specify the WebVTT file containing the subtitles annotations.
+         */
         src: {
           type: String
         },
+        /**
+         * Used to display the searchable annotation list.
+         */
         displaySubtitlesGroup: {
           type: Boolean
         },
+        /**
+         * Used to specify the with of the searchable annotation list.
+         */
         width: {
           type: Number
         },
+        /**
+         * Used to specify the height of the searchable annotation list.
+         */
         height: {
           type: Number
         }

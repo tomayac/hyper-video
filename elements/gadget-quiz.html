@@ -10,14 +10,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../polymer/polymer.html">
 
 <!--
-Element providing solution to no problem in particular.
+This elements loads quiz annotations from a WebVTT file.
+Each quiz annotation contains a question,
+which is displayed at the end-timestamp of the annotation,
+pausing the video.
+The user may then choose to replay the video from the start-timestamp of the annotation,
+or continue.
+Additionally, if the content of the annotation is ``<form>`` with an action attribute,
+they can chose to submit their answer,
+and the reply from the corresponding server will be displayed.
 
 ##### Example
 
-    <gadget-quiz></gadget-quiz>
+    <hyper-video src="big_buck_bunny.webm">
+      <gadget-quiz src="assets/quiz.html"></gadget-quiz>
+    </hyper-video>
+
+##### Example annotation file
+
+    WEBVTT
+
+    1
+    00:00:03.500 -- > 00:00:05.000
+    <form>
+      <p>Whose day does the plot follow?</p>
+    </form>
+
+    2
+    00:00:06.000 -- > 00:00:09.000
+    <form action="/app/quiz/12345/2">
+      <p>Whom does he meet?</p>
+      <label><input type="checkbox" name="checkbox" value="Frank">Frank</label><br>
+      <label><input type="checkbox" name="checkbox" value="John">John</label><br>
+      <label><input type="checkbox" name="checkbox" value="Jim">Jim</label>
+    </form>
 
 @element gadget-quiz
-@demo demo/index.html
+@demo demo/gadget-quiz.html
 @status alpha
 @homepage http://github.com/tomayac/hyper-video
 -->
@@ -54,6 +83,9 @@ Element providing solution to no problem in particular.
       is: 'gadget-quiz',
 
       properties: {
+        /**
+         * Used to specify the WebVTT file containing the quiz annotations.
+         */
         src: {
           type: String
         },
