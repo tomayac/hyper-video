@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!--
 This elements loads a subtitles track from a WebVTT file,
-and optionally displays a searchable list of the subtitles. 
+and optionally displays a searchable list of the subtitles.
 
 ##### Example
 
@@ -96,6 +96,12 @@ and optionally displays a searchable list of the subtitles.
          */
         height: {
           type: Number
+        },
+        /**
+         * Used to specify the class of the cue
+         */
+        cueClass: {
+          type: String
         }
       },
 
@@ -118,6 +124,9 @@ and optionally displays a searchable list of the subtitles.
         document.addEventListener('cues-read', function(e) {
           var data = e.detail;
           if (data.kind !== 'subtitles') {
+            return;
+          }
+          if (data.owner !== that) {
             return;
           }
           console.log('Received event (document): cues-read');
@@ -218,7 +227,9 @@ and optionally displays a searchable list of the subtitles.
             'track-ready',
             {
               src: that.src,
-              kind: 'subtitles'
+              kind: 'subtitles',
+              owner: that,
+              cueClass: that.cueClass
             }
           );
         }, 250);

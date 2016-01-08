@@ -291,7 +291,8 @@ TODO document JSON format
             if (!cuesRead) {
               console.log('Received event (track): load');
               cuesRead = true;
-              return readCues(e.target.track.cues, data.kind);
+              return readCues(e.target.track.cues, data.kind, data.owner,
+                  data.cueClass);
             }
           });
 
@@ -303,7 +304,7 @@ TODO document JSON format
            *
            * NB: if several tracks are used,
            * one such event will be generated for *each* track.
-           * 
+           *
            * @event hypervideo-cue-change
            */
            /* TODO shouldn't the track be also included in the event? */
@@ -371,7 +372,7 @@ TODO document JSON format
           );
         });
 
-        /* TODO should be document event data-annotations?*/                                           
+        /* TODO should be document event data-annotations?*/
         var updateTimelineAnnotations = function(opt_nodes) {
           // get all child <data-*> child nodes
           var dataAnnotations =
@@ -428,9 +429,9 @@ TODO document JSON format
          *
          * See also [receive-still-frames](#receive-still-frames)
          * and [all-still-frames-received](#all-still-frames-received).
-         * 
+         *
          * @event request-still-frames
-         */                                              
+         */
         /**
          * Fired when one still-frame required by a [request-still-frames](#request-still-frames) event
          * is available.
@@ -440,15 +441,15 @@ TODO document JSON format
          * - ``text``: the text of the corresponding cue
          * - ``start``: the start-time of the corresponding cue
          * - ``end``: the end-time of the corresponding cue
-         * 
+         *
          * @event receive-still-frames
-         */                                              
+         */
         /**
          * Fired when all still-frames required by a [request-still-frames](#request-still-frames)
          * event have been retrieved available.
-         * 
+         *
          * @event all-still-frames-received
-         */                                              
+         */
         document.addEventListener('request-still-frames', function(e) {
           console.log('Received event (document): request-still-frames');
           spinner = showSpinner();
@@ -593,13 +594,16 @@ TODO document JSON format
 
         /* TODO should we document event cues-read? maybe only in the Private API?
            shouldn't it rather be a callback or a Promise anyway? */
-        var readCues = function(cues, kind) {
+        var readCues = function(cues, kind, owner, cueClass) {
           if (!cues) {
             return;
           }
           var cueData = [];
           for (var i = 0, lenI = cues.length; i < lenI; i++) {
             var cue = cues.item ? cues.item(i) : cues[i];
+            if (cueClass) {
+              cue.text = '<c.' + cueClass + '>' + cue.text + '<c>';
+            }
             cueData.push({
               start: parseFloat(cue.startTime),
               end: parseFloat(cue.endTime),
@@ -613,7 +617,8 @@ TODO document JSON format
             'cues-read',
             {
               cueData: cueData,
-              kind: kind
+              kind: kind,
+              owner: owner
             }
           );
         };
@@ -626,7 +631,7 @@ TODO document JSON format
          * - ``duration``: the duration of the main video
          * - ``height``: the height of the main video
          * - ``width``: the width of the main video
-         * 
+         *
          * @event hypervideo-loaded-metadata
          */
          /* TODO also document actorsOffset in the list above? */
