@@ -160,7 +160,7 @@ Element providing solution to no problem in particular.
           });
         };
 
-        var createTrackElements = function(annotations, mode) {
+        var _createTrackElements = function(annotations, mode) {
 
           var toHHMMSSmmm = function(duration) {
             var milliseconds = parseInt((duration % 1000) / 100);
@@ -175,11 +175,17 @@ Element providing solution to no problem in particular.
             return hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
           };
 
-          var track = document.createElement('track-' + mode);
+          var track;
           if (mode === 'chapters') {
+            track = document.createElement('track-chapters');
             track.setAttribute('display-chapters-thumbnails', true);
+            track.setAttribute('width', that.width);
           } else if (mode === 'subtitles') {
+            track = document.createElement('track-subtitles');
             track.setAttribute('display-subtitles-group', true);
+            track.setAttribute('width', that.width);
+          } else if (mode === 'quizzes') {
+            track = document.createElement('gadget-quiz');
           }
           var webVtt = 'WEBVTT\n\n';
           annotations.forEach(function(annotation) {
@@ -192,12 +198,21 @@ Element providing solution to no problem in particular.
           });
           var blob = new Blob([webVtt], {type: 'text/vtt'});
           track.setAttribute('src', URL.createObjectURL(blob));
-          track.setAttribute('width', that.width);
-          that.hypervideo.appendChild(track);
+          //that.hypervideo.appendChild(track);
+          Polymer.dom(that.hypervideo.root).querySelector('#container')
+              .appendChild(track);
+        };
+
+        var createTrackChaptersElements = function(chapters) {
+          _createTrackElements(chapters, 'chapters');
+        };
+
+        var createTrackSubtitlesElements = function(subtitles) {
+          _createTrackElements(subtitles, 'subtitles');
         };
 
         var createGadgetQuizElements = function(quizzes) {
-
+          _createTrackElements(quizzes, 'quizzes');
         };
 
         document.addEventListener('hypervideo-loaded-metadata', function(e) {
@@ -218,10 +233,10 @@ Element providing solution to no problem in particular.
           }).then(function(parsedData) {
             // @todo Add more handlers
             if (parsedData.chapter) {
-              createTrackElements(parsedData.chapter, 'chapters');
+              createTrackChaptersElements(parsedData.chapter);
             }
             if (parsedData.subtitle) {
-              createTrackElements(parsedData.subtitle, 'subtitles');
+              createTrackSubtitlesElements(parsedData.subtitle);
             }
             if (parsedData.quiz) {
               createGadgetQuizElements(parsedData.quiz);
