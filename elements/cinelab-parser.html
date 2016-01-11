@@ -160,7 +160,7 @@ Element providing solution to no problem in particular.
           });
         };
 
-        var createTrackChaptersElements = function(chapters) {
+        var createTrackElements = function(annotations, mode) {
 
           var toHHMMSSmmm = function(duration) {
             var milliseconds = parseInt((duration % 1000) / 100);
@@ -175,25 +175,25 @@ Element providing solution to no problem in particular.
             return hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
           };
 
-          var trackChapters = document.createElement('track-chapters');
-          trackChapters.setAttribute('display-chapters-thumbnails', true);
+          var track = document.createElement('track-' + mode);
+          if (mode === 'chapters') {
+            track.setAttribute('display-chapters-thumbnails', true);
+          } else if (mode === 'subtitles') {
+            track.setAttribute('display-subtitles-group', true);
+          }
           var webVtt = 'WEBVTT\n\n';
-          chapters.forEach(function(chapter) {
-            var start = toHHMMSSmmm(chapter.begin);
-            var end = toHHMMSSmmm(chapter.end);
-            var content = chapter.content.data;
-            var id = chapter.id ? chapter.id : false;
-            webVtt += (id ? id + '\n' : '') + start + ' --> ' + end + '\n' + content +
-                '\n\n';
+          annotations.forEach(function(annotation) {
+            var start = toHHMMSSmmm(annotation.begin);
+            var end = toHHMMSSmmm(annotation.end);
+            var content = annotation.content.data;
+            var id = annotation.id ? annotation.id : false;
+            webVtt += (id ? id + '\n' : '') + start + ' --> ' + end + '\n' +
+                content + '\n\n';
           });
           var blob = new Blob([webVtt], {type: 'text/vtt'});
-          trackChapters.setAttribute('src', URL.createObjectURL(blob));
-          trackChapters.setAttribute('width', that.width);
-          that.hypervideo.appendChild(trackChapters);
-        };
-
-        var createTrackSubtitlesElements = function(subtitles) {
-
+          track.setAttribute('src', URL.createObjectURL(blob));
+          track.setAttribute('width', that.width);
+          that.hypervideo.appendChild(track);
         };
 
         var createGadgetQuizElements = function(quizzes) {
@@ -218,10 +218,10 @@ Element providing solution to no problem in particular.
           }).then(function(parsedData) {
             // @todo Add more handlers
             if (parsedData.chapter) {
-              createTrackChaptersElements(parsedData.chapter);
+              createTrackElements(parsedData.chapter, 'chapters');
             }
             if (parsedData.subtitle) {
-              createTrackSubtitlesElements(parsedData.subtitle);
+              createTrackElements(parsedData.subtitle, 'subtitles');
             }
             if (parsedData.quiz) {
               createGadgetQuizElements(parsedData.quiz);
