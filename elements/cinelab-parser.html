@@ -43,6 +43,11 @@ Element providing solution to no problem in particular.
       ready: function() {
         var that = this;
         var hypervideo;
+        var width;
+        var height;
+        var duration;
+        var alternativeViews;
+        var fired = false;
 
         var CINELAB = {
           FORMAT: 'http://advene.org/ns/cinelab/'
@@ -156,7 +161,16 @@ Element providing solution to no problem in particular.
         };
 
         var createTrackChaptersElements = function(chapters) {
-
+          var trackChapters = document.createElement('track-chapters');
+          trackChapters.setAttribute('display-chapters-thumbnails', true);
+          var webVtt = 'WEBVTT\n\n' +
+              'chapter-1\n' +
+              '00:00:00.000 --> 00:00:05.000\n' +
+              'Intro\n\n';
+          var blob = new Blob([webVtt], {type: 'text/vtt'});
+          trackChapters.setAttribute('src', URL.createObjectURL(blob));
+          trackChapters.setAttribute('width', that.width);
+          that.hypervideo.appendChild(trackChapters);
         };
 
         var createTrackSubtitlesElements = function(subtitles) {
@@ -169,7 +183,16 @@ Element providing solution to no problem in particular.
 
         document.addEventListener('hypervideo-loaded-metadata', function(e) {
           console.log('Received event (document): hypervideo-loaded-metadata');
-          hypervideo = e.target;
+          if (that.fired) {
+            return;
+          }
+          that.fired = true;
+          that.hypervideo = e.target;
+          var data = e.detail;
+          that.width = data.width;
+          that.height = data.height;
+          that.duration = data.duration;
+          that.alternativeViews = data.alternativeViews;
 
           loadCinelabData(that.src).then(function(rawData) {
             return parseCinelabData(rawData);
@@ -184,6 +207,15 @@ Element providing solution to no problem in particular.
             if (parsedData.quiz) {
               createGadgetQuizElements(parsedData.quiz);
             }
+
+            var videoWidth = Math.floor(that.width / 5);
+            var ratio = that.width / that.height;
+            var offset = that.alternativeViews ? videoWidth / ratio : 0;
+            that.hypervideo.fire('hypervideo-loaded-metadata', {
+              duration: that.duration,
+              height: that.height + offset,
+              width: that.width
+            });
           }).catch(function(error) {
             console.log('Cinelab parser: ' + error);
           });
