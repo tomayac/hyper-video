@@ -351,7 +351,9 @@ TODO document JSON format
               return;
             }
             var newTrack = track.cloneNode();
-            newTrack.track.mode = 'hidden';
+            newTrack.addEventListener('load', function() {
+                newTrack.track.mode = 'disabled';
+            });
             _video.appendChild(newTrack);
           });
 
