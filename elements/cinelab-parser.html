@@ -161,12 +161,31 @@ Element providing solution to no problem in particular.
         };
 
         var createTrackChaptersElements = function(chapters) {
+
+          var toHHMMSSmmm = function(duration) {
+            var milliseconds = parseInt((duration % 1000) / 100);
+            var seconds = parseInt((duration / 1000) %60);
+            var minutes = parseInt((duration / (1000 * 60)) % 60);
+            var hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            milliseconds = milliseconds < 10 ? '00' + milliseconds :
+                milliseconds < 100 ? '0' + milliseconds : milliseconds;
+            return hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
+          };
+
           var trackChapters = document.createElement('track-chapters');
           trackChapters.setAttribute('display-chapters-thumbnails', true);
-          var webVtt = 'WEBVTT\n\n' +
-              'chapter-1\n' +
-              '00:00:00.000 --> 00:00:05.000\n' +
-              'Intro\n\n';
+          var webVtt = 'WEBVTT\n\n';
+          chapters.forEach(function(chapter) {
+            var start = toHHMMSSmmm(chapter.begin);
+            var end = toHHMMSSmmm(chapter.end);
+            var content = chapter.content.data;
+            var id = chapter.id ? chapter.id : false;
+            webVtt += (id ? id + '\n' : '') + start + ' --> ' + end + '\n' + content +
+                '\n\n';
+          });
           var blob = new Blob([webVtt], {type: 'text/vtt'});
           trackChapters.setAttribute('src', URL.createObjectURL(blob));
           trackChapters.setAttribute('width', that.width);
