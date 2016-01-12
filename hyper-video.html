@@ -319,6 +319,11 @@ TODO document JSON format
             );
           });
 
+          /**
+           * @todo Maybe remove this in the future, it was needed at some point
+           * when cached tracks did not fire the load event. Potentially
+           * related to http://stackoverflow.com/questions/25151814/video-track-element-only-triggers-load-event-on-google-chrome
+           */
           var trackLoadedInterval = setInterval(function() {
             if (track.readyState >= 2) {
               clearInterval(trackLoadedInterval);
