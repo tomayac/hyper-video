@@ -1,0 +1,243 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+This elements loads a chapters track from a WebVTT file,
+and optionally displays a visual table of contents.
+
+##### Example
+
+    <hyper-video src="big_buck_bunny.webm">
+      <track-chapters
+        src="chapters.vtt"
+        display-chapter-thumbnails
+      ></track-chapters>
+    </hyper-video>
+
+@element track-chapters
+@demo demo/track-chapters.html
+@status alpha
+@homepage http://github.com/tomayac/hyper-video
+-->
+<dom-module id="track-chapters">
+
+  <template>
+
+    <style>
+      ul {
+        position: relative;
+        margin-top: 1em;
+        padding: 0px;
+        display: flex;
+        flex-wrap: wrap;
+        border: solid #000 1px;
+      }
+      li {
+        flex-grow: 1;
+        margin-top: 1px;
+        list-style: none;
+      }
+
+      li.current {
+        color: red;
+      }
+
+      img.hypervideo {
+        width: 199px;
+        height: auto;
+        margin-top: 1px;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      figcaption {
+        margin-top: 1px;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      figure {
+        margin: 0;
+      }
+
+      figcaption {
+        margin: 1px;
+        background-color: white;
+        cursor: pointer;
+      }
+    </style>
+
+    <div>
+      <ul id="container" class="container"></ul>
+    </div>
+  </template>
+
+  <script>
+    'use strict';
+
+    Polymer({
+      is: 'track-chapters',
+
+      properties: {
+        /**
+         * Used to specify the WebVTT file containing the chapters annotations.
+         */
+        src: {
+          type: String
+        },
+        /**
+         * Used to display the visual table of contents.
+         */
+        displayChaptersThumbnails: {
+          type: Boolean
+        },
+        /**
+         * Used to specify the with of the visual table of contents.
+         */
+        width: {
+          type: Number
+        },
+        /**
+         * Used to specify the height of the visual table of contents.
+         */
+        height: {
+          type: Number
+        }
+      },
+
+      created: function() {
+      },
+
+      ready: function() {
+        var that = this;
+        var container = that.$.container;
+        var hyperVideoLoadedMetadata = false;
+        var cuesElements = [];
+        var cueData;
+        var cuesRead = false;
+
+        document.addEventListener('hypervideo-loaded-metadata', function(e) {
+          console.log('Received event (document): hypervideo-loaded-metadata');
+          var data = e.detail;
+          container.style.top = 'calc(' + data.height + 'px + .5em)';
+          if (that.width) {
+            container.style.width = that.width + 'px';
+          } else {
+            container.style.width = '50%';
+          }
+          if (that.height) {
+            container.style.height = that.height + 'px';
+          }
+          hyperVideoLoadedMetadata = true;
+          if ((that.displayChaptersThumbnails) &&
+              (hyperVideoLoadedMetadata) &&
+              (cuesRead)) {
+            requestStillFrames(cueData);
+          }
+        });
+
+        document.addEventListener('cues-read', function(e) {
+          console.log('Received event (document): cues-read');
+          cuesRead = true;
+          var data = e.detail;
+          if (data.kind !== 'chapters') {
+            return;
+          }
+          cueData = data.cueData;
+          if ((that.displayChaptersThumbnails) &&
+              (hyperVideoLoadedMetadata) &&
+              (cuesRead)) {
+            requestStillFrames(cueData);
+          }
+        });
+
+        var requestStillFrames = function(cues) {
+          console.log('Fired event: request-still-frames');
+          that.fire(
+            'request-still-frames',
+            {
+              cues: cues
+            }
+          );
+        };
+
+        document.addEventListener('receive-still-frame', function(e) {
+          console.log('Received event (document): receive-still-frame');
+          var data = e.detail;
+          var img = data.img;
+          img.classList.add('style-scope', 'track-chapters');
+          var text = data.text;
+          var start = data.start;
+          var end = data.end;
+          var li = document.createElement('li');
+          li.classList.add('style-scope', 'track-chapters');
+          cuesElements.push(li);
+          li.dataset.start = start;
+          li.dataset.end = end;
+          var figure = document.createElement('figure');
+          figure.classList.add('style-scope', 'track-chapters');
+          li.appendChild(figure);
+          figure.appendChild(img);
+          var figcaption = document.createElement('figcaption');
+          figcaption.classList.add('style-scope', 'track-chapters');
+          figcaption.textContent = text;
+          figure.appendChild(figcaption);
+          container.appendChild(li);
+        });
+
+        container.addEventListener('click', function(e) {
+          console.log('Received event (container): click');
+          var current = e.target;
+          if (current === container) {
+            return;
+          }
+          while (current.nodeName !== 'LI') {
+            current = current.parentNode;
+          }
+          // console.log('Fired event: current-time-update');
+          that.fire(
+            'current-time-update',
+            {
+              currentTime: current.dataset.start
+            }
+          );
+        });
+
+        document.addEventListener('hypervideo-time-update', function(e) {
+          // console.log('Received event (document): hypervideo-time-update');
+          var currentTime = e.detail.currentTime;
+          for (var i = 0, lenI = cuesElements.length; i < lenI; i++) {
+            var cue = cuesElements[i];
+            var start = cue.dataset.start;
+            var end = cue.dataset.end;
+            if (start <= currentTime && currentTime < end) {
+              cue.classList.add('current');
+            } else {
+              cue.classList.remove('current');
+            }
+          }
+        });
+
+        setTimeout(function() {
+          console.log('Fired event: track-ready');
+          that.fire(
+            'track-ready',
+            {
+              src: that.src,
+              kind: 'chapters'
+            }
+          );
+        }, 250);
+      }
+    });
+  </script>
+
+</dom-module>

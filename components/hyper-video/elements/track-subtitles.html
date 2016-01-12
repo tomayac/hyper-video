@@ -1,0 +1,240 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+This elements loads a subtitles track from a WebVTT file,
+and optionally displays a searchable list of the subtitles.
+
+##### Example
+
+    <hyper-video src="big_buck_bunny.webm">
+      <track-subtitles
+        src="transcript.vtt"
+        display-subtitles-group
+      ></track-subtitles>
+    </hyper-video>
+
+@element track-subtitles
+@demo demo/track-subtitles.html
+@status alpha
+@homepage http://github.com/tomayac/hyper-video
+-->
+<dom-module id="track-subtitles">
+
+  <template>
+
+    <style>
+      .search {
+        margin-top: .5em;
+        margin-left: calc(.5em - 2px);
+      }
+
+      .container {
+        position: relative;
+        background-color: white;
+        color: black;
+        overflow: auto;
+        border: solid #000 1px;
+      }
+      .cuesContainer {
+        padding: .5em;
+      }
+      .cuesContainer > div {
+        cursor: pointer;
+      }
+
+      .cuesContainer > div:hover {
+        text-decoration: underline;
+      }
+
+      .current {
+        color: red;
+      }
+    </style>
+
+    <div style="display:none;" id="container" class="container">
+      <input id="search" class="search" type="search" placeholder="Query"/>
+      <div id="cuesContainer" class="cuesContainer"></div>
+    </div>
+  </template>
+
+  <script>
+    'use strict';
+
+    Polymer({
+      is: 'track-subtitles',
+
+      properties: {
+        /**
+         * Used to specify the WebVTT file containing the subtitles annotations.
+         */
+        src: {
+          type: String
+        },
+        /**
+         * Used to display the searchable annotation list.
+         */
+        displaySubtitlesGroup: {
+          type: Boolean
+        },
+        /**
+         * Used to specify the with of the searchable annotation list.
+         */
+        width: {
+          type: Number
+        },
+        /**
+         * Used to specify the height of the searchable annotation list.
+         */
+        height: {
+          type: Number
+        },
+        /**
+         * Used to specify the class of the cue
+         */
+        cueClass: {
+          type: String
+        }
+      },
+
+      created: function() {
+      },
+
+      ready: function() {
+        var that = this;
+        var container = that.$.container;
+        var search = that.$.search;
+        var cuesContainer = that.$.cuesContainer;
+        var cuesElements = [];
+
+        document.addEventListener('hypervideo-loaded-metadata', function(e) {
+          console.log('Received event (document): hypervideo-loaded-metadata');
+          var data = e.detail;
+          container.style.top = 'calc(' + data.height + 'px + .5em)';
+        });
+
+        document.addEventListener('cues-read', function(e) {
+          var data = e.detail;
+          if (data.kind !== 'subtitles') {
+            return;
+          }
+          if (data.owner !== that) {
+            return;
+          }
+          console.log('Received event (document): cues-read');
+          if (that.width) {
+            container.style.width = that.width + 'px';
+            search.style.width = 'calc(' + that.width + 'px - 1em)';
+          } else {
+            container.style.width = '50%';
+            search.style.width = '50%';
+          }
+          if (that.height) {
+            container.style.height = that.height + 'px';
+          }
+          if (that.displaySubtitlesGroup) {
+            createSubtitlesGroup(data.cueData);
+          }
+        });
+
+        var createSubtitlesGroup = function(cues) {
+          // Full-text search
+          container.style.display = 'block';
+          var doSearch = function() {
+            var query = search.value;
+            var regExp;
+            try {
+              regExp = new RegExp(query, 'gi');
+              var divs = cuesContainer.querySelectorAll('div');
+              for (var i = 0, lenI = divs.length; i < lenI; i++) {
+                var div = divs[i];
+                div.style.backgroundColor = 'transparent';
+                regExp.lastIndex = 0;
+                var matches = div.textContent.match(regExp);
+                if (matches && query.length) {
+                  matches.forEach(function(match) {
+                    div.style.backgroundColor = 'yellow';
+                  });
+                }
+              }
+            } catch(e) {
+              console.log('Invalid search term: ' + e);
+            }
+          };
+          search.addEventListener('keyup', doSearch, false);
+          search.addEventListener('change', doSearch, false);
+          search.addEventListener('search', doSearch, false);
+          // Attach cues
+          var tempDiv = document.createElement('div');
+          cues.forEach(function(cue) {
+            var div = document.createElement('div');
+            div.classList.add('style-scope', 'track-subtitles');
+            div.dataset.start = cue.start;
+            div.dataset.end = cue.end;
+            tempDiv.innerHTML = cue.text;
+            var speaker = cue.text.replace(/^<v\s+(\w+(?:\s+\w+)?)>\s+(.+?)$/g,
+                '<strong>$1:</strong> $2');
+            div.innerHTML = speaker;
+            cuesContainer.appendChild(div);
+            cuesElements.push(div);
+          });
+        };
+
+        cuesContainer.addEventListener('click', function(e) {
+          console.log('Received event (cuesContainer): click');
+          var current = e.target;
+          if (current === cuesContainer) {
+            return;
+          }
+          while (current.nodeName !== 'DIV') {
+            current = current.parentNode;
+          }
+          // console.log('Fired event: current-time-update');
+          that.fire(
+            'current-time-update',
+            {
+              currentTime: current.dataset.start
+            }
+          );
+        });
+
+        document.addEventListener('hypervideo-time-update', function(e) {
+          // console.log('Received event (document): hypervideo-time-update');
+          var currentTime = e.detail.currentTime;
+          for (var i = 0, lenI = cuesElements.length; i < lenI; i++) {
+            var cue = cuesElements[i];
+            var start = cue.dataset.start;
+            var end = cue.dataset.end;
+            if (start <= currentTime && currentTime < end) {
+              cue.classList.add('current');
+            } else {
+              cue.classList.remove('current');
+            }
+          }
+        });
+
+        setTimeout(function() {
+          console.log('Fired event: track-ready');
+          that.fire(
+            'track-ready',
+            {
+              src: that.src,
+              kind: 'subtitles',
+              owner: that,
+              cueClass: that.cueClass
+            }
+          );
+        }, 250);
+      }
+    });
+  </script>
+
+</dom-module>

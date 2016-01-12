@@ -1,0 +1,215 @@
+{
+  "format": "http://advene.org/ns/cinelab/",
+  "annotation_types": [{
+    "id": "subtitle"
+  }, {
+    "id": "chapter"
+  }, {
+    "id": "quiz"
+  }],
+  "medias": [{
+    "id": "m1",
+    "url": "http://dsi-liris-silex.univ-lyon1.fr/~learncaf/hypervideo/learning-cafe/videos/repassage2.ogv"
+  }],
+  "annotations": [{
+    "begin": 10150,
+    "end": 29202,
+    "media": "m1",
+    "content": {
+      "data": "Positionnement"
+    },
+    "type": "chapter",
+    "id": "a21"
+  }, {
+    "begin": 10150,
+    "end": 29202,
+    "media": "m1",
+    "content": {
+      "mimetype": "text/html",
+      "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Dans quel sens faut-il positionner le pantalon\u00a0?</p>\n  <p>\n    <input type=\"radio\" name=\"sense\" id=\"radio-largeur\"><label for=\"radio-largeur\">Dans la largeur.</label><br>\n    <input type=\"radio\" name=\"sense\" id=\"radio-longueur\"><label for=\"radio-longueur\">Dans la longueur.</label>\n  </p>\n</form>"
+    },
+    "type": "quiz",
+    "id": "a25"
+  }, {
+    "begin": 14456,
+    "end": 19274,
+    "media": "m1",
+    "content": {
+      "data": "Pour repasser un pantalon de costume, commencez par prendre le pantalon par les ourlets."
+    },
+    "type": "subtitle",
+    "id": "a1"
+  }, {
+    "begin": 19274,
+    "end": 22379,
+    "media": "m1",
+    "content": {
+      "data": "Positionnez une jambe \u00e0 la fois, couture sur couture."
+    },
+    "type": "subtitle",
+    "id": "a2"
+  }, {
+    "begin": 25416,
+    "end": 28573,
+    "media": "m1",
+    "content": {
+      "data": "Placez le pantalon dans la largeur de la planche \u00e0 repasser."
+    },
+    "type": "subtitle",
+    "id": "a3"
+  }, {
+    "begin": 30202,
+    "end": 34047,
+    "media": "m1",
+    "content": {
+      "data": "Positionnez un chiffon propre entre le pantalon et le fer \u00e0 repasser."
+    },
+    "type": "subtitle",
+    "id": "a4"
+  }, {
+    "begin": 32202,
+    "end": 58015,
+    "media": "m1",
+    "content": {
+      "mimetype": "text/html",
+      "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>\u00c0 quoi sert le chiffon\u00a0?</p>\n  <p><input name=\"chiffon\" placeholder=\"Le chiffon sert \u00e0\u2026\"></p>\n</form>"
+    },
+    "type": "quiz",
+    "id": "a26"
+  }, {
+    "begin": 30202,
+    "end": 72015,
+    "media": "m1",
+    "content": {
+      "data": "Repassage des jambes"
+    },
+    "type": "chapter",
+    "id": "a22"
+  }, {
+    "begin": 34047,
+    "end": 36668,
+    "media": "m1",
+    "content": {
+      "data": "Cela permet d'\u00e9viter de lustrer le tissu."
+    },
+    "type": "subtitle",
+    "id": "a5"
+  }, {
+    "begin": 36668,
+    "end": 39833,
+    "media": "m1",
+    "content": {
+      "data": "Repassez ensuite les jambes du pantalon, en commen\u00e7ant par le bas."
+    },
+    "type": "subtitle",
+    "id": "a6"
+  }, {
+    "begin": 44028,
+    "end": 48480,
+    "media": "m1",
+    "content": {
+      "data": "Faites d\u00e9filer le pantalon, petit \u00e0 petit sur la planche pour pouvoir le repasser."
+    },
+    "type": "subtitle",
+    "id": "a7"
+  }, {
+    "begin": 73015,
+    "end": 79505,
+    "media": "m1",
+    "content": {
+      "data": "Lorsque vous arrivez au niveau de la ceinture, donnez simplement un coup de vapeur sur la ceinture et sur les poches, pour les d\u00e9froisser."
+    },
+    "type": "subtitle",
+    "id": "a8"
+  }, {
+    "begin": 73015,
+    "end": 112259,
+    "media": "m1",
+    "content": {
+      "data": "Ceinture et autre cot\u00e9"
+    },
+    "type": "chapter",
+    "id": "a23"
+  }, {
+    "begin": 74015,
+    "end": 112259,
+    "media": "m1",
+    "content": {
+      "mimetype": "text/html",
+      "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Que faire apr\u00e8s \u00eatre arriv\u00e9 \u00e0 la ceinture\u00a0?</p>\n  <p>\n    <input type=\"checkbox\" name=\"ceinture\" id=\"check-ceinture\"><label for=\"check-ceinture\">Donner un coup de vapeur sur la ceinture.</label><br>\n    <input type=\"checkbox\" name=\"ceinture\" id=\"check-poches\"><label for=\"check-poches\">Donner un coup de vapeur sur les poches.</label><br>\n    <input type=\"checkbox\" name=\"ceinture\" id=\"check-ceinture-et-poches\"><label for=\"check-ceinture-et-poches\">Donner un coup de vapeur sur la ceinture et les poches.</label>\n  </p>\n</form>"
+    },
+    "type": "quiz",
+    "id": "a27"
+  }, {
+    "begin": 84140,
+    "end": 87831,
+    "media": "m1",
+    "content": {
+      "data": "Retournez le pantalon, et repassez de la m\u00eame fa\u00e7on l'autre cot\u00e9."
+    },
+    "type": "subtitle",
+    "id": "a9"
+  }, {
+    "begin": 114169,
+    "end": 117578,
+    "media": "m1",
+    "content": {
+      "data": "V\u00e9rifiez enfin que les entre-jambes du pantalon sont bien repass\u00e9es"
+    },
+    "type": "subtitle",
+    "id": "a10"
+  }, {
+    "begin": 114259,
+    "end": 153131,
+    "media": "m1",
+    "content": {
+      "data": "Finition et rangement"
+    },
+    "type": "chapter",
+    "id": "a24"
+  }, {
+    "begin": 114259,
+    "end": 153131,
+    "media": "m1",
+    "content": {
+      "mimetype": "text/html",
+      "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Sur quoi faut-il ranger le pantalon\u00a0?</p>\n  <p><input name=\"ranger\" placeholder=\"Il faut ranger le pantalon sur\u2026\"></p>\n</form>"
+    },
+    "type": "quiz",
+    "id": "a28"
+  }, {
+    "begin": 117578,
+    "end": 122717,
+    "media": "m1",
+    "content": {
+      "data": "et ajustez ci-besoin en donnant un coup de vapeur, ou en utilisant le chiffon."
+    },
+    "type": "subtitle",
+    "id": "a11"
+  }, {
+    "begin": 142163,
+    "end": 144912,
+    "media": "m1",
+    "content": {
+      "data": "Mettez enfin le pantalon sur cintre."
+    },
+    "type": "subtitle",
+    "id": "a12"
+  }, {
+    "begin": 147114,
+    "end": 150024,
+    "media": "m1",
+    "content": {
+      "data": "Voila un pantalon parfaitement repass\u00e9."
+    },
+    "type": "subtitle",
+    "id": "a13"
+  }],
+  "meta": {
+    "title": "Template package",
+    "creator": "pa",
+    "modified": "2015-11-10T00:00:00",
+    "created": "2015-11-10T00:00:00",
+    "contributor": "pa"
+  }
+}

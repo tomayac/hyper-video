@@ -1,0 +1,27 @@
+{
+  "name": "hyper-video",
+  "version": "1.2.4",
+  "homepage": "https://github.com/tomayac/hyper-video",
+  "authors": [
+    "Thomas Steiner <tomac@google.com>"
+  ],
+  "description": "Hypervideo creation based on Web Components using the Polymer framework",
+  "main": "hyper-video.html",
+  "keywords": [
+    "hypervideo"
+  ],
+  "main": "hyper-video.html",
+  "license": "Apache 2.0",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.3"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}

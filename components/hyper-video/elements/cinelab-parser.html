@@ -1,0 +1,264 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+    <cinelab-parser src="example.cjp"></cinelab-parser>
+
+@element cinelab-parser
+@demo demo/cinelab-parser.html
+@status alpha
+@homepage http://github.com/tomayac/hyper-video
+-->
+<dom-module id="cinelab-parser">
+
+  <template></template>
+
+  <script>
+    'use strict';
+
+    Polymer({
+      is: 'cinelab-parser',
+
+      properties: {
+        /**
+         * Used to specify the source of the Cinelab JSON file
+         */
+        src: {
+          type: String
+        }
+      },
+
+      created: function() {
+      },
+
+      ready: function() {
+        var that = this;
+        var hypervideo;
+        var width;
+        var height;
+        var duration;
+        var alternativeViews;
+        var fired = false;
+
+        var CINELAB = {
+          FORMAT: 'http://advene.org/ns/cinelab/'
+        };
+
+        var loadCinelabData = function(src) {
+          return fetch(src).then(function(response) {
+            return response.json();
+          }).then(function(data) {
+            return data;
+          }).catch(function(error) {
+            return new Error(error);
+          });
+        };
+
+        var parseCinelabData = function(data) {
+          return new Promise(function(resolve, reject) {
+            /**
+             * @todo Partially fulfills
+             * http://liris.cnrs.fr/advene/cinelab/cinelab-strict.jsons
+             */
+            try {
+              // Check format
+              if (!data.format || data.format !== CINELAB.FORMAT) {
+                return reject(new Error('Cinelab format must be "' +
+                    CINELAB.FORMAT + '".'));
+              }
+
+              var mediaIdValues = {};
+              var annotationTypeValues = {};
+              var typedAnnotations = {};
+
+              // Check meta
+              if (data.meta) {
+                console.log('Cinelab parser meta data\n' +
+                    JSON.stringify(data.meta, null, 2));
+              }
+
+              // Check annotation types
+              if ((!data.annotation_types) ||
+                  (!Array.isArray(data.annotation_types))) {
+                return reject(new Error('Cinelab annotation types must be '+
+                    'provided.'));
+              }
+              // Forgivingly ignore invalid annotation types
+              var annotationTypes = data.annotation_types.filter(function(
+                  annotationType) {
+                if (annotationType.id) {
+                  // @todo Check for allowed ID values
+                  annotationTypeValues[annotationType.id] = true;
+                  return true;
+                }
+                return false;
+              });
+
+              // Check medias
+              if (!data.medias || !Array.isArray(data.medias)) {
+                return reject(new Error('Cinelab medias must be provided.'));
+              }
+              // Forgivingly ignore invalid medias
+              var medias = data.medias.filter(function(media) {
+                if (media.id && media.url) {
+                  // @todo Check IDs and URLs for vaidity
+                  mediaIdValues[media.id] = true;
+                  return true;
+                }
+                return false;
+              });
+
+              // Check annotations
+              if (!data.annotations || !Array.isArray(data.annotations)) {
+                return reject(new Error('Cinelab annotations must be ' +
+                    'provided.'));
+              }
+              // Forgivingly ignore invalid annotations
+              var annotations = data.annotations.filter(function(annotation) {
+                if ((!annotation.begin) ||
+                    (!annotation.end) ||
+                    (annotation.begin > annotation.end)) {
+                  console.log('Cinelab parser warning: invalid "begin" and/or '+
+                      '"end"\n' + JSON.stringify(annotation, null, 2));
+                  return false;
+                }
+                if (!mediaIdValues[annotation.media]) {
+                  console.log('Cinelab parser warning: non-matching "media"\n' +
+                      JSON.stringify(annotation, null, 2));
+                  return false;
+                }
+                if (!annotation.content || !annotation.content.data) {
+                  console.log('Cinelab parser warning: missing or invalid '+
+                      '"content"\n' + JSON.stringify(annotation, null, 2));
+                  return false;
+                }
+                if (!annotationTypeValues[annotation.type]) {
+                  console.log('Cinelab parser warning: non-matching "type"\n' +
+                      JSON.stringify(annotation, null, 2));
+                  return false;
+                }
+                return true;
+              });
+              annotations.map(function(annotation) {
+                var type = annotation.type;
+                typedAnnotations[type] = typedAnnotations[type] || [];
+                typedAnnotations[type].push(annotation);
+              });
+              return resolve(typedAnnotations);
+            } catch (e) {
+              return reject(e);
+            }
+          });
+        };
+
+        var _createTrackElements = function(annotations, mode) {
+
+          var toHHMMSSmmm = function(duration) {
+            var milliseconds = parseInt((duration % 1000) / 100);
+            var seconds = parseInt((duration / 1000) %60);
+            var minutes = parseInt((duration / (1000 * 60)) % 60);
+            var hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            milliseconds = milliseconds < 10 ? '00' + milliseconds :
+                milliseconds < 100 ? '0' + milliseconds : milliseconds;
+            return hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
+          };
+
+          var track;
+          if (mode === 'chapters') {
+            track = document.createElement('track-chapters');
+            track.setAttribute('display-chapters-thumbnails', true);
+            track.setAttribute('width', that.width);
+          } else if (mode === 'subtitles') {
+            track = document.createElement('track-subtitles');
+            track.setAttribute('display-subtitles-group', true);
+            track.setAttribute('width', that.width);
+          } else if (mode === 'quizzes') {
+            track = document.createElement('gadget-quiz');
+          }
+          var webVtt = 'WEBVTT\n\n';
+          annotations.forEach(function(annotation) {
+            var start = toHHMMSSmmm(annotation.begin);
+            var end = toHHMMSSmmm(annotation.end);
+            var content = annotation.content.data;
+            var id = annotation.id ? annotation.id : false;
+            webVtt += (id ? id + '\n' : '') + start + ' --> ' + end + '\n' +
+                content + '\n\n';
+          });
+          var blob = new Blob([webVtt], {type: 'text/vtt'});
+          track.setAttribute('src', URL.createObjectURL(blob));
+          //that.hypervideo.appendChild(track);
+          Polymer.dom(that.hypervideo.root).querySelector('#container')
+              .appendChild(track);
+        };
+
+        var createTrackChaptersElements = function(chapters) {
+          _createTrackElements(chapters, 'chapters');
+        };
+
+        var createTrackSubtitlesElements = function(subtitles) {
+          _createTrackElements(subtitles, 'subtitles');
+        };
+
+        var createGadgetQuizElements = function(quizzes) {
+          _createTrackElements(quizzes, 'quizzes');
+        };
+
+        document.addEventListener('hypervideo-loaded-metadata', function(e) {
+          console.log('Received event (document): hypervideo-loaded-metadata');
+          if (that.fired) {
+            return;
+          }
+          that.fired = true;
+          that.hypervideo = e.target;
+          var data = e.detail;
+          that.width = data.width;
+          that.height = data.height;
+          that.duration = data.duration;
+          that.alternativeViews = data.alternativeViews;
+
+          loadCinelabData(that.src).then(function(rawData) {
+            return parseCinelabData(rawData);
+          }).then(function(parsedData) {
+            // @todo Add more handlers
+            if (parsedData.chapter) {
+              createTrackChaptersElements(parsedData.chapter);
+            }
+            if (parsedData.subtitle) {
+              createTrackSubtitlesElements(parsedData.subtitle);
+            }
+            if (parsedData.quiz) {
+              createGadgetQuizElements(parsedData.quiz);
+            }
+
+            var videoWidth = Math.floor(that.width / 5);
+            var ratio = that.width / that.height;
+            var offset = that.alternativeViews ? videoWidth / ratio : 0;
+            that.hypervideo.fire('hypervideo-loaded-metadata', {
+              duration: that.duration,
+              height: that.height + offset,
+              width: that.width
+            });
+          }).catch(function(error) {
+            console.log('Cinelab parser: ' + error);
+          });
+        });
+      }
+    });
+  </script>
+
+</dom-module>

@@ -1,0 +1,1033 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+A hyper-video is a document mixing video content and annotations on that video.
+This elements allows to produce a hyper-video using HTML5 Video support,
+and annotation represented in various formats, including
+  - the standard [WebVTT](https://w3c.github.io/webvtt/) format,
+  - embedbed HTML5 components,
+  - the [Cinelab](http://advene.org/cinelab/) format,
+  - RDF annotations published as [TPF](www.hydra-cg.com/spec/latest/triple-pattern-fragments/).
+
+##### Example
+
+    <hyper-video
+        src="big_buck_bunny.mp4 big_buck_bunny.webm"
+        width="800"
+        height="450"
+        muted>
+      <!-- here, put sub-components to enrich the hyper-video -- >
+    </hyper-video>
+
+#### Alternative views
+
+In addition to the main video,
+secondary videos providing an alternative point of view on the main video can be displayed.
+
+Those alternative should have the same duration as the main video.
+They are displayed in sync with the main video, in a smaller size,
+below the main video.
+By clicking on an alternative video,
+the user can switch position beween the main video and one of the alternatives.
+
+They are specified in the [alternativeViews](#alternativeViews) attribute.
+TODO document JSON format
+
+@element hyper-video
+@demo demo/hyper-video.html
+@status alpha
+@homepage http://github.com/tomayac/hyper-video
+-->
+<dom-module id="hyper-video" hidden>
+
+  <template>
+
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+      video.hypervideo {
+        position: absolute;
+      }
+
+      video.small {
+        cursor: pointer;
+      }
+
+      video.big {
+        cursor: default;
+      }
+
+      video {
+        -webkit-transition: all .5s ease-in-out;
+           -moz-transition: all .5s ease-in-out;
+             -o-transition: all .5s ease-in-out;
+                transition: all .5s ease-in-out;
+      }
+
+      .spinner {
+        background-color: black;
+        opacity: 0.66;
+      }
+
+      /**
+       * (C)Leanest CSS spinner ever
+       * http://lea.verou.me/2013/11/cleanest-css-spinner-ever/
+       */
+
+      @-webkit-keyframes spin {
+        to { -webkit-transform: rotate(1turn); }
+      }
+
+      @keyframes spin {
+        to { transform: rotate(1turn); }
+      }
+
+      .progress {
+        position: relative;
+        display: inline-block;
+        width: 5em;
+        height: 5em;
+        margin: 0 .5em;
+        font-size: 12px;
+        text-indent: 999em;
+        overflow: hidden;
+        animation: spin 1s infinite steps(8);
+        -webkit-animation: spin 1s infinite steps(8);
+      }
+
+      .progress:before,
+      .progress:after,
+      .progress > div:before,
+      .progress > div:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 2.25em; /* (container width - part width)/2  */
+        width: .5em;
+        height: 1.5em;
+        border-radius: .2em;
+        background: #eee;
+        transform-origin: 50% 2.5em; /* container height / 2 */
+        -webkit-transform-origin: 50% 2.5em; /* container height / 2 */
+      }
+
+      .progress:before {
+        background: #555;
+      }
+
+      .progress:after {
+        transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+        background: #777;
+      }
+
+      .progress > div:before {
+        transform: rotate(-90deg);
+        -webkit-transform: rotate(-90deg);
+        background: #999;
+      }
+
+      .progress > div:after {
+        transform: rotate(-135deg);
+        -webkit-transform: rotate(-135deg);
+        background: #bbb;
+      }
+    </style>
+
+    <div style="position: relative;">
+      <div id="container">
+        <video
+            id="hypervideo"
+            class="hypervideo"
+            controls
+            crossorigin="Anonymous">
+        </video>
+        <content></content>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    'use strict';
+
+    Polymer({
+      is: 'hyper-video',
+
+      properties: {
+
+        /**
+         * Used to specify the source URL(s) of the main video,
+         * as a whitespace separated list of URLs.
+         *
+         * Alternatively, you can use [youTubeVideoId](#youTubeVideoId).
+         */
+        src: {
+          type: String
+        },
+        /**
+         * Used to specify alternative views (see above).
+         */
+        alternativeViews: {
+          type: String
+        },
+        /**
+         * Used to specify the width of the main video.
+         */
+        width: {
+          type: Number
+        },
+        /**
+         * Used to specify the height of the main video.
+         */
+        height: {
+          type: Number
+        },
+        /**
+         * Used to specify the poster attribute of the main video.
+         */
+        poster: {
+          type: String
+        },
+        /**
+         * Used to set the muted flag on the main video.
+         */
+        muted: {
+          type: Boolean
+        },
+        /**
+         * Used to specify the main video by its Youtube identifier.
+         *
+         * Alternatively, you can use [src](#src).
+         */
+        youTubeVideoId: {
+          type: Boolean
+        },
+        /**
+         * Provides the time currently playing on the main video.
+         */
+        currentTime: {
+          value: 0
+        },
+        /**
+         * Provides the duration of the main video.
+         */
+        duration: {
+          value: null
+        },
+        /** @private */
+        _videos: {
+          type: Array,
+          value: []
+        },
+        /** @private */
+        _currentTime: {
+          type: Number,
+          observer: '_currentTimeChanged'
+        }
+      },
+
+      _currentTimeChanged: function(newValue) {
+        this._videos && this._videos.forEach(function(video) {
+          video.currentTime = newValue;
+        });
+        this.currentTime = newValue;
+        this.$.hypervideo.currentTime = newValue;
+      },
+
+      ready: function() {
+        var that = this;
+        var spinner;
+        var video = that.$.hypervideo;
+        var container = that.$.container;
+
+        var onMutation = function(observer, mutations) {
+          var nodes = [];
+          var chapters = [];
+          for (var i = 0, lenI = mutations.length; i < lenI; i++) {
+            var mutation = mutations[i];
+            if (mutation.addedNodes) {
+              for (var j = 0, lenJ = mutation.addedNodes.length; j < lenJ; j++) {
+                if (/^data-/gi.test(mutation.addedNodes[j].nodeName)) {
+                  nodes.push(mutation.addedNodes[j]);
+                }
+              }
+            }
+          }
+          if (nodes.length) {
+            positionDataAnnotations(nodes);
+            updateTimelineAnnotations(nodes);
+          }
+          that.onMutation(that, onMutation);
+        };
+
+        var CORS_PROXY = document.location.origin + '/cors/';
+        /**
+         * Subcomponent can fire this event,
+         * with a attributes ``src`` and ``kind``,
+         * to request the hyper-video to create a ``<track>`` subelements under the main video.
+         *
+         * NB: tracks of kind ``subtitles`` are duplicated on all alterative views,
+         * but displayed only when the alternative view is enlarged.
+         *
+         * @event track-ready
+         */
+        document.addEventListener('track-ready', function(e) {
+          console.log('Received event (document): track-ready');
+          var data = e.detail;
+          var track = document.createElement('track');
+          var cuesRead = false;
+          track.addEventListener('load', function(e) {
+            if (!cuesRead) {
+              console.log('Received event (track): load');
+              cuesRead = true;
+              return readCues(e.target.track.cues, data.kind, data.owner,
+                  data.cueClass);
+            }
+          });
+
+          /**
+           * Fired whenever there is a change of active annotations in one track.
+           * (corresponds to the ``cue-change`` event on ``video``).
+           *
+           * The detail of the event contains an attribute ``activeCues``.
+           *
+           * NB: if several tracks are used,
+           * one such event will be generated for *each* track.
+           *
+           * @event hypervideo-cue-change
+           */
+           /* TODO shouldn't the track be also included in the event? */
+          track.addEventListener('cuechange', function() {
+            console.log('Fired event: hypervideo-cue-change');
+            that.fire(
+              'hypervideo-cue-change',
+              {
+                activeCues: track.track.activeCues
+              }
+            );
+          });
+
+          var trackLoadedInterval = setInterval(function() {
+            if (track.readyState >= 2) {
+              clearInterval(trackLoadedInterval);
+              if (!cuesRead) {
+                console.log('Received event (track): readyState');
+                cuesRead = true;
+                return readCues(track.track.cues, track.kind, track.owner,
+                  track.cueClass);
+              }
+            }
+          }, 100);
+          track.src = data.src;
+          track.default = true;
+          track.kind = data.kind;
+          if (track.kind === 'subtitles' || track.kind === 'captions') {
+            track.srclang = 'en';
+            track.track.mode = 'showing';
+          } else if (track.kind === 'chapters') {
+            var canvas = document.createElement('canvas');
+            canvas.width = video.width;
+            canvas.height = video.height;
+            var ctx = canvas.getContext('2d');
+            that.ctx = ctx;
+            that.canvas = canvas;
+          } else if (track.kind === 'metadata') {
+            track.track.mode = 'hidden';
+          }
+          video.appendChild(track);
+          that._videos.forEach(function(_video) {
+            if (_video === video || track.kind !== 'subtitles') {
+              return;
+            }
+            var newTrack = track.cloneNode();
+            newTrack.addEventListener('load', function() {
+                newTrack.track.mode = 'disabled';
+            });
+            _video.appendChild(newTrack);
+          });
+
+        });
+
+
+        /* TODO should we document event web-component-toc? */
+        document.addEventListener('web-components-toc-ready', function() {
+          console.log('Received event (document): web-components-toc-ready');
+          // get all child <data-*> or <track-*> or <visualization-*> child nodes
+          var webComponents =
+              queryRegExSelectorAll(that, /^(?:data|track|visualization)-/gi);
+          console.log('Fired event: web-components-toc');
+          that.fire(
+            'web-components-toc',
+            {
+              webComponentsToC: webComponents
+            }
+          );
+        });
+
+        /* TODO should be document event data-annotations?*/
+        var updateTimelineAnnotations = function(opt_nodes) {
+          // get all child <data-*> child nodes
+          var dataAnnotations =
+              opt_nodes || queryRegExSelectorAll(that, /^data-/gi);
+          var annotations = [];
+          dataAnnotations.forEach(function(annotation) {
+            var type;
+            if (/actor/gi.test(annotation.nodeName)) {
+              type = 'actors';
+            } else if (/overlay/gi.test(annotation.nodeName)) {
+              type = 'overlays';
+            } else {
+              type = 'annotations';
+            }
+            annotations.push({
+              start: parseInt(annotation.getAttribute('start'), 10),
+              end: parseInt(annotation.getAttribute('end'), 10),
+              type: type
+            });
+          });
+          console.log('Fired event: data-annotations');
+          that.fire(
+            'data-annotations',
+            {
+              dataAnnotations: annotations
+            }
+          );
+
+        };
+
+        document.addEventListener('timeline-ready', function() {
+          console.log('Received event (document): timeline-ready');
+          updateTimelineAnnotations();
+        });
+
+        /**
+         * Subcomponent can fire this event,
+         * with an attribute ``currentTime``,
+         * to request the hyper-video to seek a particular time.
+         *
+         * @event current-time-update
+         */
+        document.addEventListener('current-time-update', function(e) {
+          // console.log('Received event (document): current-time-update');
+          var data = e.detail;
+          video.currentTime = data.currentTime;
+          video.play();
+        });
+
+        /**
+         * Subcomponents can fire this event,
+         * with an attribute ``cues`` containing an array of cues,
+         * to request the capture of a particular frame of the main video.
+         *
+         * See also [receive-still-frames](#receive-still-frames)
+         * and [all-still-frames-received](#all-still-frames-received).
+         *
+         * @event request-still-frames
+         */
+        /**
+         * Fired when one still-frame required by a [request-still-frames](#request-still-frames) event
+         * is available.
+         *
+         * The detail of the event contains the following attributes:
+         * - ``img``: the image
+         * - ``text``: the text of the corresponding cue
+         * - ``start``: the start-time of the corresponding cue
+         * - ``end``: the end-time of the corresponding cue
+         *
+         * @event receive-still-frames
+         */
+        /**
+         * Fired when all still-frames required by a [request-still-frames](#request-still-frames)
+         * event have been retrieved available.
+         *
+         * @event all-still-frames-received
+         */
+        document.addEventListener('request-still-frames', function(e) {
+          console.log('Received event (document): request-still-frames');
+          spinner = showSpinner();
+          var cues = e.detail.cues;
+          if (!cues) {
+            return;
+          }
+          var functions = [];
+          cues.forEach(function(cue) {
+            var start = cue.start;
+            if (start > video.duration) {
+              return;
+            }
+            functions.push({
+              cue: cue,
+              func: function() {
+                video.currentTime = start;
+              }
+            });
+          });
+          var getNextStillFrame = function() {
+            console.log('Received event (video): seeked');
+            that.ctx.drawImage(video, 0, 0, video.clientWidth,
+                video.clientHeight);
+            var img = document.createElement('img');
+            img.classList.add('hypervideo');
+            var url = that.canvas.toDataURL();
+            img.src = url;
+            var cue = functions[processedStillFrames].cue;
+            console.log('Fired event: receive-still-frame');
+            that.fire(
+              'receive-still-frame',
+              {
+                img: img,
+                text: cue.text,
+                start: cue.start,
+                end: cue.end
+              }
+            );
+            processedStillFrames++;
+            if (functions[processedStillFrames]) {
+              return functions[processedStillFrames].func();
+            } else {
+              video.removeEventListener('seeked', getNextStillFrame);
+              video.currentTime = 0;
+              that.fire('all-still-frames-received');
+              spinner.remove();
+            }
+          };
+          var processedStillFrames = 0;
+          video.addEventListener('seeked', getNextStillFrame);
+          functions[processedStillFrames].func();
+        });
+
+        var initializeVideo = function() {
+          // either add sources for regular video
+          if (that.src) {
+            that.src.split(/\s/g).forEach(function(src) {
+              var source = document.createElement('source');
+              source.src = src;
+              video.appendChild(source);
+            });
+          // or add sources for YouTube video
+          } else if (that.youtubevideoid) {
+            getYouTubeHtml5VideoUrl(that.youtubevideoid,
+                function(err, videoSources) {
+              if (err) {
+                return;
+              }
+              for (var videoSource in videoSources) {
+                videoSource = videoSources[videoSource];
+                var source = document.createElement('source');
+                source.src = CORS_PROXY +
+                    encodeURIComponent(videoSource.original_url);
+                source.type = videoSource.type.replace(/\+/g, ' ')
+                    .replace(/"/g, '\"');
+                video.appendChild(source);
+              }
+            });
+          }
+          // determine video dimensions
+          if (that.width) {
+            that.width = parseInt(that.width, 10);
+          } else {
+            that.width = 400;
+          }
+          video.width = that.width;
+          if (that.height) {
+            that.height = parseInt(that.height, 10);
+          } else {
+            that.height = 225;
+          }
+          video.height = that.height;
+          // add poster
+          if (that.poster) {
+            video.poster = that.poster;
+          }
+          // mute video
+          if (that.muted) {
+            video.muted = true;
+          }
+        };
+
+        var showSpinner = function() {
+          // show spinner while the hypervideo gets prepared
+          var splashDiv = document.createElement('div');
+          splashDiv.classList.add('style-scope', 'hyper-video');
+          splashDiv.classList.add('spinner');
+          var splashSpinner = document.createElement('div');
+          splashSpinner.classList.add('style-scope', 'hyper-video');
+          splashSpinner.classList.add('progress');
+          splashDiv.appendChild(splashSpinner);
+          splashDiv.style.width = video.width + 'px';
+          splashDiv.style.height = video.height + 'px';
+          splashDiv.style.position = 'absolute';
+          splashDiv.style.top = video.offsetTop + 'px';
+          splashDiv.style.left = video.offsetLeft + 'px';
+          splashSpinner.style.position = 'relative';
+          splashSpinner.style.top = (video.offsetHeight / 2 - 60 / 2) + 'px';
+          splashSpinner.style.left = (video.offsetWidth / 2 - 60 / 2) + 'px';
+          var loadingDiv = document.createElement('div');
+          loadingDiv.classList.add('style-scope', 'hyper-video');
+          loadingDiv.textContent = '*';
+          splashSpinner.appendChild(loadingDiv);
+          container.appendChild(splashDiv);
+          return splashDiv;
+        };
+
+        var positionDataAnnotations = function(opt_nodes) {
+          // positions data annotations on top of the video
+          var polymerData =
+              opt_nodes || queryRegExSelectorAll(that, /^data-/gi);
+          polymerData.forEach(function(node) {
+            node.style.position = 'absolute';
+            node.style.top = (video.offsetTop + 0.66 * video.offsetHeight) +
+                'px';
+            node.style.left = (video.offsetLeft + (0.05 * that.width)) + 'px';
+            node.style.width = (0.9 * that.width) + 'px';
+            node.style.display = 'none';
+          });
+        };
+
+        /* TODO should we document event cues-read? maybe only in the Private API?
+           shouldn't it rather be a callback or a Promise anyway? */
+        var readCues = function(cues, kind, owner, cueClass) {
+          if (!cues) {
+            return;
+          }
+          var cueData = [];
+          for (var i = 0, lenI = cues.length; i < lenI; i++) {
+            var cue = cues.item ? cues.item(i) : cues[i];
+            if (cueClass) {
+              cue.text = '<c.' + cueClass + '>' + cue.text + '<c>';
+            }
+            cueData.push({
+              start: parseFloat(cue.startTime),
+              end: parseFloat(cue.endTime),
+              text: cue.text,
+              id: cue.id,
+              type: kind
+            });
+          }
+          console.log('Fired event: cues-read');
+          that.fire(
+            'cues-read',
+            {
+              cueData: cueData,
+              kind: kind,
+              owner: owner
+            }
+          );
+        };
+
+        /**
+         * Fired when the video metadata has been loaded
+         * (corresponds to the ``loadedmetadata`` event on ``video``).
+         *
+         * The detail of the event contains the following attributes:
+         * - ``duration``: the duration of the main video
+         * - ``height``: the height of the main video
+         * - ``width``: the width of the main video
+         *
+         * @event hypervideo-loaded-metadata
+         */
+         /* TODO also document actorsOffset in the list above? */
+        video.addEventListener('loadedmetadata', function() {
+          console.log('Received event (video): loadedmetadata');
+          that.duration = video.duration;
+          // adjust the timeline dimensions according to the video duration
+          var polymerTimelines = that.querySelectorAll('timeline');
+          for (var i = 0, lenI = polymerTimelines.length; i < lenI; i++) {
+            polymerTimelines[i].style.left = (video.offsetLeft +
+                (0.05 * that.width)) + 'px';
+          }
+          var polymerData = queryRegExSelector(that, /^data-/gi);
+          console.log('Fired event: hypervideo-loaded-metadata');
+          var videoWidth = Math.floor(that.width / 5);
+          var ratio = that.width / that.height;
+          var offset = that.alternativeViews ? videoWidth / ratio : 0;
+          that.fire(
+            'hypervideo-loaded-metadata',
+            {
+              duration: that.duration,
+              height: that.height + offset,
+              width: that.width,
+              actorsOffset: {
+                left: polymerData ? polymerData.style.left.replace('px', '') : null,
+                top: polymerData ? polymerData.style.top.replace('px', '') : null
+              }
+            }
+          );
+
+          // alternative views
+          if (that.alternativeViews) {
+            that._videos.push(video);
+            var trackVideo;
+            var showControls = function showControls(e) {
+              return e.target.controls = true;
+            };
+
+            var hideControls = function hideControls(e) {
+              return e.target.removeAttribute('controls');
+            };
+
+            var playAll = function playAll(e) {
+              var currentTime = e.target.currentTime;
+              for (var i = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
+                currentVideo.currentTime = currentTime;
+                currentVideo.play();
+              }
+              trackVideo.currentTime = currentTime;
+              trackVideo.play();
+            };
+
+            var pauseAll = function pauseAll() {
+              for (var i = 0; i < that._videos.length; i++) {
+                that._videos[i].pause();
+              }
+              trackVideo.pause();
+            };
+
+            var seekAll = function seekAll(e) {
+              for (var i = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
+                if (currentVideo === e.target) {
+                  continue;
+                }
+                currentVideo.currentTime = e.target.currentTime;
+              }
+              trackVideo.currentTime = e.target.currentTime;
+            };
+
+            var transitionend = function transitioned(e) {
+              for (var i = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
+                if (currentVideo.classList.contains('small')) {
+                  currentVideo.style.zIndex = 1000;
+                } else {
+                  currentVideo.style.zIndex = 'auto';
+                }
+              }
+            };
+
+            var makeBig = function makeBig(e) {
+              for (var i = 0, j = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
+                if (currentVideo === e.target) {
+                  currentVideo.width = that.width;
+                  currentVideo.height = that.width / ratio;
+                  currentVideo.style.top = 0;
+                  currentVideo.style.left = 0;
+                  currentVideo.style.zIndex = 1000;
+                  currentVideo.classList.remove('small');
+                  currentVideo.classList.add('big');
+                  currentVideo.addEventListener('mouseover', showControls);
+                  currentVideo.addEventListener('mouseout', hideControls);
+                  currentVideo.addEventListener('seeked', seekAll);
+                  var tracks =
+                      currentVideo.querySelectorAll('track[kind="subtitles"]');
+                  for (var k = 0, lenK = tracks.length; k < lenK; k++) {
+                    var track = tracks[k];
+                    track.track.mode = 'showing';
+                  }
+                } else {
+                  currentVideo.width = videoWidth;
+                  currentVideo.height = videoWidth / ratio;
+                  currentVideo.style.top = that.height + 'px';
+                  currentVideo.style.left = (j * videoWidth) + 'px';
+                  currentVideo.classList.remove('big');
+                  currentVideo.classList.add('small');
+                  currentVideo.removeEventListener('mouseover', showControls);
+                  currentVideo.removeEventListener('mouseout', hideControls);
+                  currentVideo.removeEventListener('seeked', seekAll);
+                  currentVideo.removeAttribute('controls');
+                  var tracks =
+                      currentVideo.querySelectorAll('track[kind="subtitles"]');
+                  for (var k = 0, lenK = tracks.length; k < lenK; k++) {
+                    var track = tracks[k];
+                    track.track.mode = 'disabled';
+                  }
+                  j++;
+                }
+              }
+            };
+
+            that.alternativeViews.split(/\s/).forEach(function(views) {
+              views = JSON.parse(views);
+              var content = container.querySelector('content');
+              for (var videoSource in views) {
+                if (video.currentSrc.indexOf(videoSource) === -1) {
+                  continue;
+                }
+                var tracks = video.querySelectorAll('track[kind="subtitles"]');
+                for (var id in views[videoSource]) {
+                  var alternativeView = views[videoSource][id];
+                  var viewVideo = document.createElement('video');
+                  viewVideo.classList.add('style-scope', 'hyper-video');
+                  var viewSource = document.createElement('source');
+                  viewSource.src = alternativeView.src;
+                  viewVideo.appendChild(viewSource);
+                  viewVideo.id = id;
+                  viewVideo.setAttribute('title', alternativeView.title);
+                  viewVideo.classList.add('hypervideo');
+                  video.parentNode.insertBefore(viewVideo, content);
+                  for (var i = 0, lenI = tracks.length; i < lenI; i++) {
+                    var track = tracks[i];
+                    var newTrack = document.createElement('track');
+                    newTrack.src = track.src;
+                    newTrack.kind = track.kind;
+                    viewVideo.appendChild(newTrack);
+                  }
+                  that._videos.push(viewVideo);
+                }
+                // Create a hidden track video for the sole purpose of firing
+                // cue change events because we dynamically need to switch
+                // tracks
+                trackVideo = document.createElement('video');
+                trackVideo.muted = true;
+                trackVideo.style.display = 'none';
+                trackVideo.id = 'trackVideo';
+                trackVideo.src = video.currentSrc;
+                video.parentNode.insertBefore(trackVideo, content);
+                for (var i = 0, lenI = tracks.length; i < lenI; i++) {
+                  var track = tracks[i];
+                  var newTrack = document.createElement('track');
+                  newTrack.addEventListener('cuechange', function() {
+                    console.log('Fired event: hypervideo-cue-change');
+                    that.fire(
+                      'hypervideo-cue-change',
+                      {
+                        activeCues: newTrack.track.activeCues
+                      }
+                    );
+                  });
+                  newTrack.src = track.src;
+                  newTrack.kind = track.kind;
+                  if (i === 0) {
+                    newTrack.track.mode = 'showing';
+                    newTrack.default = true;
+                  } else {
+                    newTrack.track.mode = 'hidden';
+                  }
+                  trackVideo.appendChild(newTrack);
+                }
+              }
+            });
+
+            (function init() {
+              for (var i = 0; i < that._videos.length; i++) {
+                var currentVideo = that._videos[i];
+
+                currentVideo.addEventListener('play', playAll);
+
+                currentVideo.addEventListener('pause', pauseAll);
+
+                currentVideo.addEventListener('click', makeBig);
+
+                currentVideo.addEventListener('transitionend', transitionend);
+
+                if (i === 0) {
+                  currentVideo.width = that.width;
+                  currentVideo.height = that.height;
+                  currentVideo.style.top = 0;
+                  currentVideo.style.left = 0;
+                  currentVideo.classList.add('big');
+                  currentVideo.addEventListener('mouseover', showControls);
+                  currentVideo.addEventListener('mouseout', hideControls);
+                  currentVideo.addEventListener('seeked', seekAll);
+                  currentVideo.muted = that.muted;
+                } else {
+                  currentVideo.style.left = ((i - 1) * videoWidth) + 'px';
+                  currentVideo.style.top =that.height + 'px';
+                  currentVideo.width = videoWidth;
+                  currentVideo.height = videoWidth / ratio;
+                  currentVideo.classList.add('small');
+                  currentVideo.muted = true;
+                }
+              }
+            })();
+          }
+
+        });
+
+        // publish timeupdate events
+        /**
+         * Fired on a regular basis when the current time of the main video changes
+         * (corresponds to the ``timeupdate`` event on ``video``).
+         *
+         * The detail of this event has an attribute ``currentTime``.
+         *
+         * @event hypervideo-time-update
+         */
+        video.addEventListener('timeupdate', function() {
+          // console.log('Received event (video): timeupdate');
+          that.currentTime = video.currentTime;
+          // console.log('Fired event: hypervideo-time-update');
+          that.fire(
+            'hypervideo-time-update',
+            {
+              currentTime: that.currentTime
+            }
+          );
+        });
+
+        spinner = showSpinner();
+        setTimeout(function() {
+          initializeVideo();
+          positionDataAnnotations();
+          spinner.remove();
+        }, 50);
+      },
+
+      foo: 1,
+
+      /**
+       * Calls the ``pause`` method of the main video.
+       */
+      pause: function() {
+        return this.$.hypervideo.pause();
+      },
+
+      /**
+       * Calls the ``play`` method of the main video.
+       */
+      play: function() {
+        return this.$.hypervideo.play();
+      },
+
+      /**
+       * Calls the ``seekTo`` method of the main video.
+       */
+      seekTo: function(time) {
+        return this._currentTime = time;
+      }
+    });
+  </script>
+
+  <script>
+    'use strict';
+
+    /* jshint unused:false */
+    var queryRegExSelectorAll = function(root, regEx) {
+      function walk(node) {
+        regEx.lastIndex = 0;
+        if (node.nodeType === Node.ELEMENT_NODE && regEx.test(node.nodeName)) {
+          nodes.push(node);
+        }
+        for (var child = node.firstChild; child; child = child.nextSibling) {
+          walk(child);
+        }
+      }
+
+      var nodes = [];
+      walk(root);
+      return nodes;
+    };
+
+    var queryRegExSelector = function(root, regEx) {
+      function walk(node) {
+        if (nodes.length) {
+          return;
+        }
+        regEx.lastIndex = 0;
+        if (node.nodeType === Node.ELEMENT_NODE && regEx.test(node.nodeName)) {
+          nodes.push(node);
+        }
+        for (var child = node.firstChild; child; child = child.nextSibling) {
+          walk(child);
+        }
+      }
+
+      var nodes = [];
+      walk(root);
+      return nodes[0] ? nodes[0] : null;
+    };
+
+    var getYouTubeHtml5VideoUrl = function(videoId, callback) {
+      var decodeQueryString = function(queryString) {
+        var key, keyValPair, keyValPairs, r, val, _i, _len;
+        r = {};
+        keyValPairs = queryString.split('&');
+        for (_i = 0, _len = keyValPairs.length; _i < _len; _i++) {
+          keyValPair = keyValPairs[_i];
+          key = decodeURIComponent(keyValPair.split('=')[0]);
+          val = decodeURIComponent(keyValPair.split('=')[1] || '');
+          r[key] = val;
+        }
+        return r;
+      };
+
+      var decodeStreamMap = function(url_encoded_fmt_stream_map) {
+        var quality, sources, stream, type, urlEncodedStream, _i, _len,
+            _ref;
+        sources = {};
+        _ref = url_encoded_fmt_stream_map.split(',');
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          urlEncodedStream = _ref[_i];
+          if (!urlEncodedStream) {
+            return false;
+          }
+          stream = decodeQueryString(urlEncodedStream);
+          type = stream.type.split(';')[0];
+          quality = stream.quality.split(',')[0];
+          stream.original_url = stream.url;
+          stream.url = '' + stream.url + '&signature=' + stream.sig;
+          sources['' + type + ' ' + quality] = stream;
+        }
+        return sources;
+      };
+
+      var CORS_PROXY = document.location.origin + '/cors/';
+      // Translate to HTML5 video URL, try at least
+      var  url = CORS_PROXY + encodeURIComponent(
+          'http://www.youtube.com/get_video_info?video_id=' + videoId);
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var youTubeVideo = decodeQueryString(xhr.responseText);
+          // video.live_playback is '1' for Hangouts on Air
+          if ((youTubeVideo.status === 'fail') ||
+              (youTubeVideo.live_playback)) {
+            return callback('No HTML5 version available.');
+          }
+          if (!youTubeVideo.url_encoded_fmt_stream_map) {
+            return callback('No HTML5 version available.');
+          }
+          youTubeVideo.sources =
+              decodeStreamMap(youTubeVideo.url_encoded_fmt_stream_map);
+          if (!youTubeVideo.sources) {
+            return callback('No HTML5 version available.');
+          }
+          var mediumQuality = {};
+          for (var key in youTubeVideo.sources) {
+            if (/.*?medium.*?/gi.test(key)) {
+              mediumQuality[key] = youTubeVideo.sources[key];
+            }
+          }
+          return callback(null, mediumQuality);
+        }
+      };
+      xhr.open('GET', url, true);
+      xhr.send();
+    };
+  </script>
+
+</dom-module>
+
+<link rel="import" href="elements/data-actor.html">
+<link rel="import" href="elements/data-annotation.html">
+<link rel="import" href="elements/data-overlay.html">
+<link rel="import" href="elements/track-chapters.html">
+<link rel="import" href="elements/track-subtitles.html">
+<link rel="import" href="elements/visualization-timeline.html">
+<link rel="import" href="elements/visualization-toc.html">
+<link rel="import" href="elements/gadget-quiz.html">
+<link rel="import" href="elements/cinelab-parser.html">

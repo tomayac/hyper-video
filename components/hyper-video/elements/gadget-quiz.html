@@ -1,0 +1,256 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+This elements loads quiz annotations from a WebVTT file.
+Each quiz annotation contains a question,
+which is displayed at the end-timestamp of the annotation,
+pausing the video.
+The user may then choose to replay the video from the start-timestamp of the annotation,
+or continue.
+Additionally, if the content of the annotation is ``<form>`` with an action attribute,
+they can chose to submit their answer,
+and the reply from the corresponding server will be displayed.
+
+##### Example
+
+    <hyper-video src="big_buck_bunny.webm">
+      <gadget-quiz src="assets/quiz.html"></gadget-quiz>
+    </hyper-video>
+
+##### Example annotation file
+
+    WEBVTT
+
+    1
+    00:00:03.500 -- > 00:00:05.000
+    <form>
+      <p>Whose day does the plot follow?</p>
+    </form>
+
+    2
+    00:00:06.000 -- > 00:00:09.000
+    <form action="/app/quiz/12345/2">
+      <p>Whom does he meet?</p>
+      <label><input type="checkbox" name="checkbox" value="Frank">Frank</label><br>
+      <label><input type="checkbox" name="checkbox" value="John">John</label><br>
+      <label><input type="checkbox" name="checkbox" value="Jim">Jim</label>
+    </form>
+
+@element gadget-quiz
+@demo demo/gadget-quiz.html
+@status alpha
+@homepage http://github.com/tomayac/hyper-video
+-->
+<dom-module id="gadget-quiz">
+
+  <template>
+
+    <style>
+      .quiz-question {
+        background-color: black;
+        opacity: .8;
+        color: white;
+        font-family: sans-serif;
+        font-size: 1em;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        padding: 1em;
+        box-sizing: border-box;
+        justify-content: center;
+        flex-direction: column;
+        z-index: 10000;
+      }
+    </style>
+
+    <div id="container" class="container">
+    </div>
+  </template>
+
+  <script>
+    'use strict';
+
+    Polymer({
+      is: 'gadget-quiz',
+
+      properties: {
+        /**
+         * Used to specify the WebVTT file containing the quiz annotations.
+         */
+        src: {
+          type: String
+        },
+      },
+
+      created: function() {
+      },
+
+      ready: function() {
+        var that = this;
+        var container = that.$.container;
+        var cuesElements = [];
+        var width;
+        var height;
+        var duration;
+        var hypervideo;
+        var timeToleranceThreshold = 0.25;
+
+        document.addEventListener('hypervideo-loaded-metadata', function(e) {
+          console.log('Received event (document): hypervideo-loaded-metadata');
+          hypervideo = e.target;
+          var data = e.detail;
+          width = data.width;
+          height = data.height;
+          duration = data.duration;
+        });
+
+        container.addEventListener('click', function(e) {
+          var button = e.target;
+          if ((button.nodeName.toLowerCase() !== 'button') ||
+              (button.type === 'submit')) {
+            return;
+          }
+          for (var i = 0, lenI = cuesElements.length; i < lenI; i++) {
+            var cue = cuesElements[i];
+            cue.style.display = 'none';
+          }
+          if (button.classList.contains('continue')) {
+            hypervideo.seekTo(parseFloat(button.dataset.end) + timeToleranceThreshold < duration ?
+                parseFloat(button.dataset.end) + timeToleranceThreshold :
+                parseFloat(button.dataset.end));
+            hypervideo.play();
+          } else if (button.classList.contains('review')) {
+            hypervideo.seekTo(parseFloat(button.dataset.start));
+            hypervideo.play();
+          }
+        });
+
+        var evaluateForm = function(e) {
+          e.preventDefault();
+          var form = e.target;
+          if (form.action) {
+            var url = form.action;
+            if (!/^https?:\/\//.test(url)) {
+              url = document.location.href + url;
+            }
+            url = 'http://crossorigin.me/' + url;
+            var formData = new FormData(form);
+            fetch(url, {
+              method: 'post',
+              body: formData
+            }).then(function(response) {
+              if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+                return;
+              }
+              return response.text();
+            }).then(function(data) {
+              form.parentNode.querySelector('.result').innerHTML = data;
+            }).catch(function(err) {
+              console.log('Fetch Error :-S', err);
+            });
+          }
+        };
+
+        document.addEventListener('cues-read', function(e) {
+          console.log('Received event (document): cues-read');
+          var data = e.detail;
+          if (data.kind !== 'metadata') {
+            return;
+          }
+          var cues = data.cueData;
+          cues.forEach(function(cue, i) {
+            var div = document.createElement('div');
+            div.dataset.start = cue.start;
+            div.dataset.end = cue.end;
+            div.classList.add('quiz-question', 'style-scope', 'gadget-quiz');
+            div.style.display = 'none';
+            var wrapper = document.createElement('div');
+            wrapper.innerHTML = cue.text;
+            div.appendChild(wrapper);
+            var form = div.querySelector('form');
+            var reviewSceneButton = document.createElement('button');
+            reviewSceneButton.classList.add('review');
+            reviewSceneButton.type = 'button';
+            reviewSceneButton.dataset.start = cue.start;
+            reviewSceneButton.textContent = 'Watch again';
+            if (form) {
+              form.appendChild(document.createElement('br'));
+              form.appendChild(reviewSceneButton);
+              var continueButton = document.createElement('button');
+              continueButton.classList.add('continue');
+              continueButton.type = 'button';
+              continueButton.dataset.end = cue.end;
+              continueButton.textContent = 'Continue';
+              form.appendChild(continueButton);
+              if (form.action) {
+                var submitButton = document.createElement('button');
+                submitButton.textContent = 'Submit';
+                submitButton.type = 'submit';
+                form.dataset.end = cue.end;
+                form.addEventListener('submit', evaluateForm);
+                form.appendChild(submitButton);
+                var result = document.createElement('div');
+                result.classList.add('result');
+                wrapper.appendChild(result);
+              }
+            } else {
+              wrapper.appendChild(document.createElement('br'));
+              wrapper.appendChild(reviewSceneButton);
+              var continueButton = document.createElement('button');
+              continueButton.classList.add('continue');
+              continueButton.type = 'button';
+              continueButton.dataset.end = cue.end;
+              continueButton.textContent = 'Continue';
+              wrapper.appendChild(continueButton);
+            }
+            container.appendChild(div);
+            cuesElements[i] = div;
+          });
+        });
+
+        document.addEventListener('hypervideo-time-update', function(e) {
+          // console.log('Received event (document): hypervideo-time-update');
+          var currentTime = e.detail.currentTime;
+          for (var i = 0, lenI = cuesElements.length; i < lenI; i++) {
+            var cue = cuesElements[i];
+            // Define a tolerance interval around the cue end
+            var start = parseFloat(cue.dataset.end) - timeToleranceThreshold > 0 ?
+                parseFloat(cue.dataset.end) - timeToleranceThreshold : 0;
+            var end = parseFloat(cue.dataset.end) + timeToleranceThreshold;
+            if (start < currentTime && currentTime < end) {
+              cue.style.display = 'flex';
+              cue.style.width = width + 'px';
+              cue.style.height = height + 'px';
+              e.target.pause();
+            } else {
+              cue.style.display = 'none';
+            }
+          }
+        });
+
+        setTimeout(function() {
+          console.log('Fired event: track-ready');
+          that.fire(
+            'track-ready',
+            {
+              src: that.src,
+              kind: 'metadata'
+            }
+          );
+        }, 250);
+      }
+    });
+  </script>
+
+</dom-module>
