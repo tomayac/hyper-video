@@ -163,11 +163,14 @@ and the reply from the corresponding server will be displayed.
         };
 
         document.addEventListener('cues-read', function(e) {
-          console.log('Received event (document): cues-read');
           var data = e.detail;
+          if (data.owner !== that) {
+            return;
+          }
           if (data.kind !== 'metadata') {
             return;
           }
+          console.log('Received event (document): cues-read');
           var cues = data.cueData;
           cues.forEach(function(cue, i) {
             var div = document.createElement('div');

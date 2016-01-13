@@ -286,13 +286,14 @@ TODO document JSON format
         document.addEventListener('track-ready', function(e) {
           console.log('Received event (document): track-ready');
           var data = e.detail;
+          var owner = e.target;
           var track = document.createElement('track');
           var cuesRead = false;
           track.addEventListener('load', function(e) {
             if (!cuesRead) {
               console.log('Received event (track): load');
               cuesRead = true;
-              return readCues(e.target.track.cues, data.kind, data.owner,
+              return readCues(e.target.track.cues, data.kind, owner,
                   data.cueClass);
             }
           });
@@ -330,8 +331,8 @@ TODO document JSON format
               if (!cuesRead) {
                 console.log('Received event (track): readyState');
                 cuesRead = true;
-                return readCues(track.track.cues, track.kind, track.owner,
-                  track.cueClass);
+                return readCues(track.track.cues, track.kind, owner,
+                  data.cueClass);
               }
             }
           }, 100);
@@ -362,7 +363,6 @@ TODO document JSON format
             });
             _video.appendChild(newTrack);
           });
-
         });
 
 

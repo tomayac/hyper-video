@@ -145,12 +145,15 @@ and optionally displays a visual table of contents.
         });
 
         document.addEventListener('cues-read', function(e) {
-          console.log('Received event (document): cues-read');
           cuesRead = true;
           var data = e.detail;
+          if (data.owner !== that) {
+            return;
+          }
           if (data.kind !== 'chapters') {
             return;
           }
+          console.log('Received event (document): cues-read');
           cueData = data.cueData;
           if ((that.displayChaptersThumbnails) &&
               (hyperVideoLoadedMetadata) &&
