@@ -1,11 +1,11 @@
 {
   "format": "http://advene.org/ns/cinelab/",
   "annotation_types": [{
-    "id": "subtitle"
+    "id": "transcript"
   }, {
-    "id": "chapter"
+    "id": "part"
   }, {
-    "id": "quiz"
+    "id": "question"
   }],
   "medias": [{
     "id": "m1",
@@ -18,7 +18,7 @@
     "content": {
       "data": "Positionnement"
     },
-    "type": "chapter",
+    "type": "part",
     "id": "a21"
   }, {
     "begin": 10150,
@@ -28,7 +28,7 @@
       "mimetype": "text/html",
       "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Dans quel sens faut-il positionner le pantalon\u00a0?</p>\n  <p>\n    <input type=\"radio\" name=\"sense\" id=\"radio-largeur\"><label for=\"radio-largeur\">Dans la largeur.</label><br>\n    <input type=\"radio\" name=\"sense\" id=\"radio-longueur\"><label for=\"radio-longueur\">Dans la longueur.</label>\n  </p>\n</form>"
     },
-    "type": "quiz",
+    "type": "question",
     "id": "a25"
   }, {
     "begin": 14456,
@@ -37,7 +37,7 @@
     "content": {
       "data": "Pour repasser un pantalon de costume, commencez par prendre le pantalon par les ourlets."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a1"
   }, {
     "begin": 19274,
@@ -46,7 +46,7 @@
     "content": {
       "data": "Positionnez une jambe \u00e0 la fois, couture sur couture."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a2"
   }, {
     "begin": 25416,
@@ -55,7 +55,7 @@
     "content": {
       "data": "Placez le pantalon dans la largeur de la planche \u00e0 repasser."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a3"
   }, {
     "begin": 30202,
@@ -64,7 +64,7 @@
     "content": {
       "data": "Positionnez un chiffon propre entre le pantalon et le fer \u00e0 repasser."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a4"
   }, {
     "begin": 32202,
@@ -74,7 +74,7 @@
       "mimetype": "text/html",
       "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>\u00c0 quoi sert le chiffon\u00a0?</p>\n  <p><input name=\"chiffon\" placeholder=\"Le chiffon sert \u00e0\u2026\"></p>\n</form>"
     },
-    "type": "quiz",
+    "type": "question",
     "id": "a26"
   }, {
     "begin": 30202,
@@ -83,7 +83,7 @@
     "content": {
       "data": "Repassage des jambes"
     },
-    "type": "chapter",
+    "type": "part",
     "id": "a22"
   }, {
     "begin": 34047,
@@ -92,7 +92,7 @@
     "content": {
       "data": "Cela permet d'\u00e9viter de lustrer le tissu."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a5"
   }, {
     "begin": 36668,
@@ -101,7 +101,7 @@
     "content": {
       "data": "Repassez ensuite les jambes du pantalon, en commen\u00e7ant par le bas."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a6"
   }, {
     "begin": 44028,
@@ -110,7 +110,7 @@
     "content": {
       "data": "Faites d\u00e9filer le pantalon, petit \u00e0 petit sur la planche pour pouvoir le repasser."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a7"
   }, {
     "begin": 73015,
@@ -119,7 +119,7 @@
     "content": {
       "data": "Lorsque vous arrivez au niveau de la ceinture, donnez simplement un coup de vapeur sur la ceinture et sur les poches, pour les d\u00e9froisser."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a8"
   }, {
     "begin": 73015,
@@ -128,7 +128,7 @@
     "content": {
       "data": "Ceinture et autre cot\u00e9"
     },
-    "type": "chapter",
+    "type": "part",
     "id": "a23"
   }, {
     "begin": 74015,
@@ -138,7 +138,7 @@
       "mimetype": "text/html",
       "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Que faire apr\u00e8s \u00eatre arriv\u00e9 \u00e0 la ceinture\u00a0?</p>\n  <p>\n    <input type=\"checkbox\" name=\"ceinture\" id=\"check-ceinture\"><label for=\"check-ceinture\">Donner un coup de vapeur sur la ceinture.</label><br>\n    <input type=\"checkbox\" name=\"ceinture\" id=\"check-poches\"><label for=\"check-poches\">Donner un coup de vapeur sur les poches.</label><br>\n    <input type=\"checkbox\" name=\"ceinture\" id=\"check-ceinture-et-poches\"><label for=\"check-ceinture-et-poches\">Donner un coup de vapeur sur la ceinture et les poches.</label>\n  </p>\n</form>"
     },
-    "type": "quiz",
+    "type": "question",
     "id": "a27"
   }, {
     "begin": 84140,
@@ -147,7 +147,7 @@
     "content": {
       "data": "Retournez le pantalon, et repassez de la m\u00eame fa\u00e7on l'autre cot\u00e9."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a9"
   }, {
     "begin": 114169,
@@ -156,7 +156,7 @@
     "content": {
       "data": "V\u00e9rifiez enfin que les entre-jambes du pantalon sont bien repass\u00e9es"
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a10"
   }, {
     "begin": 114259,
@@ -165,7 +165,7 @@
     "content": {
       "data": "Finition et rangement"
     },
-    "type": "chapter",
+    "type": "part",
     "id": "a24"
   }, {
     "begin": 114259,
@@ -175,7 +175,7 @@
       "mimetype": "text/html",
       "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Sur quoi faut-il ranger le pantalon\u00a0?</p>\n  <p><input name=\"ranger\" placeholder=\"Il faut ranger le pantalon sur\u2026\"></p>\n</form>"
     },
-    "type": "quiz",
+    "type": "question",
     "id": "a28"
   }, {
     "begin": 117578,
@@ -184,7 +184,7 @@
     "content": {
       "data": "et ajustez ci-besoin en donnant un coup de vapeur, ou en utilisant le chiffon."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a11"
   }, {
     "begin": 142163,
@@ -193,7 +193,7 @@
     "content": {
       "data": "Mettez enfin le pantalon sur cintre."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a12"
   }, {
     "begin": 147114,
@@ -202,7 +202,7 @@
     "content": {
       "data": "Voila un pantalon parfaitement repass\u00e9."
     },
-    "type": "subtitle",
+    "type": "transcript",
     "id": "a13"
   }],
   "meta": {

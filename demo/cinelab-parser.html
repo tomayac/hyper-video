@@ -22,8 +22,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <hyper-video src="assets/big_buck_bunny.mp4 assets/big_buck_bunny.webm" width="800" height="450" muted>
 
-      <cinelab-parser src="assets/cinelab.cjp"></cinelab-parser>
-
+      <cinelab-parser src="assets/cinelab.cjp" mapping='{"transcript": "st", "part": "ch", "question": "qz"}'></cinelab-parser>
+      <track-chapters id="ch" display-chapters-thumbnails width="800"></track-chapters>
+      <track-subtitles id="st" display-subtitles-group width="800"></track-subtitles>
+      <gadget-quiz id="qz"></gadget-quiz>
     </hyper-video>
 
   </body>
