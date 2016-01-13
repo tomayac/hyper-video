@@ -77,7 +77,8 @@ and optionally displays a searchable list of the subtitles.
          * Used to specify the WebVTT file containing the subtitles annotations.
          */
         src: {
-          type: String
+          type: String,
+          notify: true
         },
         /**
          * Used to display the searchable annotation list.
@@ -221,18 +222,22 @@ and optionally displays a searchable list of the subtitles.
           }
         });
 
-        setTimeout(function() {
+        var fireTrackReady = function() {
           console.log('Fired event: track-ready');
           that.fire(
             'track-ready',
             {
               src: that.src,
               kind: 'subtitles',
-              owner: that,
               cueClass: that.cueClass
             }
           );
-        }, 250);
+        };
+        if (that.src) {
+          setTimeout(fireTrackReady, 250);
+        } else {
+          that.addEventListener("src-changed", fireTrackReady);
+        }
       }
     });
   </script>
