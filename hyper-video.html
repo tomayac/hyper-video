@@ -290,14 +290,20 @@ TODO document JSON format
           var owner = e.target;
           var track = document.createElement('track');
           var cuesRead = false;
-          track.addEventListener('load', function(e) {
+          var doReadCues = function(e) {
             if (!cuesRead) {
               console.log('Received event (track): load');
+              if (track.kind === 'subtitles' || track.king === 'captions') {
+                track.track.mode = 'showing';
+              } else {
+                track.track.mode = 'hidden';
+              }
               cuesRead = true;
-              return readCues(e.target.track.cues, data.kind, owner,
-                  data.cueClass);
+              readCues(track.track.cues, data.kind, owner,
+                       data.cueClass);
             }
-          });
+          };
+          track.addEventListener('load', doReadCues);
 
           /**
            * Fired whenever there is a change of active annotations in one track.
@@ -329,20 +335,15 @@ TODO document JSON format
           var trackLoadedInterval = setInterval(function() {
             if (track.readyState >= 2) {
               clearInterval(trackLoadedInterval);
-              if (!cuesRead) {
-                console.log('Received event (track): readyState');
-                cuesRead = true;
-                return readCues(track.track.cues, track.kind, owner,
-                  data.cueClass);
-              }
+              doReadCues();
             }
           }, 100);
+
           track.src = data.src;
           track.default = true;
           track.kind = data.kind;
           if (track.kind === 'subtitles' || track.kind === 'captions') {
-            track.srclang = 'en';
-            track.track.mode = 'showing';
+            track.srclang = navigator.language;
           } else if (track.kind === 'chapters') {
             var canvas = document.createElement('canvas');
             canvas.width = video.width;
@@ -350,10 +351,9 @@ TODO document JSON format
             var ctx = canvas.getContext('2d');
             that.ctx = ctx;
             that.canvas = canvas;
-          } else if (track.kind === 'metadata') {
-            track.track.mode = 'hidden';
           }
           video.appendChild(track);
+
           that._videos.forEach(function(_video) {
             if (_video === video || track.kind !== 'subtitles') {
               return;
@@ -622,7 +622,7 @@ TODO document JSON format
               type: kind
             });
           }
-          console.log('Fired event: cues-read');
+          console.log('Fired event: cues-read', lenI);
           that.fire(
             'cues-read',
             {
@@ -703,7 +703,7 @@ TODO document JSON format
             };
 
             var seekAll = function seekAll(e) {
-              console.log("seekAll", e.target);
+              //console.log("seekAll", e.target);
               for (var i = 0; i < that._videos.length; i++) {
                 var currentVideo = that._videos[i];
                 if (currentVideo === e.target) {
@@ -740,10 +740,14 @@ TODO document JSON format
                   currentVideo.addEventListener('mouseout', hideControls);
                   currentVideo.addEventListener('seeked', seekAll);
                   var tracks =
-                      currentVideo.querySelectorAll('track[kind="subtitles"]');
+                      currentVideo.getElementsByTagName('track');
                   for (var k = 0, lenK = tracks.length; k < lenK; k++) {
                     var track = tracks[k];
-                    track.track.mode = 'showing';
+                    if (track.kind === 'subtitles' || track.kind === 'captions') {
+                      track.track.mode = 'showing';
+                    } else {
+                      track.track.mode = 'hidden';
+                    }
                   }
                 } else {
                   currentVideo.width = videoWidth;
@@ -757,7 +761,7 @@ TODO document JSON format
                   currentVideo.removeEventListener('seeked', seekAll);
                   currentVideo.removeAttribute('controls');
                   var tracks =
-                      currentVideo.querySelectorAll('track[kind="subtitles"]');
+                      currentVideo.getElementsByTagName('track');
                   for (var k = 0, lenK = tracks.length; k < lenK; k++) {
                     var track = tracks[k];
                     track.track.mode = 'disabled';
