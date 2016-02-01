@@ -39,7 +39,10 @@ Element providing solution to no problem in particular.
           type: String
         },
         /**
-         * Used to specify the mapping between annotation types and hyper-video sub-elements
+         * Used to specify the mapping between annotation types and hyper-video sub-elements.
+         * Each keys must be an annotation type identifier as it appears in the CJP file.
+         * Each values must be the HTML identifier of target sub-element;
+         * it can also be an array of HTML identifiers if the annotations must be duplicated in several sub-elements.
          */
         mapping: {
           type: Object
@@ -215,14 +218,18 @@ Element providing solution to no problem in particular.
           }).then(function(parsedData) {
             for (var atype in parsedData) {
               if (!parsedData.hasOwnProperty(atype)) continue;
-              var trackId = that.mapping[atype];
-              if (!trackId) continue;
-              var trackElt = that.parentElement.querySelector("#"+trackId);
-              if (!trackElt) {
-                console.log("No such hyper-video sub-element", trackId);
-                continue;
+              var trackIds = that.mapping[atype];
+              if (!trackIds) continue;
+              if (typeof(trackIds) === 'string') { trackIds = [ trackIds ]; }
+              for (var i=0; i<trackIds.length; i+=1) {
+                  var trackId = trackIds[i];
+                  var trackElt = that.parentElement.querySelector("#"+trackId);
+                  if (!trackElt) {
+                      console.log("No such hyper-video sub-element", trackId);
+                      continue;
+                  }
+                  _populateTrackElement(trackElt, parsedData[atype]);
               }
-              _populateTrackElement(trackElt, parsedData[atype]);
             }
 
             /* @todo I think this is came from a spurious copy-paste...
