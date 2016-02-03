@@ -8,202 +8,176 @@
     "id": "question"
   }],
   "medias": [{
-    "id": "m1",
-    "url": "http://dsi-liris-silex.univ-lyon1.fr/~learncaf/hypervideo/learning-cafe/videos/repassage2.ogv"
+    "id": "main",
+    "url": "big_buck_bunny.webm"
   }],
-  "annotations": [{
-    "begin": 10150,
-    "end": 29202,
-    "media": "m1",
-    "content": {
-      "data": "Positionnement"
-    },
+  "annotations": [
+  {
+    "id": "ch1",
     "type": "part",
-    "id": "a21"
-  }, {
-    "begin": 10150,
-    "end": 29202,
-    "media": "m1",
+    "begin": 0,
+    "end": 10000,
     "content": {
-      "mimetype": "text/html",
-      "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Dans quel sens faut-il positionner le pantalon\u00a0?</p>\n  <p>\n    <input type=\"radio\" name=\"sense\" id=\"radio-largeur\"><label for=\"radio-largeur\">Dans la largeur.</label><br>\n    <input type=\"radio\" name=\"sense\" id=\"radio-longueur\"><label for=\"radio-longueur\">Dans la longueur.</label>\n  </p>\n</form>"
+      "data": "Act 1"
     },
-    "type": "question",
-    "id": "a25"
+    "media": "main"
   }, {
-    "begin": 14456,
-    "end": 19274,
-    "media": "m1",
-    "content": {
-      "data": "Pour repasser un pantalon de costume, commencez par prendre le pantalon par les ourlets."
-    },
-    "type": "transcript",
-    "id": "a1"
-  }, {
-    "begin": 19274,
-    "end": 22379,
-    "media": "m1",
-    "content": {
-      "data": "Positionnez une jambe \u00e0 la fois, couture sur couture."
-    },
-    "type": "transcript",
-    "id": "a2"
-  }, {
-    "begin": 25416,
-    "end": 28573,
-    "media": "m1",
-    "content": {
-      "data": "Placez le pantalon dans la largeur de la planche \u00e0 repasser."
-    },
-    "type": "transcript",
-    "id": "a3"
-  }, {
-    "begin": 30202,
-    "end": 34047,
-    "media": "m1",
-    "content": {
-      "data": "Positionnez un chiffon propre entre le pantalon et le fer \u00e0 repasser."
-    },
-    "type": "transcript",
-    "id": "a4"
-  }, {
-    "begin": 32202,
-    "end": 58015,
-    "media": "m1",
-    "content": {
-      "mimetype": "text/html",
-      "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>\u00c0 quoi sert le chiffon\u00a0?</p>\n  <p><input name=\"chiffon\" placeholder=\"Le chiffon sert \u00e0\u2026\"></p>\n</form>"
-    },
-    "type": "question",
-    "id": "a26"
-  }, {
-    "begin": 30202,
-    "end": 72015,
-    "media": "m1",
-    "content": {
-      "data": "Repassage des jambes"
-    },
+    "id": "ch2",
     "type": "part",
-    "id": "a22"
-  }, {
-    "begin": 34047,
-    "end": 36668,
-    "media": "m1",
+    "begin": 10000,
+    "end": 20000,
     "content": {
-      "data": "Cela permet d'\u00e9viter de lustrer le tissu."
+      "data": "Act 2"
     },
-    "type": "transcript",
-    "id": "a5"
+    "media": "main"
   }, {
-    "begin": 36668,
-    "end": 39833,
-    "media": "m1",
-    "content": {
-      "data": "Repassez ensuite les jambes du pantalon, en commen\u00e7ant par le bas."
-    },
-    "type": "transcript",
-    "id": "a6"
-  }, {
-    "begin": 44028,
-    "end": 48480,
-    "media": "m1",
-    "content": {
-      "data": "Faites d\u00e9filer le pantalon, petit \u00e0 petit sur la planche pour pouvoir le repasser."
-    },
-    "type": "transcript",
-    "id": "a7"
-  }, {
-    "begin": 73015,
-    "end": 79505,
-    "media": "m1",
-    "content": {
-      "data": "Lorsque vous arrivez au niveau de la ceinture, donnez simplement un coup de vapeur sur la ceinture et sur les poches, pour les d\u00e9froisser."
-    },
-    "type": "transcript",
-    "id": "a8"
-  }, {
-    "begin": 73015,
-    "end": 112259,
-    "media": "m1",
-    "content": {
-      "data": "Ceinture et autre cot\u00e9"
-    },
+    "id": "ch3",
     "type": "part",
-    "id": "a23"
-  }, {
-    "begin": 74015,
-    "end": 112259,
-    "media": "m1",
+    "begin": 20000,
+    "end": 30000,
     "content": {
-      "mimetype": "text/html",
-      "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Que faire apr\u00e8s \u00eatre arriv\u00e9 \u00e0 la ceinture\u00a0?</p>\n  <p>\n    <input type=\"checkbox\" name=\"ceinture\" id=\"check-ceinture\"><label for=\"check-ceinture\">Donner un coup de vapeur sur la ceinture.</label><br>\n    <input type=\"checkbox\" name=\"ceinture\" id=\"check-poches\"><label for=\"check-poches\">Donner un coup de vapeur sur les poches.</label><br>\n    <input type=\"checkbox\" name=\"ceinture\" id=\"check-ceinture-et-poches\"><label for=\"check-ceinture-et-poches\">Donner un coup de vapeur sur la ceinture et les poches.</label>\n  </p>\n</form>"
+      "data": "Act 3"
     },
-    "type": "question",
-    "id": "a27"
+    "media": "main"
   }, {
-    "begin": 84140,
-    "end": 87831,
-    "media": "m1",
-    "content": {
-      "data": "Retournez le pantalon, et repassez de la m\u00eame fa\u00e7on l'autre cot\u00e9."
-    },
-    "type": "transcript",
-    "id": "a9"
-  }, {
-    "begin": 114169,
-    "end": 117578,
-    "media": "m1",
-    "content": {
-      "data": "V\u00e9rifiez enfin que les entre-jambes du pantalon sont bien repass\u00e9es"
-    },
-    "type": "transcript",
-    "id": "a10"
-  }, {
-    "begin": 114259,
-    "end": 153131,
-    "media": "m1",
-    "content": {
-      "data": "Finition et rangement"
-    },
+    "id": "ch4",
     "type": "part",
-    "id": "a24"
-  }, {
-    "begin": 114259,
-    "end": 153131,
-    "media": "m1",
+    "begin": 30000,
+    "end": 40000,
     "content": {
-      "mimetype": "text/html",
-      "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Sur quoi faut-il ranger le pantalon\u00a0?</p>\n  <p><input name=\"ranger\" placeholder=\"Il faut ranger le pantalon sur\u2026\"></p>\n</form>"
+      "data": "Act 4"
     },
-    "type": "question",
-    "id": "a28"
+    "media": "main"
   }, {
-    "begin": 117578,
-    "end": 122717,
-    "media": "m1",
+    "id": "ch5",
+    "type": "part",
+    "begin": 40000,
+    "end": 50000,
     "content": {
-      "data": "et ajustez ci-besoin en donnant un coup de vapeur, ou en utilisant le chiffon."
+      "data": "Act 5"
     },
-    "type": "transcript",
-    "id": "a11"
+    "media": "main"
   }, {
-    "begin": 142163,
-    "end": 144912,
-    "media": "m1",
+    "id": "ch6",
+    "type": "part",
+    "begin": 50000,
+    "end": 54000,
     "content": {
-      "data": "Mettez enfin le pantalon sur cintre."
+      "data": "Act 6"
     },
-    "type": "transcript",
-    "id": "a12"
+    "media": "main"
   }, {
-    "begin": 147114,
-    "end": 150024,
-    "media": "m1",
+    "id": "ch7",
+    "type": "part",
+    "begin": 54000,
+    "end": 57000,
     "content": {
-      "data": "Voila un pantalon parfaitement repass\u00e9."
+      "data": "Act 7"
     },
-    "type": "transcript",
-    "id": "a13"
+    "media": "main"
+  }, {
+    "id": "ch8",
+    "type": "part",
+    "begin": 57000,
+    "end": 60000,
+    "content": {
+      "data": "Act 8"
+    },
+    "media": "main"
+  }, {
+      "id": "tr1",
+      "type": "transcript",
+      "begin": 3500,
+      "end": 5000,
+      "content": {
+          "data": "<v Narrator> The plot follows a day of the life of Big Buck Bunny"
+      },
+      "media": "main"
+  }, {
+      "id": "tr2",
+      "type": "transcript",
+      "begin": 6000,
+      "end": 9000,
+      "content": {
+          "data": "when he meets three bullying rodents"
+      },
+      "media": "main"
+  }, {
+      "id": "tr3",
+      "type": "transcript",
+      "begin": 11000,
+      "end": 14000,
+      "content": {
+          "data": "Frank (the leader of the rodents), Rinky and Gamera."
+      },
+      "media": "main"
+  }, {
+      "id": "tr4",
+      "type": "transcript",
+      "begin": 14500,
+      "end": 18000,
+      "content": {
+          "data": "The rodents amuse themselves"
+      },
+      "media": "main"
+  }, {
+      "id": "tr5",
+      "type": "transcript",
+      "begin": 19000,
+      "end": 24000,
+      "content": {
+          "data": "by harassing helpless creatures of the forest"
+      },
+      "media": "main"
+  }, {
+      "id": "tr6",
+      "type": "transcript",
+      "begin": 24500,
+      "end": 26000,
+      "content": {
+          "data": "by throwing fruits, nuts and rocks at them."
+      },
+      "media": "main"
+  }, {
+      "id": "q1",
+      "type": "question",
+      "begin": 3500,
+      "end": 5000,
+      "content": {
+          "mimetype": "text/html",
+          "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n<p>Whose day does the plot follow?</p>\n<input name=\"response\" placeholder=\"Response\">\n</form>\n"
+      },
+      "media": "main"
+  }, {
+      "id": "q2",
+      "type": "question",
+      "begin": 6000,
+      "end": 9000,
+      "content": {
+          "mimetype": "text/html",
+          "data": "<form>\n  <p>Whom does he meet?</p>\n  <input type=\"checkbox\" name=\"checkbox\" id=\"check1\" value=\"Frank\"><label for=\"check1\">Frank</label><br>\n  <input type=\"checkbox\" name=\"checkbox\" id=\"check2\" value=\"John\"><label for=\"check2\">John</label><br>\n  <input type=\"checkbox\" name=\"checkbox\" id=\"check3\" value=\"Jim\"><label for=\"check3\">Jim</label>\n</form>\n"
+      },
+      "media": "main"
+  }, {
+      "id": "q3",
+      "type": "question",
+      "begin": 11000,
+      "end": 14000,
+      "content": {
+          "mimetype": "text/html",
+          "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Who is Frank?</p>\n  <input type=\"radio\" name=\"radio\" id=\"radio1\" value=\"An owl\"><label for=\"radio1\">An owl</label><br>\n  <input type=\"radio\" name=\"radio\" id=\"radio2\" value=\"The leader of the rodents\"><label for=\"radio2\">The leader of the rodents</label><br>\n  <input type=\"radio\" name=\"radio\" id=\"radio3\" value=\"A rabbit\"><label for=\"radio3\">A rabbit</label>\n</form>\n"
+      },
+      "media": "main"
+  }, {
+      "id": "q4",
+      "type": "question",
+      "begin": 14500,
+      "end": 18000,
+      "content": {
+          "mimetype": "text/html",
+          "data": "What do the rodents do?"
+      },
+      "media": "main"
   }],
   "meta": {
     "title": "Template package",

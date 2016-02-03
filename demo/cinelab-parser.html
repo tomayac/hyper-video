@@ -15,7 +15,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <title>hyper-video Demo</title>
     <link href="styles/main.css" media="all" rel="stylesheet" type="text/css"/>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <style> track-subtitles { display: inline-block; }</style>
+    <style>
+      track-subtitles { display: inline-block; }
+      ::cue(.chapter) { font-size: 50% }
+    </style>
     <link rel="import" href="../hyper-video.html">
   </head>
   <body>
@@ -25,8 +28,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <cinelab-parser src="assets/cinelab.cjp" mapping='{"transcript": "st", "part": ["ch", "ch2"], "question": "qz"}'></cinelab-parser>
       <track-chapters id="ch" display-chapters-thumbnails width="800"></track-chapters>
-      <track-subtitles id="st" display-subtitles-group width="400" height="400"></track-subtitles>
-      <track-subtitles id="ch2" display-subtitles-group width="400" height="400"></track-subtitles>
+      <track-subtitles id="st" display-subtitles-group width="400" height="250"></track-subtitles>
+      <track-subtitles id="ch2" display-subtitles-group width="400" cue-class="chapter" height="250"></track-subtitles>
       <gadget-quiz id="qz"></gadget-quiz>
     </hyper-video>
 
