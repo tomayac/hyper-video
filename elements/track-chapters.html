@@ -91,7 +91,8 @@ and optionally displays a visual table of contents.
          * Used to specify the WebVTT file containing the chapters annotations.
          */
         src: {
-          type: String
+          type: String,
+          notify: true
         },
         /**
          * Used to display the visual table of contents.
@@ -145,12 +146,15 @@ and optionally displays a visual table of contents.
         });
 
         document.addEventListener('cues-read', function(e) {
-          console.log('Received event (document): cues-read');
           cuesRead = true;
           var data = e.detail;
+          if (data.owner !== that) {
+            return;
+          }
           if (data.kind !== 'chapters') {
             return;
           }
+          console.log('Received event (document): cues-read');
           cueData = data.cueData;
           if ((that.displayChaptersThumbnails) &&
               (hyperVideoLoadedMetadata) &&
@@ -226,7 +230,7 @@ and optionally displays a visual table of contents.
           }
         });
 
-        setTimeout(function() {
+        var fireTrackReady = function() {
           console.log('Fired event: track-ready');
           that.fire(
             'track-ready',
@@ -235,7 +239,12 @@ and optionally displays a visual table of contents.
               kind: 'chapters'
             }
           );
-        }, 250);
+        };
+        if (that.src) {
+          setTimeout(fireTrackReady, 250);
+        } else {
+          that.addEventListener("src-changed", fireTrackReady);
+        }
       }
     });
   </script>

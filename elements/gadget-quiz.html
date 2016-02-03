@@ -87,7 +87,8 @@ and the reply from the corresponding server will be displayed.
          * Used to specify the WebVTT file containing the quiz annotations.
          */
         src: {
-          type: String
+          type: String,
+          notify: true
         },
       },
 
@@ -163,11 +164,14 @@ and the reply from the corresponding server will be displayed.
         };
 
         document.addEventListener('cues-read', function(e) {
-          console.log('Received event (document): cues-read');
           var data = e.detail;
+          if (data.owner !== that) {
+            return;
+          }
           if (data.kind !== 'metadata') {
             return;
           }
+          console.log('Received event (document): cues-read');
           var cues = data.cueData;
           cues.forEach(function(cue, i) {
             var div = document.createElement('div');
@@ -239,7 +243,7 @@ and the reply from the corresponding server will be displayed.
           }
         });
 
-        setTimeout(function() {
+        var fireTrackReady = function() {
           console.log('Fired event: track-ready');
           that.fire(
             'track-ready',
@@ -248,7 +252,12 @@ and the reply from the corresponding server will be displayed.
               kind: 'metadata'
             }
           );
-        }, 250);
+        };
+        if (that.src) {
+          setTimeout(fireTrackReady, 250);
+        } else {
+          that.addEventListener("src-changed", fireTrackReady);
+        }
       }
     });
   </script>
