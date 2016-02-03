@@ -99,21 +99,18 @@ Element providing solution to no problem in particular.
               }
 
               // Check annotation types
-              if ((!data.annotation_types) ||
-                  (!Array.isArray(data.annotation_types))) {
-                return reject(new Error('Cinelab annotation types must be '+
-                    'provided.'));
+              if (data.annotation_types) {
+                // Forgivingly ignore invalid annotation types
+                var annotationTypes = data.annotation_types.filter(function(
+                    annotationType) {
+                  if (annotationType.id) {
+                    // @todo Check for allowed ID values
+                    annotationTypeValues[annotationType.id] = true;
+                    return true;
+                  }
+                  return false;
+                });
               }
-              // Forgivingly ignore invalid annotation types
-              var annotationTypes = data.annotation_types.filter(function(
-                  annotationType) {
-                if (annotationType.id) {
-                  // @todo Check for allowed ID values
-                  annotationTypeValues[annotationType.id] = true;
-                  return true;
-                }
-                return false;
-              });
 
               // Check medias
               if (!data.medias || !Array.isArray(data.medias)) {
@@ -153,7 +150,7 @@ Element providing solution to no problem in particular.
                       '"content"\n' + JSON.stringify(annotation, null, 2));
                   return false;
                 }
-                if (!annotationTypeValues[annotation.type]) {
+                if (!annotation.type.match(/:/) && !annotationTypeValues[annotation.type]) {
                   console.log('Cinelab parser warning: non-matching "type"\n' +
                       JSON.stringify(annotation, null, 2));
                   return false;

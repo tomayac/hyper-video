@@ -1,8 +1,10 @@
 {
   "format": "http://advene.org/ns/cinelab/",
+  "imports": [{
+      "id": "imp",
+      "url": "http://example.org/dummy.cjp"
+  }],
   "annotation_types": [{
-    "id": "transcript"
-  }, {
     "id": "part"
   }, {
     "id": "question"
@@ -86,7 +88,7 @@
     "media": "main"
   }, {
       "id": "tr1",
-      "type": "transcript",
+      "type": "imp:transcript",
       "begin": 3500,
       "end": 5000,
       "content": {
@@ -95,7 +97,7 @@
       "media": "main"
   }, {
       "id": "tr2",
-      "type": "transcript",
+      "type": "imp:transcript",
       "begin": 6000,
       "end": 9000,
       "content": {
@@ -104,7 +106,7 @@
       "media": "main"
   }, {
       "id": "tr3",
-      "type": "transcript",
+      "type": "imp:transcript",
       "begin": 11000,
       "end": 14000,
       "content": {
@@ -113,7 +115,7 @@
       "media": "main"
   }, {
       "id": "tr4",
-      "type": "transcript",
+      "type": "imp:transcript",
       "begin": 14500,
       "end": 18000,
       "content": {
@@ -122,7 +124,7 @@
       "media": "main"
   }, {
       "id": "tr5",
-      "type": "transcript",
+      "type": "imp:transcript",
       "begin": 19000,
       "end": 24000,
       "content": {
@@ -131,7 +133,7 @@
       "media": "main"
   }, {
       "id": "tr6",
-      "type": "transcript",
+      "type": "imp:transcript",
       "begin": 24500,
       "end": 26000,
       "content": {
