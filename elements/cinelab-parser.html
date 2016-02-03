@@ -136,8 +136,8 @@ Element providing solution to no problem in particular.
               }
               // Forgivingly ignore invalid annotations
               var annotations = data.annotations.filter(function(annotation) {
-                if ((!annotation.begin) ||
-                    (!annotation.end) ||
+                if ((annotation.begin === undefined) ||
+                    (annotation.end === undefined) ||
                     (annotation.begin > annotation.end)) {
                   console.log('Cinelab parser warning: invalid "begin" and/or '+
                       '"end"\n' + JSON.stringify(annotation, null, 2));
