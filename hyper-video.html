@@ -765,8 +765,8 @@ TODO document JSON format
               }
             };
 
-            that.alternativeViews.split(/\s/).forEach(function(views) {
-              views = JSON.parse(views);
+            if (that.alternativeViews) {
+              var views = JSON.parse(that.alternativeViews);
               var content = container.querySelector('content');
               for (var videoSource in views) {
                 if (video.currentSrc.indexOf(videoSource) === -1) {
@@ -825,7 +825,7 @@ TODO document JSON format
                   trackVideo.appendChild(newTrack);
                 }
               }
-            });
+            };
 
             (function init() {
               for (var i = 0; i < that._videos.length; i++) {
