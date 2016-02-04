@@ -46,6 +46,13 @@ Element providing solution to no problem in particular.
          */
         mapping: {
           type: Object
+        },
+        /**
+         * The identifier of the cinelab media to use as the main video.
+         * This must only be set if the ``src`` attribute of the parent ``hyper-video`` element is *not* set.
+         */
+        mainVideo: {
+          type: String
         }
       },
 
@@ -73,6 +80,87 @@ Element providing solution to no problem in particular.
           }).catch(function(error) {
             return new Error(error);
           });
+        };
+
+        var _getAbsoluteUrl = function(url, base) {
+          if (base === undefined) {
+            var a = document.createElement("a");
+            a.href = url;
+            return a.href;
+          } else {
+            // solution from http://stackoverflow.com/a/12965135
+            var doc      = document
+              , old_base = doc.getElementsByTagName('base')[0]
+              , old_href = old_base && old_base.href
+              , doc_head = doc.head || doc.getElementsByTagName('head')[0]
+              , our_base = old_base || doc_head.appendChild(doc.createElement('base'))
+              , resolver = doc.createElement('a')
+              , resolved_url
+              ;
+            our_base.href = _getAbsoluteUrl(base);
+            resolver.href = url;
+            resolved_url  = resolver.href; // browser magic at work here
+
+            if (old_base) old_base.href = old_href;
+            else doc_head.removeChild(our_base);
+            return resolved_url;
+          }
+        };
+
+        var _setHypervideoMedia = function(cpElement, medias, reject) {
+            var mediasById = {};
+            medias.forEach(function(media) { mediasById[media.id] = media });
+            var base = _getAbsoluteUrl(cpElement.src);
+            var mainMedia = mediasById[cpElement.mainVideo];
+            if (mainMedia === undefined) {
+              return reject("Media " + cpElement.mainVideo + " can not be found");
+            };
+            var src = _getAbsoluteUrl(mainMedia.url, base);
+            var alternativeViews = {};
+            alternativeViews[src] = {};
+            var alternativeViewsKeys = [src];
+            var meta = mainMedia.meta || {};
+            var altUrls = meta.altUrls;
+            if (altUrls) {
+              altUrls.split(" ").forEach(function(url) {
+                var absUrl = _getAbsoluteUrl(url, base);
+                src += " " + absUrl;
+                alternativeViews[absUrl] = {};
+                alternativeViewsKeys.push(absUrl);
+              });
+            }
+
+            var altViews = meta.altViews;
+            if (altViews) {
+              altViews.split(" ").forEach(function(mid) {
+                var media = mediasById[mid];
+                if (media === undefined) {
+                  console.log("Ignoring unknown alternative media " + mid);
+                  return;
+                };
+                var urls = [ media.url ];
+                var meta = media.meta || {};
+                urls = urls.concat((meta.altUrls || "").split(" "));
+                for (var i=0; i<urls.length; i+=1) {
+                  var absUrl = _getAbsoluteUrl(urls[i], base);
+                  alternativeViews[alternativeViewsKeys[i]][mid] = {
+                    "title": meta.title,
+                    "src": absUrl
+                  };
+                }
+              });
+            }
+
+            
+
+            var hvElement = cpElement;
+            while (hvElement.tagName !== "HYPER-VIDEO") {
+                hvElement = hvElement.parentElement;
+            }
+            hvElement.src = src;
+            if (altViews) {
+              hvElement.alternativeViews = JSON.stringify(alternativeViews);
+            }
         };
 
         var parseCinelabData = function(data) {
@@ -125,6 +213,8 @@ Element providing solution to no problem in particular.
                 }
                 return false;
               });
+              // If required, set hyper-video src and alternativeViews
+              if (that.mainVideo) _setHypervideoMedia(that, medias, reject);
 
               // Check annotations
               if (!data.annotations || !Array.isArray(data.annotations)) {
@@ -157,7 +247,7 @@ Element providing solution to no problem in particular.
                 }
                 return true;
               });
-              annotations.map(function(annotation) {
+              annotations.forEach(function(annotation) {
                 var type = annotation.type;
                 typedAnnotations[type] = typedAnnotations[type] || [];
                 typedAnnotations[type].push(annotation);
@@ -197,6 +287,11 @@ Element providing solution to no problem in particular.
           track.src = URL.createObjectURL(blob);
         };
 
+        /* load the data immediatedly, but process annotation later */
+        var parsedDataPromise = loadCinelabData(that.src).then(function(rawData) {
+            return parseCinelabData(rawData);
+        });
+
         document.addEventListener('hypervideo-loaded-metadata', function(e) {
           console.log('Received event (document): hypervideo-loaded-metadata');
           if (that.fired) {
@@ -210,9 +305,7 @@ Element providing solution to no problem in particular.
           that.duration = data.duration;
           that.alternativeViews = data.alternativeViews;
 
-          loadCinelabData(that.src).then(function(rawData) {
-            return parseCinelabData(rawData);
-          }).then(function(parsedData) {
+          parsedDataPromise.then(function(parsedData) {
             for (var atype in parsedData) {
               if (!parsedData.hasOwnProperty(atype)) continue;
               var trackIds = that.mapping[atype];

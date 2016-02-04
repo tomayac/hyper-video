@@ -174,7 +174,8 @@ TODO document JSON format
          * Alternatively, you can use [youTubeVideoId](#youTubeVideoId).
          */
         src: {
-          type: String
+          type: String,
+          notify: true
         },
         /**
          * Used to specify alternative views (see above).
@@ -885,11 +886,18 @@ TODO document JSON format
         });
 
         spinner = showSpinner();
-        setTimeout(function() {
-          initializeVideo();
-          positionDataAnnotations();
-          spinner.remove();
-        }, 50);
+        
+        var initializeHypervideo = function() {
+            initializeVideo();
+            positionDataAnnotations();
+            spinner.remove();
+        }
+        
+        if (that.src) {
+          setTimeout(initializeHypervideo, 50);
+        } else {
+          that.addEventListener("src-changed", initializeHypervideo);
+        }
       },
 
       foo: 1,
