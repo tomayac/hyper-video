@@ -428,7 +428,7 @@ TODO document JSON format
         document.addEventListener('current-time-update', function(e) {
           // console.log('Received event (document): current-time-update');
           var data = e.detail;
-          video.currentTime = data.currentTime;
+          that._currentTime = data.currentTime;
           video.play();
         });
 
@@ -703,6 +703,7 @@ TODO document JSON format
             };
 
             var seekAll = function seekAll(e) {
+              console.log("seekAll", e.target);
               for (var i = 0; i < that._videos.length; i++) {
                 var currentVideo = that._videos[i];
                 if (currentVideo === e.target) {
