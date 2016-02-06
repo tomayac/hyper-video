@@ -769,6 +769,10 @@ TODO document JSON format
             if (that.alternativeViews) {
               var views = JSON.parse(that.alternativeViews);
               var content = container.querySelector('content');
+              var altViewsDiv = document.createElement('div');
+              altViewsDiv.id = "alternativeViews";
+              video.parentNode.insertBefore(altViewsDiv, content);
+
               for (var videoSource in views) {
                 if (video.currentSrc.indexOf(videoSource) === -1) {
                   continue;
@@ -784,7 +788,7 @@ TODO document JSON format
                   viewVideo.id = id;
                   viewVideo.setAttribute('title', alternativeView.title);
                   viewVideo.classList.add('hypervideo');
-                  video.parentNode.insertBefore(viewVideo, content);
+                  altViewsDiv.appendChild(viewVideo);
                   for (var i = 0, lenI = tracks.length; i < lenI; i++) {
                     var track = tracks[i];
                     var newTrack = document.createElement('track');
