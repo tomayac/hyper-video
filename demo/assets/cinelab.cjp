@@ -1,0 +1,246 @@
+{
+  "format": "http://advene.org/ns/cinelab/",
+  "imports": [{
+      "id": "imp",
+      "url": "http://example.org/dummy.cjp"
+  }],
+  "annotation_types": [{
+    "id": "part"
+  }, {
+    "id": "question"
+  }],
+  "medias": [
+    {
+      "id": "main",
+      "url": "big_buck_bunny.webm",
+      "meta": {
+        "title": "Big Buck Bunny",
+        "altUrls": "big_buck_bunny.mp4",
+        "altViews": "alt1 alt2"
+      }
+    },
+    {
+      "id": "alt1",
+      "url": "big_buck_bunny.webm",
+      "meta": {
+        "title": "Big Buck Bunny - alt1",
+        "altUrls": "big_buck_bunny.mp4"
+      }
+    },
+    {
+      "id": "alt2",
+      "url": "big_buck_bunny.webm",
+      "meta": {
+        "title": "Big Buck Bunny - alt2",
+        "altUrls": "big_buck_bunny.mp4"
+      }
+    }
+  ],
+  "annotations": [
+  {
+    "id": "ch1",
+    "type": "part",
+    "begin": 0,
+    "end": 10000,
+    "content": {
+      "data": "Act 1"
+    },
+    "media": "main",
+    "meta": {
+        "http://champin.net/2014/linkedvtt/onto#position": "95%",
+        "http://champin.net/2014/linkedvtt/onto#aligh": "right"
+    }
+  }, {
+    "id": "ch2",
+    "type": "part",
+    "begin": 10000,
+    "end": 20000,
+    "content": {
+      "data": "Act 2"
+    },
+    "media": "main",
+    "meta": {
+        "http://champin.net/2014/linkedvtt/onto#position": "95%",
+        "http://champin.net/2014/linkedvtt/onto#aligh": "right"
+    }
+  }, {
+    "id": "ch3",
+    "type": "part",
+    "begin": 20000,
+    "end": 30000,
+    "content": {
+      "data": "Act 3"
+    },
+    "media": "main",
+    "meta": {
+        "http://champin.net/2014/linkedvtt/onto#position": "95%",
+        "http://champin.net/2014/linkedvtt/onto#aligh": "right"
+    }
+  }, {
+    "id": "ch4",
+    "type": "part",
+    "begin": 30000,
+    "end": 40000,
+    "content": {
+      "data": "Act 4"
+    },
+    "media": "main",
+    "meta": {
+        "http://champin.net/2014/linkedvtt/onto#position": "95%",
+        "http://champin.net/2014/linkedvtt/onto#aligh": "right"
+    }
+  }, {
+    "id": "ch5",
+    "type": "part",
+    "begin": 40000,
+    "end": 50000,
+    "content": {
+      "data": "Act 5"
+    },
+    "media": "main",
+    "meta": {
+        "http://champin.net/2014/linkedvtt/onto#position": "95%",
+        "http://champin.net/2014/linkedvtt/onto#aligh": "right"
+    }
+  }, {
+    "id": "ch6",
+    "type": "part",
+    "begin": 50000,
+    "end": 54000,
+    "content": {
+      "data": "Act 6"
+    },
+    "media": "main",
+    "meta": {
+        "http://champin.net/2014/linkedvtt/onto#position": "95%",
+        "http://champin.net/2014/linkedvtt/onto#aligh": "right"
+    }
+  }, {
+    "id": "ch7",
+    "type": "part",
+    "begin": 54000,
+    "end": 57000,
+    "content": {
+      "data": "Act 7"
+    },
+    "media": "main",
+    "meta": {
+        "http://champin.net/2014/linkedvtt/onto#position": "95%",
+        "http://champin.net/2014/linkedvtt/onto#aligh": "right"
+    }
+  }, {
+    "id": "ch8",
+    "type": "part",
+    "begin": 57000,
+    "end": 60000,
+    "content": {
+      "data": "Act 8"
+    },
+    "media": "main",
+    "meta": {
+        "http://champin.net/2014/linkedvtt/onto#position": "95%",
+        "http://champin.net/2014/linkedvtt/onto#aligh": "right"
+    }
+  }, {
+      "id": "tr1",
+      "type": "imp:transcript",
+      "begin": 3500,
+      "end": 5000,
+      "content": {
+          "data": "<v Narrator> The plot follows a day of the life of Big Buck Bunny"
+      },
+      "media": "main"
+  }, {
+      "id": "tr2",
+      "type": "imp:transcript",
+      "begin": 6000,
+      "end": 9000,
+      "content": {
+          "data": "when he meets three bullying rodents"
+      },
+      "media": "main"
+  }, {
+      "id": "tr3",
+      "type": "imp:transcript",
+      "begin": 11000,
+      "end": 14000,
+      "content": {
+          "data": "Frank (the leader of the rodents), Rinky and Gamera."
+      },
+      "media": "main"
+  }, {
+      "id": "tr4",
+      "type": "imp:transcript",
+      "begin": 14500,
+      "end": 18000,
+      "content": {
+          "data": "The rodents amuse themselves"
+      },
+      "media": "main"
+  }, {
+      "id": "tr5",
+      "type": "imp:transcript",
+      "begin": 19000,
+      "end": 24000,
+      "content": {
+          "data": "by harassing helpless creatures of the forest"
+      },
+      "media": "main"
+  }, {
+      "id": "tr6",
+      "type": "imp:transcript",
+      "begin": 24500,
+      "end": 26000,
+      "content": {
+          "data": "by throwing fruits, nuts and rocks at them."
+      },
+      "media": "main"
+  }, {
+      "id": "q1",
+      "type": "question",
+      "begin": 3500,
+      "end": 5000,
+      "content": {
+          "mimetype": "text/html",
+          "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n<p>Whose day does the plot follow?</p>\n<input name=\"response\" placeholder=\"Response\">\n</form>\n"
+      },
+      "media": "main"
+  }, {
+      "id": "q2",
+      "type": "question",
+      "begin": 6000,
+      "end": 9000,
+      "content": {
+          "mimetype": "text/html",
+          "data": "<form>\n  <p>Whom does he meet?</p>\n  <input type=\"checkbox\" name=\"checkbox\" id=\"check1\" value=\"Frank\"><label for=\"check1\">Frank</label><br>\n  <input type=\"checkbox\" name=\"checkbox\" id=\"check2\" value=\"John\"><label for=\"check2\">John</label><br>\n  <input type=\"checkbox\" name=\"checkbox\" id=\"check3\" value=\"Jim\"><label for=\"check3\">Jim</label>\n</form>\n"
+      },
+      "media": "main"
+  }, {
+      "id": "q3",
+      "type": "question",
+      "begin": 11000,
+      "end": 14000,
+      "content": {
+          "mimetype": "text/html",
+          "data": "<form action=\"http://www.apple.com/library/test/success.html\">\n  <p>Who is Frank?</p>\n  <input type=\"radio\" name=\"radio\" id=\"radio1\" value=\"An owl\"><label for=\"radio1\">An owl</label><br>\n  <input type=\"radio\" name=\"radio\" id=\"radio2\" value=\"The leader of the rodents\"><label for=\"radio2\">The leader of the rodents</label><br>\n  <input type=\"radio\" name=\"radio\" id=\"radio3\" value=\"A rabbit\"><label for=\"radio3\">A rabbit</label>\n</form>\n"
+      },
+      "media": "main"
+  }, {
+      "id": "q4",
+      "type": "question",
+      "begin": 14500,
+      "end": 18000,
+      "content": {
+          "mimetype": "text/html",
+          "data": "What do the rodents do?"
+      },
+      "media": "main"
+  }],
+  "meta": {
+    "title": "Template package",
+    "creator": "pa",
+    "modified": "2015-11-10T00:00:00",
+    "created": "2015-11-10T00:00:00",
+    "contributor": "pa"
+  }
+}

@@ -272,15 +272,30 @@ Element providing solution to no problem in particular.
           return hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
         };
 
+        var _CUE_SETTINGS = [ "vertical", "line", "position", "size", "alignment", "region" ];
+
+        var _generateCueSettings = function(annotation) {
+          var ret = "";
+          var meta = annotation.meta || {};
+          _CUE_SETTINGS.forEach(function(prop) {
+            var value = meta["http://champin.net/2014/linkedvtt/onto#" + prop];
+            if (value) {
+              ret += " " + prop + ":" + value;
+            }
+          });
+          return ret;
+        };
+
         var _populateTrackElement = function(track, annotations) {
           console.log("Populating", track.id, "with", annotations.length, "annotations")
           var webVtt = 'WEBVTT\n\n';
           annotations.forEach(function(annotation) {
             var start = toHHMMSSmmm(annotation.begin);
             var end = toHHMMSSmmm(annotation.end);
+            var cueSettings = _generateCueSettings(annotation);
             var content = annotation.content.data;
             var id = annotation.id ? annotation.id : false;
-            webVtt += (id ? id + '\n' : '') + start + ' --> ' + end + '\n' +
+            webVtt += (id ? id + '\n' : '') + start + ' --> ' + end + cueSettings + '\n' +
                 content + '\n\n';
           });
           var blob = new Blob([webVtt], {type: 'text/vtt'});
