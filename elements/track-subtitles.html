@@ -97,12 +97,6 @@ and optionally displays a searchable list of the subtitles.
          */
         height: {
           type: Number
-        },
-        /**
-         * Used to specify the class of the cue
-         */
-        cueClass: {
-          type: String
         }
       },
 
@@ -229,7 +223,6 @@ and optionally displays a searchable list of the subtitles.
             {
               src: that.src,
               kind: 'subtitles',
-              cueClass: that.cueClass
             }
           );
         };

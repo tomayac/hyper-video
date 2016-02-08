@@ -299,8 +299,7 @@ TODO document JSON format
                 track.track.mode = 'hidden';
               }
               cuesRead = true;
-              readCues(track.track.cues, data.kind, owner,
-                       data.cueClass);
+              readCues(track.track.cues, data.kind, owner);
             }
           };
           track.addEventListener('load', doReadCues);
@@ -611,16 +610,13 @@ TODO document JSON format
 
         /* TODO should we document event cues-read? maybe only in the Private API?
            shouldn't it rather be a callback or a Promise anyway? */
-        var readCues = function(cues, kind, owner, cueClass) {
+        var readCues = function(cues, kind, owner) {
           if (!cues) {
             return;
           }
           var cueData = [];
           for (var i = 0, lenI = cues.length; i < lenI; i++) {
             var cue = cues.item ? cues.item(i) : cues[i];
-            if (cueClass) {
-              cue.text = '<c.' + cueClass + '>' + cue.text + '<c>';
-            }
             cueData.push({
               start: parseFloat(cue.startTime),
               end: parseFloat(cue.endTime),
