@@ -342,6 +342,13 @@ TODO document JSON format
           track.src = data.src;
           track.default = true;
           track.kind = data.kind;
+          if (navigator.appVersion.match(/Chrome/)) {
+            // Accessing attributes of track.track too early prevents Firefox from displaying it correctly
+            // (apparently by preventing the .language attribute to be correctly set).
+            // However, *not* setting track.track.mode in Chrome prevents the track to load correctly,
+            // hence the ugly test above.
+            track.track.mode = "hidden";
+          }
           if (track.kind === 'subtitles' || track.kind === 'captions') {
             track.srclang = navigator.language;
           } else if (track.kind === 'chapters') {
