@@ -15,7 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <title>hyper-video Demo</title>
     <link href="styles/main.css" media="all" rel="stylesheet" type="text/css"/>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="../hyper-video.html">
+    <link rel="import" href="../elements/hv-synchronizer.html">
     <style>
       video { display: block; height: 10em; }
       label { display: block; }
@@ -25,6 +25,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <body>
     <h1>Hypervideo Demo - hv-synchronizer</h1>
 
+    <label>selector <input id="selector"></label>
+    <label>master <input id="master"></label>
+    <label>master-class <input id="masterClass" value="irule"></label>
+    <div>
+      <button id="add">Add video</button></button>
+      <button id="rem">Remove video</button></button>
+    </div>
+
     <hv-synchronizer master-class="irule">
       <video id="v1" src="assets/big_buck_bunny.mp4" controls muted></video>
       <video id="v2" src="assets/big_buck_bunny.mp4" controls muted></video>
@@ -32,9 +40,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <video id="v3" src="assets/big_buck_bunny.mp4" controls muted></video>
       </div>
     </hv-synchronizer>
-    <label>selector <input id="selector"></label>
-    <label>master <input id="master"></label>
-    <label>master-class <input id="masterClass" value="irule"></label>
     <script>
       window.addEventListener('load', function() {
         var hvs = document.getElementsByTagName('hv-synchronizer')[0];
@@ -44,6 +49,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         document.getElementById('selector').addEventListener('change', handleChange);
         document.getElementById('master').addEventListener('change', handleChange);
         document.getElementById('masterClass').addEventListener('change', handleChange);
+
+        var v3 = document.getElementById('v3');
+
+        document.getElementById('add').addEventListener('click', function(evt) {
+          var newVideo = v3.cloneNode(true);
+          newVideo.id = null;
+          newVideo.muted = true; // does not seem to be cloned...
+          v3.parentNode.appendChild(newVideo);
+        });
+        document.getElementById('rem').addEventListener('click', function(evt) {
+          var lastVideo = v3.parentNode.querySelector('video:last-child');
+          v3.parentNode.removeChild(lastVideo);
+        });
       });
     </script>
   </body>

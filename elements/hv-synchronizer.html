@@ -16,7 +16,7 @@ to a single element.
 @status alpha
 @homepage http://github.com/tomayac/hyper-video
 -->
-<dom-module id="visualization-timeline">
+<dom-module id="hv-synchronizer">
 
   <template>
     <content></content>
@@ -62,53 +62,10 @@ to a single element.
       _master: null,
       _dispatchEvent: null,
 
-      created: function() {
-        console.log("created");
-        var that = this;
-
-        function doPlay(target, other) {
-          other.currentTime = target.currentTime;
-          other.play();
-        }
-        function doPause(target, other) {
-          other.pause();
-          other.currentTime = target.currentTime;
-        }
-        function doSeek(target, other) {
-          if (Math.abs(other.currentTime - target.currentTime) > that._tolerance) {
-            other.currentTime = target.currentTime;
-          }
-        }
-        function doChangeRate(target, other) {
-          other.playbackRate = target.playbackRate;
-        }
-
-        that._dispatchEvent = function(evt) {
-          // NB: we create this function here (rather than directly at the top level)
-          // so that it can use the variable 'that' rather than relying on 'this',
-          // which makes it more robust.
-          console.log("dispatchEvent", evt.type, evt.target);
-          var target = evt.target;
-          var type = evt.type;
-          var action;
-          if (type === "play" || type === "playing") action = doPlay;
-          else if (type === "pause" || type === "waiting") action = doPause;
-          else if (type === "seeked") action = doSeek;
-          else if (type === "ratechange") action = doChangeRate;
-          else {
-            console.error("Unrecognized event type " + type);
-            return;
-          }
-          that._medias.forEach(function(other) {
-            action(target, other);
-          });
-        }
-      },
-
-      _EVENTS: ["play", "playing", "pause", "waiting", "seeked", "ratechange"],
+      _EVENTS: ["playing", "pause", "waiting", "seeked", "ratechange"],
 
       _updateMedias: function(selector, master) {
-        console.log("_updateMedias", selector, master);
+        //console.log("_updateMedias", selector, master);
         var that = this;
 
         if (that._master) {
@@ -129,17 +86,90 @@ to a single element.
         for (var i=0; i<selected.length; i+=1) that._medias.add(selected[i]);
         that._medias.delete(that._master);
 
-        console.log("_medias", that._medias, "\n_master", that._master);
+        console.log("after _updateMedias:\n_medias=", that._medias, "\n_master=", that._master);
       },
 
       _updateMasterClass(newValue, oldValue) {
-        console.log("_updateMasterClass", oldValue, newValue);
+        //console.log("_updateMasterClass", oldValue, newValue);
         var that = this;
         if (that._master) {
           that._master.classList.remove(oldValue);
           that._master.classList.add(newValue);
         }
-        console.log("===", that._master)
+      },
+
+      created: function() {
+        console.log("created");
+        var that = this;
+
+        function doPlay(master, other) {
+          other.currentTime = master.currentTime;
+          other.play();
+        }
+
+        function doPause(master, other) {
+          other.pause();
+          other.currentTime = master.currentTime;
+        }
+
+        function doSeek(master, other) {
+          other.currentTime = master.currentTime;
+          if (master.paused) {
+            // required by Firefox to force an update on paused videos
+            other.play();
+            other.pause();
+          }
+        }
+
+        function doChangeRate(master, other) {
+          other.playbackRate = master.playbackRate;
+        }
+
+        that._dispatchEvent = function (evt) {
+          // NB: we create this function here (rather than directly at the top level)
+          // so that it can use the variable 'that' rather than relying on 'this'.
+          // That way, we can safely pass it as an eventListener.
+
+          //console.log("dispatchEvent", evt.type, evt.target);
+          var target = evt.target;
+          var type = evt.type;
+          var action;
+          if (type === "play" || type === "playing") action = doPlay;
+          else if (type === "pause" || type === "waiting") action = doPause;
+          else if (type === "seeked") action = doSeek;
+          else if (type === "ratechange") action = doChangeRate;
+          else {
+            console.error("Unrecognized event type " + type);
+            return;
+          }
+          that._medias.forEach(function (other) {
+            action(target, other);
+          });
+        };
+
+        // Ensure that _updateMedias is called when the content of this element is changed.
+        var observer = new MutationObserver(function () {
+          var wasPlaying = (that._master && that._master.currentTime > 0 && !that._master.paused && !that._master.ended && that._master.readyState > 2);
+          if (wasPlaying) that._master.pause();
+
+          that._updateMedias(that.selector, that.master);
+
+          // then ensure that the settings propagate to the new videos (if any)
+          var oldPlaybackRate = that._master.playbackRate;
+          var oldCurrentTime = that._master.currentTime;
+          that._master.playbackRate = oldPlaybackRate + 1;
+          that._master.playbackRate = oldPlaybackRate;
+          that._master.currentTime = 0;
+          that._master.currentTime = oldCurrentTime;
+          if (wasPlaying) that._master.play();
+
+          // NB: if after _updateMedias, the master is a new video element,
+          // then all the videos will start follow this new master.
+          // This is a feature, not a bug.
+          // Doing the opposite (adapting the new master to the previous one)
+          // makes the code hard to maintain, for a use-case which may not even be useful.
+        });
+        observer.observe(that, { "childList": true, "subtree": true });
       }
 
     });
