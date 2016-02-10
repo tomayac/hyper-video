@@ -1,0 +1,50 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>hyper-video Demo</title>
+    <link href="styles/main.css" media="all" rel="stylesheet" type="text/css"/>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../hyper-video.html">
+    <style>
+      video { display: block; height: 10em; }
+      label { display: block; }
+      .irule { border-right: 10px solid red; }
+    </style>
+  </head>
+  <body>
+    <h1>Hypervideo Demo - hv-synchronizer</h1>
+
+    <hv-synchronizer master-class="irule">
+      <video id="v1" src="assets/big_buck_bunny.mp4" controls muted></video>
+      <video id="v2" src="assets/big_buck_bunny.mp4" controls muted></video>
+      <div>
+        <video id="v3" src="assets/big_buck_bunny.mp4" controls muted></video>
+      </div>
+    </hv-synchronizer>
+    <label>selector <input id="selector"></label>
+    <label>master <input id="master"></label>
+    <label>master-class <input id="masterClass" value="irule"></label>
+    <script>
+      window.addEventListener('load', function() {
+        var hvs = document.getElementsByTagName('hv-synchronizer')[0];
+        function handleChange(evt) {
+          hvs[evt.target.id] = evt.target.value;
+        }
+        document.getElementById('selector').addEventListener('change', handleChange);
+        document.getElementById('master').addEventListener('change', handleChange);
+        document.getElementById('masterClass').addEventListener('change', handleChange);
+      });
+    </script>
+  </body>
+</html>

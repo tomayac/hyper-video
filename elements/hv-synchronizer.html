@@ -1,0 +1,148 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+This element synchronizes a set of media elements (video or audio)
+to a single element.
+
+##### Example
+
+    <hv-synchronizer>
+      <video src="video1.webm"></video>
+      <video src="video2.webm"></video>
+    </hv-synchronizer>
+
+@element hv-synchronizer
+@demo demo/hv-synchronizer.html
+@status alpha
+@homepage http://github.com/tomayac/hyper-video
+-->
+<dom-module id="visualization-timeline">
+
+  <template>
+    <content></content>
+  </template>
+
+  <script>
+    'use strict';
+
+    Polymer({
+      is: 'hv-synchronizer',
+
+      properties: {
+        /** A selector (as expected by ``querySelectorAll``)
+         *  identifying all the media elements inside <hv-synchronizer> to be synchronized.
+         */
+        selector: {
+          type: String,
+          value: "video,audio"
+        },
+        /** A selector (as expected by ``querySelector``)
+         *  identifying the master element (i.e. the one driving all the others).
+         *
+         *  If unset, this defaults to the first element matched by ``selector``.
+         */
+        master: {
+          type: String,
+          value: null
+        },
+        /** The class automatically assigned to the *master* media element.
+         */
+        masterClass: {
+          type: String,
+          value: 'hv-synchronizer-master',
+          observer: "_updateMasterClass"
+        }
+      },
+
+      observers: [
+        "_updateMedias(selector, master)"
+      ],
+
+      _medias: null,
+      _master: null,
+      _dispatchEvent: null,
+
+      created: function() {
+        console.log("created");
+        var that = this;
+
+        function doPlay(target, other) {
+          other.currentTime = target.currentTime;
+          other.play();
+        }
+        function doPause(target, other) {
+          other.pause();
+          other.currentTime = target.currentTime;
+        }
+        function doSeek(target, other) {
+          if (Math.abs(other.currentTime - target.currentTime) > that._tolerance) {
+            other.currentTime = target.currentTime;
+          }
+        }
+        function doChangeRate(target, other) {
+          other.playbackRate = target.playbackRate;
+        }
+
+        that._dispatchEvent = function(evt) {
+          // NB: we create this function here (rather than directly at the top level)
+          // so that it can use the variable 'that' rather than relying on 'this',
+          // which makes it more robust.
+          console.log("dispatchEvent", evt.type, evt.target);
+          var target = evt.target;
+          var type = evt.type;
+          var action;
+          if (type === "play" || type === "playing") action = doPlay;
+          else if (type === "pause" || type === "waiting") action = doPause;
+          else if (type === "seeked") action = doSeek;
+          else if (type === "ratechange") action = doChangeRate;
+          else {
+            console.error("Unrecognized event type " + type);
+            return;
+          }
+          that._medias.forEach(function(other) {
+            action(target, other);
+          });
+        }
+      },
+
+      _EVENTS: ["play", "playing", "pause", "waiting", "seeked", "ratechange"],
+
+      _updateMedias: function(selector, master) {
+        console.log("_updateMedias", selector, master);
+        var that = this;
+
+        if (that._master) {
+          that._master.classList.remove(that.masterClass);
+          that._EVENTS.forEach(function(etype) {
+            that._master.removeEventListener(etype, that._dispatchEvent);
+          });
+        }
+        that._master = that.querySelector(master || selector);
+        that._master.classList.add(that.masterClass);
+        that._EVENTS.forEach(function(etype) {
+          that._master.addEventListener(etype, that._dispatchEvent);
+        });
+
+        that._medias = new Set();
+        // Chrome does not allow the result of querySelector to be passed to Set() :-(
+        var selected = that.querySelectorAll(selector);
+        for (var i=0; i<selected.length; i+=1) that._medias.add(selected[i]);
+        that._medias.delete(that._master);
+
+        console.log("_medias", that._medias, "\n_master", that._master);
+      },
+
+      _updateMasterClass(newValue, oldValue) {
+        console.log("_updateMasterClass", oldValue, newValue);
+        var that = this;
+        if (that._master) {
+          that._master.classList.remove(oldValue);
+          that._master.classList.add(newValue);
+        }
+        console.log("===", that._master)
+      }
+
+    });
+  </script>
+
+</dom-module>
