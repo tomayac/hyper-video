@@ -1,0 +1,88 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+This element allows to take snapshots of its parent <video> element.
+Note that it requires that the video source is CORS enabled.
+
+##### Example
+
+    <video src="video1.webm">
+      <hv-snapshoter></hv-snapshoter>
+    </video>
+
+@element hv-snapshoter
+@demo demo/hv-snapshoter.html
+@status alpha
+@homepage http://github.com/tomayac/hyper-video
+-->
+<dom-module id="hv-snapshoter">
+
+  <template>
+  </template>
+
+  <script>
+    'use strict';
+
+    Polymer({
+      is: 'hv-snapshoter',
+
+      properties: {
+      },
+
+      _canvas: null,
+      _ctx: null,
+
+      ready: function() {
+        //console.log("ready");
+        var that = this;
+
+        that._canvas = document.createElement('canvas');
+        that._ctx = that._canvas.getContext('2d');
+      },
+
+      /**
+       * TODO document capture()
+       */
+      capture: function(timestamps, callback) {
+        //console.log("capture");
+        var that = this;
+
+        return new Promise(function (resolve, reject) {
+          if (timestamps.length == 0) {
+            resolve([]);
+            return;
+          }
+
+          var video = that.parentNode;
+          var initTime = video.currentTime;
+          var urls = [];
+          var i = 0;
+
+          that._canvas.width = video.getBoundingClientRect().width;
+          that._canvas.height = video.getBoundingClientRect().height;
+
+          function captureStep() {
+            that._ctx.drawImage(video, 0, 0, video.clientWidth, video.clientHeight);
+            var url = that._canvas.toDataURL();
+            urls.push(url);
+            callback(url, video.currentTime);
+
+            i += 1;
+            if (i < timestamps.length) {
+              video.currentTime = timestamps[i];
+            } else {
+              video.removeEventListener('seeked', captureStep);
+              video.currentTime = initTime;
+              resolve(urls);
+            }
+          }
+
+          video.addEventListener('seeked', captureStep);
+          video.currentTime = timestamps[0];
+        });
+      }
+
+    });
+  </script>
+
+</dom-module>

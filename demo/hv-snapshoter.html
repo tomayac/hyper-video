@@ -1,0 +1,73 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>hyper-video Demo</title>
+    <link href="styles/main.css" media="all" rel="stylesheet" type="text/css"/>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../elements/hv-snapshoter.html">
+    <style>
+      label { display: block; }
+      video { display: block; height: 15em; }
+      #snapshots img {
+        height: 5em;
+        margin: .5em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Hypervideo Demo - hv-snapshoter</h1>
+
+    <label>timestamps<input id="timestamps" value="10 20 30"></label>
+    <div>
+      <button id="go" disabled>Take Snapshots</button></button>
+    </div>
+
+    <video id="v1" src="assets/big_buck_bunny.mp4" controls muted>
+      <hv-snapshoter id="snapshoter"></hv-snapshoter>
+    </video>
+    <div id="snapshots">snapshots will appear here...
+    </div>
+    <script>
+      window.addEventListener('load', function() {
+        var timestamps = document.getElementById("timestamps");
+        var go = document.getElementById("go");
+        var snapshoter = document.getElementById("snapshoter");
+        var snapshots = document.getElementById("snapshots");
+
+        window.addEventListener('WebComponentsReady', function() {
+          go.disabled = false;
+        });
+
+        go.addEventListener('click', function() {
+          snapshots.innerHTML = "";
+
+          var jobs = [];
+          timestamps.value.split(" ").forEach(function (i) {
+            jobs.push(parseInt(i));
+          });
+
+          snapshoter.capture(jobs, function(url, timestamp) {
+            console.log("got image for timestamp", timestamp)
+            var img = document.createElement("img");
+            img.src = url;
+            img.alt = "snapshot @"+timestamp;
+            snapshots.appendChild(img);
+          }).then(function (urls) {
+            console.log('thank you hv-snapshoter :-)');
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
