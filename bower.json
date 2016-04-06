@@ -8,7 +8,7 @@
   "description": "Hypervideo creation based on Web Components using the Polymer framework",
   "main": "hyper-video.html",
   "keywords": [
-    "hypervideo"
+    "hypervideo, web-components"
   ],
   "main": "hyper-video.html",
   "license": "Apache 2.0",
