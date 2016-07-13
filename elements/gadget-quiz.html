@@ -143,7 +143,6 @@ and the reply from the corresponding server will be displayed.
             if (!/^https?:\/\//.test(url)) {
               url = document.location.href + url;
             }
-            url = 'http://crossorigin.me/' + url;
             var formData = new FormData(form);
             fetch(url, {
               method: 'post',

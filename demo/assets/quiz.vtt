@@ -2,7 +2,7 @@ WEBVTT
 
 1
 00:00:03.500 --> 00:00:05.000
-<form action="http://www.apple.com/library/test/success.html">
+<form action="https://crossorigin.me/http://www.apple.com/library/test/success.html">
   <p>Whose day does the plot follow?</p>
   <input name="response" placeholder="Response">
 </form>
@@ -18,7 +18,7 @@ WEBVTT
 
 3
 00:00:11.000 --> 00:00:14.000
-<form action="http://www.apple.com/library/test/success.html">
+<form action="https://crossorigin.me/http://www.apple.com/library/test/success.html">
   <p>Who is Frank?</p>
   <input type="radio" name="radio" id="radio1" value="An owl"><label for="radio1">An owl</label><br>
   <input type="radio" name="radio" id="radio2" value="The leader of the rodents"><label for="radio2">The leader of the rodents</label><br>
