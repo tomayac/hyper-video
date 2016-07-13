@@ -513,6 +513,7 @@ TODO document JSON format
               video.currentTime = 0;
               that.fire('all-still-frames-received');
               spinner.remove();
+              spinner = null;
             }
           };
           var processedStillFrames = 0;
@@ -688,7 +689,8 @@ TODO document JSON format
             };
 
             var playAll = function playAll(e) {
-              var currentTime = e.target.currentTime;
+              if (spinner) return;
+              var currentTime = e.target.currentTime || 0;
               for (var i = 0; i < that._videos.length; i++) {
                 var currentVideo = that._videos[i];
                 currentVideo.currentTime = currentTime;
@@ -699,6 +701,7 @@ TODO document JSON format
             };
 
             var pauseAll = function pauseAll() {
+              if (spinner) return;
               for (var i = 0; i < that._videos.length; i++) {
                 that._videos[i].pause();
               }
@@ -706,6 +709,7 @@ TODO document JSON format
             };
 
             var seekAll = function seekAll(e) {
+              if (spinner) return;
               //console.log("seekAll", e.target);
               for (var i = 0; i < that._videos.length; i++) {
                 var currentVideo = that._videos[i];
@@ -898,13 +902,14 @@ TODO document JSON format
         });
 
         spinner = showSpinner();
-        
+
         var initializeHypervideo = function() {
             initializeVideo();
             positionDataAnnotations();
             spinner.remove();
+            spinner = null;
         }
-        
+
         if (that.src) {
           setTimeout(initializeHypervideo, 50);
         } else {
