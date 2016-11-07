@@ -293,7 +293,7 @@ TODO document JSON format
           var doReadCues = function(e) {
             if (!cuesRead) {
               console.log('Received event (track): load');
-              if (track.kind === 'subtitles' || track.king === 'captions') {
+              if (track.kind === 'subtitles' || track.kind === 'captions') {
                 track.track.mode = 'showing';
               } else {
                 track.track.mode = 'hidden';
