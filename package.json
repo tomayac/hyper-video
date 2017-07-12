@@ -8,7 +8,9 @@
     "request": "~2.36.0"
   },
   "devDependencies": {},
-  "scripts": {},
+  "scripts": {
+    "start": "node app.js"
+  },
   "keywords": [
     "hypervideo",
     "web",
@@ -18,6 +20,7 @@
   "author": "Thomas Steiner",
   "license": "Apache 2.0",
   "engines": {
-     "node": "~0.10.32"
+    "node": "8.1.x",
+    "npm": "5.0.x"
   }
 }
