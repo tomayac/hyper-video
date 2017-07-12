@@ -1,6 +1,6 @@
 {
   "name": "hyper-video",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Hypervideo creation based on Web Components using the Polymer framework",
   "main": "app.js",
   "dependencies": {
@@ -20,7 +20,7 @@
   "author": "Thomas Steiner",
   "license": "Apache 2.0",
   "engines": {
-    "node": "4.8.x",
-    "npm": "2.15.x"
+    "node": ">=4.8.x",
+    "npm": ">=2.15.x"
   }
 }
