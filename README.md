@@ -44,4 +44,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-[![NPM](https://nodei.co/npm/hyper-video.png?downloads=true)](https://nodei.co/npm/hyper-video/)
+[![NPM](https://nodei.co/npm/hyper-video.png?downloads=true)](https://nodei.co/npm/hyper-video/) [![Greenkeeper badge](https://badges.greenkeeper.io/tomayac/hyper-video.svg)](https://greenkeeper.io/)
